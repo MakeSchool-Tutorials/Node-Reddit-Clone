@@ -28,3 +28,9 @@ And hidden solutions:
 
 > [solution]
 > This is how it would have worked!
+
+Enumerations should look beautiful, too:
+
+1. Is this good?
+2. Or not?
+3. Huh?
