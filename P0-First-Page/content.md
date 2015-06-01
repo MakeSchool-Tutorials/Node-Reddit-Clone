@@ -24,7 +24,7 @@ Info Boxes:
 > You should be careful
 because of X, Y and Z
 
-And hidden solutoins:
+And hidden solutions:
 
 > [solution]
 > This is how it would have worked!
