@@ -145,7 +145,7 @@ The following syntax will embed an MP4 video with controls. Videos can be refere
 
 The following syntax will embed a PDF for viewing in-line. PDFs can be referenced with URLs or relative links if they are included in the repository.
 
-![ms-pdf](assets/empty-slides)
+![ms-pdf](assets/empty-slides.pdf)
 
 Images can also be included by full URL. This should be avoided in favor of images being stored in the tutorial repository.
 
