@@ -1,5 +1,6 @@
-title: "Tutorial Template Title"
+title: "Tutorial Template Title, max 56 characters"
 cover: cover.png
 teaser_text: |
     Tell the user what they will learn!
     This can be multi-line text.
+    150 characters max!
