@@ -88,12 +88,12 @@ Each `h1` header creates a "Mark Complete" button for content between it and nex
 
 ## Text formatting
 
-- Italics can be done with *asterisks* or _underscores_
-- Bold can be done with **asterisks** or __underscores__
-- Bold-italics can be done with ***asterisks*** or ___underscores___
-- Strikethrough can be done with ~~two tildes~~
-- You can alternate between *asterisks and underscores to get ___nested emphasis___ to work*
-- Inline code references (file names, class names, function names, etc) can be made with `back-ticks`, code blocks are discussed below
+- Italics can be done with *asterisks* or _underscores_. Use italics for the name of applications and introducing new concepts.
+- Bold can be done with **asterisks** or __underscores__. Use bold for names of buttons.
+- Bold-italics can be done with ***asterisks*** or ___underscores___.
+- Strikethrough can be done with ~~two tildes~~.
+- You can alternate between *asterisks and underscores to get ___nested emphasis___ to work*.
+- Inline code references (file names, class names, function names, etc) can be made with `back-ticks`, code blocks are discussed below.
 
 ## Links
 
@@ -182,6 +182,7 @@ Always use fenced code blocks. Do not use indented code blocks in any new tutori
 // Code within fenced code blocks should be left-aligned!
 print("Hello, Make School!")
 print("Follow each language's style guide.")
+
 if containsIndentation {
   print("Be consistent with number of spaces in indentation.")
 }
@@ -261,3 +262,20 @@ This is not part of the box.
 
 > [info]
 > Adding an empty comment forces the renderer to treat these as separate boxes :D
+>
+> The comment needs an empty line above and below it!
+
+### Code blocks within action highlight boxes
+
+> [info]
+> Fenced code blocks exit prematurely if they contain an empty line while within an action highlight box. **To fix this, you will need to include a `>` on each empty line within the fenced code block!**
+>
+```
+import ConvenienceKit
+>
+func doesNothing() {
+>
+}
+```
+>
+> This will not render correctly without the `>` on empty lines within the fenced code block.
