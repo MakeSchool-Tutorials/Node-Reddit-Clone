@@ -125,23 +125,17 @@ The renderer has overhauled the image syntax for embedding MP4 videos, Youtube v
 
 ### Youtube
 
-***NOTE: this is proposed syntax and not yet implemented on the website.***
-
 The following syntax will embed a Youtube video into the tutorial. The video must be embeddable (see video's settings on Youtube).
 
 ![ms-video-youtube](https://www.youtube.com/watch?v=6rT00QXqZak)
 
-### MP4
+### MP4/MOV
 
-***NOTE: this is proposed syntax and not yet implemented on the website.***
-
-The following syntax will embed an MP4 video with controls. Videos can be referenced with URLs or relative links if they are included in the repository. This works great with short screencasts made with QuickTime.
+The following syntax will embed an MP4/MOV video with controls. Videos can be referenced with URLs or relative links if they are included in the repository. This works great with short screencasts made with QuickTime.
 
 ![ms-video](assets/short-video.mov)
 
 ### PDF
-
-***NOTE: this is proposed syntax and not yet implemented on the website.***
 
 The following syntax will embed a PDF for viewing in-line. PDFs can be referenced with URLs or relative links if they are included in the repository.
 
@@ -208,6 +202,14 @@ Linguist will sometimes fail to classify a code sample's language correctly. Whe
 
 Read about the following boxes and use them when appropriate.
 
+### Quote box
+
+Use quote boxes to include a quote.
+
+> I think everyone should learn how to program a computer, because it teaches you how to think. I view computer science as a liberal art, something everyone should learn to do.
+>
+> - Steve Jobs
+
 ### Info box
 
 Use info boxes to draw a students attention to an important concept.
@@ -240,6 +242,17 @@ Use solution boxes to keep a solution hidden until the student hovers over it. T
 ```
 import ConvenienceKit
 ```
+
+This is not part of the box.
+
+### Challenge box
+
+Use challenge boxes should be used for additional features the user might want to implement.
+
+> [challenge]
+> Would you kindly add a high score popup?
+>
+> The game could use some social integration as well!
 
 This is not part of the box.
 
