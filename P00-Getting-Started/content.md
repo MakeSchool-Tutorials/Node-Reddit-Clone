@@ -84,22 +84,21 @@ Use `#` to create new headers.
 #### This is an h4 sub-header
 ```
 
-Each `h1` header creates a "Mark Complete" button for content between it and next `h1` header. ***Make sure there is a full "step" of content for each `h1` header.***
+Each `h1` header creates a "Mark Complete" button for content between it and next `h1` header. **_Make sure there is a full "step" of content for each `h1` header._**
 
 ## Text formatting
 
-- Italics can be done with *asterisks* or _underscores_. Use italics for the name of applications and introducing new concepts.
-- Bold can be done with **asterisks** or __underscores__. Use bold for names of buttons.
-- Bold-italics can be done with ***asterisks*** or ___underscores___.
+- Italics can be done with _underscores_. Use italics for the name of applications and introducing new concepts.
+- Bold can be done with **asterisks**. Use bold for names of buttons.
+- Bold-italics can be done with **_asterisks arpund underscores_**.
 - Strikethrough can be done with ~~two tildes~~.
-- You can alternate between *asterisks and underscores to get ___nested emphasis___ to work*.
 - Inline code references (file names, class names, function names, etc) can be made with `back-ticks`, code blocks are discussed below.
 
 ## Links
 
 [This](https://github.com/MakeSchool-Tutorials/Tutorial-Template) creates a link. Relative links should only be used when [linking to assets in the repository](assets/ms-logo.png).
 
-*Relative links to files in the same works on makeschool.com but the links will not do anything when clicked from ms-markdown-preview.*
+_Relative links to files in the same works on makeschool.com but the links will not do anything when clicked from ms-markdown-preview._
 
 ## Images
 
@@ -121,11 +120,11 @@ Make sure that every image has both alt and title text defined. Both are importa
 
 ## Other embedded assets
 
-The renderer has overhauled the image syntax for embedding MP4 videos, Youtube videos, and PDF files.
+The renderer has overhauled the image syntax for embedding MP4 videos, YouTube videos, and PDF files.
 
-### Youtube
+### YouTube
 
-The following syntax will embed a Youtube video into the tutorial. The video must be embeddable (see video's settings on Youtube).
+The following syntax will embed a YouTube video into the tutorial. The video must be embeddable (see video's settings on YouTube).
 
 ![ms-video-youtube](https://www.youtube.com/watch?v=6rT00QXqZak)
 
@@ -154,18 +153,19 @@ Images can also be included by full URL. This should be avoided in favor of imag
 
 1. This is an ordered list
 2. With multiple items
-4. Fixes your count so this will show up as number 3
+3. Use the correct number or the linter will get angry!
 4. But don't be lazy...
 
 ### Nested lists
 
 1. This is a nested list
-    - Use four spaces for each level
-    - More nested items
-        - So nested!
-2. Formatting can get a little weird so don't go too deep
+    1. Use four spaces for each level
+    2. More nested items
+
+2. Formatting can get a little weird so only nest once!
     - You can even combine ordered and unordered lists when nesting
     - Just remember to use four spaces for each level
+
 3. Such an amazing list
 
 ## Code blocks
@@ -217,7 +217,6 @@ Use info boxes to draw a students attention to an important concept.
 > [info]
 > Important concepts should be recapped or summarized in info boxes.
 
-
 ### Action box
 
 Use action boxes whenever the student should do something (add code, implement pseudocode, change IDE settings, download files, etc).
@@ -228,7 +227,8 @@ Use action boxes whenever the student should do something (add code, implement p
 ```
 import ConvenienceKit
 ```
-> This is still part of the box! Remember, code blocks need an empty line above them. In the case of code blocks inside of boxes, the line before a code block should only contain a `>` character.
+>
+> This is still part of the box! Remember, code blocks need an empty line above them. In the case of code blocks inside of boxes, the line before and after a code block should only contain a `>` character.
 
 This is no longer part of the box.
 
