@@ -1,6 +1,5 @@
-title: "Tutorial Template Title, max 56 characters"
-cover: cover.png
+title: "Reddit Clone in Node.js"
+cover: cover.jpg
 teaser_text: |
-    Tell the user what they will learn!
-    This can be multi-line text.
-    150 characters max!
+    Build a Reddit clone in Node.js
+    You'll use MongoDB and Express.js

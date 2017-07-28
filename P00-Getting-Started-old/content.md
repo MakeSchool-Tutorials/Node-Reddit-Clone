@@ -1,9 +1,9 @@
 ---
-title: "Get started with Express.js"
+title: "Get started with writing tutorials!"
 slug: getting-started
 ---
 
-This tutorial is part of a 
+The above title becomes the tutorials first header so _an introduction to the tutorial page should be given here before any more headers are created._
 
 In this tutorial we will discuss best practices for creating Make School tutorials. We'll cover:
 
