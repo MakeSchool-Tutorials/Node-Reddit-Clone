@@ -1,6 +1,6 @@
 ---
 title: "Pacing the content!"
-slug: pacing-content
+slug: pacing-content-dirk
 ---
 
 Make School tutorials should have a consistent flow. This is a short guide to structuring the content of the tutorial.

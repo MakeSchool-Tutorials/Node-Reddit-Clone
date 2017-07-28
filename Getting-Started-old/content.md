@@ -1,6 +1,6 @@
 ---
 title: "Get started with writing tutorials!"
-slug: getting-started
+slug: getting-started-blerk
 ---
 
 The above title becomes the tutorials first header so _an introduction to the tutorial page should be given here before any more headers are created._
