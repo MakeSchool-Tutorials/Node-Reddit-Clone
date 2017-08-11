@@ -5,14 +5,14 @@ slug: technical-planning
 
 This tutorial is part of a three part series with the Giphy Search Tutorial and the Rotten Potatoes Tutorial. Whereas those tutorials gave you 100% of the code or starter code you needed to build them, this project will be more demanding of you to write your own code, or find the proper code snippets from your other projects and framework documentation.
 
-This tutorial should take much longer than those to complete and it will require that you read instructions very carefully and follow them step by step. You might encounter errors that you will need to troubleshoot and google to solve. If you would like to provide feedback on this tutorial, please leave github issues on the github repo.
-
 In this tutorial you will develop a clone of Reddit with posts, subreddits, authentication, and even a search bar. The tools you will use are:
 
 1. Node.js
 1. Express.js
 1. MongoDB & Mongoose (ODM)
 1. JSON Web Tokens (JWT)
+
+This tutorial should take much longer than those to complete and it will require that you read instructions very carefully and follow them step by step. You might encounter errors that you will need to troubleshoot and google to solve. If you would like to provide feedback on this tutorial, please leave github issues on the [github repo](https://github.com/MakeSchool-Tutorials/Node-Reddit-Clone).
 
 # Tutorial structure
 

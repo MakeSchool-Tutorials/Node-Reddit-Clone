@@ -15,11 +15,8 @@ We'll follow this little technical planning list we made, and we can even make s
 1. Show one post
 1. Comment on posts
 1. Create subreddits
-1. Create a post on a subreddit
-1. Show all subreddits
 1. Sign up and Login
-1. Associate posts, comments with their author
-1. Delete posts
+1. Associate posts and comments with their author
 1. Make comments on comments
 1. Vote a post up
 1. Vote a comment up
@@ -85,8 +82,8 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var PostSchema = new Schema({
-  title           : { type: String, required: true }
-  , url             :
+  title             : { type: String, required: true }
+  , url             : { type: String, required: true }
   , summary         : { type: String, required: true }
 });
 

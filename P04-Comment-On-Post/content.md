@@ -1,21 +1,21 @@
 ---
-title: "Displaying All Posts"
-slug: displaying-posts
+title: "Comment on Posts"
+slug: comment-on-post
 ---
 
-Alright next step! Now that we can create posts, let's display them.
+Alright next step! We can see those posts, let's comment on them.
 
 1. Create a post
 1. Show all posts
 1. Show one post
 1. **Comment on posts**
-  1.
+  1. Make a new comment form in the posts#show template
+  1. Make a create route for comments
+  1. Associate comments with posts
+  1. Display comments
 1. Create subreddits
-1. Create a post on a subreddit
-1. Show all subreddits
 1. Sign up and Login
-1. Associate posts, comments with their author
-1. Delete posts
+1. Associate posts and comments with their author
 1. Make comments on comments
 1. Vote a post up
 1. Vote a comment up
@@ -53,3 +53,75 @@ Create a new file `comments.js` in your `controllers` folder and follow the patt
 
 1. Require the comment model
 1. Export the comments controller into the `server.js`
+1. Make the CREATE in a nested route (hint: `/posts/:postId/comments`)
+1. Save your new comment to the database
+1. Confirm that comments are saving
+
+# Associating Comments and Posts
+
+**The Gotcha** - the gotcha here is that if you just use the same code from `posts.js` you will only create comments in their own collection and not associate them with their parent post. We're going to use a **Reference Association** meaning we will reference the child document by its id in the parent's document. The child's id acts similarly to a **Foreign Key** in a SQL database. So let's do it.
+
+First we can do the controller logic, then model logic.
+
+In the controller we need find the parent Post from the `:postId` we have in the url parameters, then associate this parent with the comment by pushing the comment into an array in the parent's attribute `comments` that we haven't created yet.
+
+```js
+// CREATE
+app.post('/posts/:postId/comments', function (req, res) {
+  var comment = new Comment(req.body);
+
+  Post.findById(req.params.postId).exec(function (err, post) {
+    comment.save(function (err, comment) {
+      post.comments.unshift(comment);
+      post.save();
+
+      return res.send({ post: post });
+    })
+  })
+});
+```
+
+Why did I recommend we use unshift here instead of push?
+
+> [solution]
+> `unshift` adds an element to the front of an array, while `push` adds it to the end. Reddit puts its newest comments at the top, so we want the default order to be reverse chronological order.
+
+Next we need to add an array attribute to the mongoose `Post` model.
+
+```js
+  , comments       : [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
+```
+
+Finally, create some new comments and confirm that their `_id`'s are being added to this `comments` attribute.
+
+# Displaying Comments
+
+Now that we have the comments associate we can see them in the parent `post` object. Let's add them to the posts#show template below the new comment form.
+
+```html
+{{#each post.comments}}   
+  {{this}}
+{{/each}}
+```
+
+What do you see?
+
+Just the id's right? When we do a reference association, we only save the id's into the parent's document. In order to replace these id's with the actual child document, we have to use the mongoose function `.populate()` when we fetch the parent from the database. Like this:
+
+```js
+Post.findById(req.params.id).populate('comments').exec(function (err, post) {
+  res.render('posts-show', { post: post });
+});
+```
+
+Now do we see the comments?
+
+Just one more change, you have to access the `content` attribute of each comment. You can add more style to these if you like. Perhaps a paragraph tag to start.
+
+```html
+{{#each post.comments}}   
+  <p>{{this.content}}</p>
+{{/each}}
+```
+
+Onward!
