@@ -49,13 +49,60 @@ Now we need a create comment route. We can start with the code we used for the c
 > [info]
 > Remember that a route can be called a number of different names: an endpoint, a webhook, a path, and others.
 
-Create a new file `comments.js` in your `controllers` folder and follow the pattern you used for the `posts.js` file to
+Follow the pattern you used for the Post resource to create a Comment resource.
 
-1. Require the comment model
+1. Create a comments controller in a new file `comments.js` in your `controllers` folder
+
+  ```js
+  module.exports = function(app) {
+
+  };
+  ```
+
 1. Export the comments controller into the `server.js`
+
+  ```js
+    require('./controllers/posts.js')(app);
+  ```
+
 1. Make the CREATE in a nested route (hint: `/posts/:postId/comments`)
-1. Save your new comment to the database
-1. Confirm that comments are saving
+
+  ```js
+  // CREATE
+  app.post('/posts/:postId/comments', function (req, res) {
+    // INSTANTIATE INSTANCE OF MODEL
+    var comment = new Comment(req.body);
+
+    // SAVE INSTANCE OF POST MODEL TO DB
+    comment.save(function (err, comment) {
+      // REDIRECT TO THE ROOT
+      return res.redirect(`/`);
+    })
+  });
+
+  ```
+
+1. Create a Comment model in a `comment.js` file
+
+  ```js
+  var mongoose = require('mongoose'),
+      Schema = mongoose.Schema;
+
+  var CommentSchema = new Schema({
+    content             : { type: String, required: true }
+  });
+
+  module.exports = mongoose.model('Comment', CommentSchema);
+  ```
+
+1. Require the comment model in the comments controller
+
+  ```js
+  var Comment = require('../models/comment');
+  ```
+
+1. Create a comment by submitting your form
+1. Confirm that comments are saving by inspecting the database
 
 # Associating Comments and Posts
 
@@ -75,7 +122,7 @@ app.post('/posts/:postId/comments', function (req, res) {
       post.comments.unshift(comment);
       post.save();
 
-      return res.send({ post: post });
+      return res.redirect(`/posts/` + post._id);
     })
   })
 });
