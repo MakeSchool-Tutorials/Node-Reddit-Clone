@@ -15,7 +15,6 @@ Alright next step!
 1. **Make comments on comments**
   1. ... :D
 1. Vote a post up
-1. Vote a comment up
 1. Sort posts by # of votes
 
 # Make a Plan
@@ -50,18 +49,17 @@ Another strategy we could try is using a "[Embedded Document](http://mongoosejs.
 {
   _id: "ji2roi3ji23j2j3",
   user: "fu0fa90faa99a0a",
-  body: "Awesome site to share",
+  title: "Awesome site to share",
+  summary: "But seriously, this is really neat.",
   url: "https://www.google.com",
   comments: [
     {
       _id: "afk3jk4k23j4h232",
-      user: "lk11l2j31l24j1kl",
-      content: "great post"
+      body: "great post"
       comments: [
         {
           _id: "afk3jk4k23j4h232",
-          user: "lkj4l1j41kl1343",
-          content: "great comment",
+          body: "great comment",
           comments: []
         }
       ]
@@ -83,7 +81,8 @@ What if we made comments (the first comments on posts) reference documents, but 
 {
   _id: "ji2roi3ji23j2j3",
   user: "fu0fa90faa99a0a",
-  body: "Awesome site to share",
+  title: "Awesome site to share",
+  summary: "But seriously, this is really neat.",
   url: "https://www.google.com",
   comments: ["jl3j1kl4j21ljl34", "j234j2l3j42jlk4k3"]
 }
@@ -97,11 +96,11 @@ What if we made comments (the first comments on posts) reference documents, but 
   replies: [
     {
       _id: "afk3jk4k23j4h232",
-      content: "great comment"
+      body: "great comment"
       replies: [
         {
           _id: "afk3jk4k23j4h232",
-          content: "great sub comment",
+          body: "great sub comment",
           replies: []
         }
       ]
@@ -110,4 +109,4 @@ What if we made comments (the first comments on posts) reference documents, but 
 }
 ```
 
-This is a more complicated strategy, but are there any advantages? Is it faster or easier to query? Are there routes where we'd want to be able to see just a particular comment and its replies? 
+This is a more complicated strategy, but are there any advantages? Is it faster or easier to query? Are there routes where we'd want to be able to see just a particular comment and its replies?

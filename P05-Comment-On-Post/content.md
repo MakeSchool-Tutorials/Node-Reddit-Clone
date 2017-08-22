@@ -18,7 +18,6 @@ Alright next step! We can see those posts, let's comment on them.
 1. Associate posts and comments with their author
 1. Make comments on comments
 1. Vote a post up
-1. Vote a comment up
 1. Sort posts by # of votes
 
 

@@ -3,7 +3,7 @@ title: "Comments on Comments: Part Deux"
 slug: comments-on-comments-part-deux
 ---
 
-So last lesson was about thinking about and weighing the pros and cons of a few implementations of comments on comments. Now we're going to walk through how to actually implement one strategy.
+So last lesson we were thinking through how to put comments inside other comments. Now we are going to actually do it!
 
 1. Create a post
 1. Show all posts
@@ -18,7 +18,6 @@ So last lesson was about thinking about and weighing the pros and cons of a few 
   1. Make comments embedded inside comments.
   1. Test comments on comments are working.
 1. Vote a post up
-1. Vote a comment up
 1. Sort posts by # of votes
 
 # Embedding Comments in Posts

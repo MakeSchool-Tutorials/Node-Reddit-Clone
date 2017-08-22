@@ -1,10 +1,22 @@
 Error handling
+```js
+app.get('/', (request, response) => {  
+  throw new Error('oops')
+})
+
+app.use((err, request, response, next) => {  
+  // log the error, for now just console.log
+  console.log(err)
+  response.status(500).send('Something broke!')
+})
+```
+
 Testing
 Validation
 
 require the comment model into the proper controllers
 
-How do you create a new reply comment on an embedded comment? 
+How do you create a new reply comment on an embedded comment?
 
 
 Challenges:
@@ -20,7 +32,8 @@ Challenges:
   - ???
 1. Authorization. Edit/Update/Delete only your own comments and posts
 1. Protect paths that you must be logged in to use
-
+1. Add user id's to comments
+1. password reset
 
 
 # Authorization
