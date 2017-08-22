@@ -1,6 +1,6 @@
 ---
-title: "Displaying All Posts"
-slug: displaying-posts
+title: "Testing Posts"
+slug: testing-posts
 ---
 
 So now we can create and show posts, but we are never done with code until we've written automated tests for it. So we'll have to setup our test environment and make a few controller- or route-level tests.
