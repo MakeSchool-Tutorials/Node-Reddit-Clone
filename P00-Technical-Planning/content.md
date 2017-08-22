@@ -49,20 +49,20 @@ Here are some of the routes and features we could build
 
 In what order should we fulfill these tasks? Write the order down somewhere that you would do these tasks. When you are done, hover over the solution to see what order these tasks in this tutorial.
 
-> [solution]
-> We should work from the most fundamental out to things that are more wants and not needs. Here's what we'll do this this tutorial. It is generally best to not start with authentication because that can cause some initial complexity, so we'll do authentication in the middle. Voting could come sooner or later, I put it at the very end so we'll have a kind of themed twitter or facebook wall until there is voting and sorting on votes.
-> 1. Create a post
-> 1. Show all posts
-> 1. Comment on posts
-> 1. Create subreddits
-> 1. Create a post on a subreddit
-> 1. Show all subreddits
-> 1. Sign up and Login
-> 1. Associate posts, comments with their author
-> 1. Make comments on comments
-> 1. Vote a post up
-> 1. Vote a comment up
-> 1. Sort posts by # of votes
+We should work from the most fundamental out to things that are more wants and not needs. Here's what we'll do this this tutorial. It is generally best to not start with authentication because that can cause some initial complexity, so we'll do authentication in the middle. Voting could come sooner or later, I put it at the very end so we'll have a kind of themed Twitter or Facebook wall until there is voting and sorting on votes.
+
+1. Create a post
+1. Show all posts
+1. Comment on posts
+1. Create subreddits
+1. Create a post on a subreddit
+1. Show all subreddits
+1. Sign up and Login
+1. Associate posts, comments with their author
+1. Make comments on comments
+1. Vote a post up
+1. Vote a comment up
+1. Sort posts by # of votes
 
 # Bootstrapping Express.js
 
@@ -72,6 +72,7 @@ Ok, we've got user narratives, wireframes, and a plan for the first few features
 1. Bootstrap Express.js. You can use Handlebars or Jade as a templating engine if you like. [Express documentation](https://expressjs.com/en/starter/hello-world.html). Now run your server and get "hello world" to appear.
 1. Once you have "hello world" and a template engine installed, move on to the next step.
 1. Now add bootstrap to your layout template `<head>` using the CDN.
+
   ```html
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -79,5 +80,6 @@ Ok, we've got user narratives, wireframes, and a plan for the first few features
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   ```
+
 1. Now add the [navbar component](http://getbootstrap.com/components/#navbar) to your layout template.
 1. Onwards!
