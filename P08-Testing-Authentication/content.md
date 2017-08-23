@@ -118,3 +118,10 @@ before(function (done) {
 ```
 
 Now the agent has the JWT cookie when it makes other requests like to view the posts#new route or create a post.
+
+This is good we have this now, because when we made it impossible to create posts when a user was not logged in broke the posts#create route test!
+
+**Challenges**
+
+1. Can you use this code or something like it to fix the posts#create test?
+1. Can you write another test to test that it is impossible to create a post if a user is not logged in?

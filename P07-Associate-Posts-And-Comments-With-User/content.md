@@ -88,6 +88,29 @@ Now let's hide the button to create a new post for those who are loggedin.
 
 Remember you'll have to add `currentUser` to all of the routes that call `res.render()` so the main templates work. This may seem like some duplication of code, and it is. Can you brainstorm a solution with a friend where there wouldn't be duplication and the code could be 100% DRY?
 
+# Requiring User to Be Logged In to Post
+
+Right now if you aren't logged in, you could still just navigate to `/posts/new` and create a post. Let's be a bit more secure and prevent someone from creating a post unless they are logged in.
+
+```js
+// CREATE
+app.post('/posts', function (req, res) {
+  if (req.user) {
+    var post = new Post(req.body);
+
+    post.save(function (err, post) {
+      return res.redirect(`/`);
+    })
+  } else {
+    return res.status(401); // UNAUTHORIZED
+  }
+});
+```
+
+We could do this more elegantly and more DRY if we made another example of [custom middleware called](https://expressjs.com/en/guide/writing-middleware.html) `CheckAuth` and used it on those routes that we require to be logged in.
+
+Can you rewrite the above code into its own middleware called `CheckAuth`?
+
 # Associating the `author` of Comments and Posts
 
 So now we want people to take responsibility for their silly posts on our Node Reddit (Noddit? Reddode?). We need to make each post and each comment point back to its author and each user to track the posts and comments they create. We'll do this by saving the author's user id into the child post or comment, and by tracking the post and comment id's in the user. Then we can use the `.populate()` method to pull in the details whenever we need.
