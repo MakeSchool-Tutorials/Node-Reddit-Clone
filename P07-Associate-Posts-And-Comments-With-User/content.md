@@ -15,7 +15,6 @@ Alright next step! Its time to allow people to take responsibility for the silly
   1. Check authentication and make `req.user` and `currentUser` objects
   1. Add `author` attribute to comments and posts
   1. Save the user as the author of posts
-  1. Remove the ability to comment on one's own posts
   1. Display the author's username on posts and comments
 1. Make comments on comments
 1. Vote a post up
@@ -155,6 +154,10 @@ Now can you do this same pattern for the comments controller for when someone cr
 # Displaying the Author
 
 Now populate the author in posts and display their username on every post wherever it appears.
+
+# Now For Comments
+
+Using the previous instructions for associating users and posts, can you make it so users and comments are equally associated?
 
 # Extra Challenges:
 
