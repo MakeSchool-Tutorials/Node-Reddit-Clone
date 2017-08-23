@@ -24,7 +24,14 @@ We'll follow this little technical planning list we made, and we can even make s
 
 # New Post Form
 
-To create a new instance of a resource, we first have to make a form. We'll follow RESTful routing and make the url match this pattern: `/<<RESOURCE NAME PLURAL>>/new`. So in the case of a resource `Post`, the path will be `/posts/new`.
+To create a new instance of a resource, we first have to make a button to make a new post. Since making a post is very important **Call To Action (CTA)**, we'll put it in the navbar.
+
+```html
+<a href="/posts/new" class="btn btn-primary navbar-btn">New Post</a>
+```
+
+
+Then we have to make the form. We'll follow RESTful routing and make the url match this pattern: `/<<RESOURCE NAME PLURAL>>/new`. So in the case of a resource `Post`, the path will be `/posts/new`.
 
 Create this new route and have it render a new template `posts-new.handlebars`.
 

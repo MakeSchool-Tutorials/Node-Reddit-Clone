@@ -11,7 +11,8 @@ Alright next step! Its time to allow people to take responsibility for the silly
 1. Comment on posts
 1. Create subreddits
 1. Sign up and Login
-1. **Associate posts and comments with their author**
+1. **Association posts and comments with their author**
+  1. Check authentication and make `req.user` and `currentUser` objects
   1. Add `author` attribute to comments and posts
   1. Save the user as the author of posts
   1. Remove the ability to comment on one's own posts
@@ -19,7 +20,6 @@ Alright next step! Its time to allow people to take responsibility for the silly
 1. Make comments on comments
 1. Vote a post up
 1. Sort posts by # of votes
-
 
 # Checking Login Status
 
@@ -78,11 +78,23 @@ app.get('/', function (req, res) {
 
 Do the login and sign up links appear and disappear if you are logged in or not?
 
-Add `currentUser` to all of the routes that call `res.render()` so the templates can use it.
+Now let's hide the button to create a new post for those who are loggedin.
+
+```html
+{{#if currentUser}}
+  <a href="/posts/new" class="btn btn-primary navbar-btn">New Post</a>
+{{/if}}
+```
+
+Remember you'll have to add `currentUser` to all of the routes that call `res.render()` so the main templates work. This may seem like some duplication of code, and it is. Can you brainstorm a solution with a friend where there wouldn't be duplication and the code could be 100% DRY?
 
 # Associating the `author` of Comments and Posts
 
-Let's add an `author` attribute to both the `comment.js` and the `post.js` files and let's make it required:
+So now we want people to take responsibility for their silly posts on our Node Reddit (Noddit? Reddode?). We need to make each post and each comment point back to its author and each user to track the posts and comments they create. We'll do this by saving the author's user id into the child post or comment, and by tracking the post and comment id's in the user. Then we can use the `.populate()` method to pull in the details whenever we need.
+
+To accomplish this there is no change to the views to start, so we can go straight to updating model and controller code.
+
+First let's add an `author` attribute to both the `comment.js` and the `post.js` files. It's type will be a single ObjectId and we'll make it required because only logged in people can create posts.
 
 ```js
 ...
@@ -90,23 +102,30 @@ Let's add an `author` attribute to both the `comment.js` and the `post.js` files
 ...
 ```
 
-# Save the Current User as the Author of Posts and Comments
-
-Now we can update the posts controller to save the current user as the author when we create a post.
+And let's add the `posts` attribute to the `User` model. It will be an array of ObjectId's.
 
 ```js
-User.findById(req.user._id).exec(function (err, user) {
-  var post = new Post(req.params.tourId);
+, posts         : [{ type: Schema.Types.ObjectId, ref: 'Post' }]
+```
 
-  post.save(function (err, post) {
+Now we can update the posts controller to save the current user as the author when we create a post, and we can look up the current user and add the new post to their `posts`.
+
+```js
+var post = new Post(req.params.tourId);
+post.author = req.user._id
+
+post.save(function (err, post) {
+  User.findById(req.user._id).exec(function (err, user) {
+    user.posts.unshift(post);
+    user.save();
+
     // REDIRECT TO THE NEW POST
     res.redirect('/posts/'+ post._id)
   });
 });
-
 ```
 
-Test that this is working in your project.
+Test that both the `author` and the `posts` are being saved by looking in your database or logging to the console.
 
 Now can you do this same pattern for the comments controller for when someone creates a comment?
 
@@ -118,3 +137,4 @@ Now populate the author in posts and display their username on every post wherev
 
 1. Can you make an author's username a link that displays that users's profile at `/users/:username`?
 1. Can you do the same for comments?
+1. Can you make a `/profile` route that loads the current user and displays their posts and comments?
