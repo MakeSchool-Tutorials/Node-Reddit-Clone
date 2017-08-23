@@ -222,71 +222,20 @@ Now lets see if the cookie is set by examining the cookies in another request, s
 
 You can also see this cookie in the client under Developer Tools > Application tab > Cookies, or by typing in `document.cookies` in the client console.
 
-# Authorization - Checking Login
-
-So now that we are setting the cookie to be logged in, and can see this cookie on the server or client side, how do we customize our views and the **authorization** of a user? There are a few ways to do it. We could use client JavaScript to track the presence of the `nToken` cookie and update the DOM based on that. But let's try to find a server-side solution first because our app is very server-side structured now.
-
-We can always check if `req.cookies.nToken` is present, but shouldn't we also check if it is valid? And don't we really want the user `_id`of the user this token represents? This is a lot of code to include in every route! In order to refactor this code, we can make our own custom middleware and put it in `server.js` so it is used for every route.
-
-```js
-var checkAuth = function (req, res, next) {
-  console.log("Checking authentication");
-
-  if (typeof req.cookies.nToken === 'undefined' || req.cookies.nToken === null) {
-    req.user = null;
-  } else {
-    var token = req.cookies.nToken;
-    var decodedToken = jsonwebtoken.decode(token, { complete: true }) || {};
-    req.user = decodedToken.payload;
-  }
-
-  next()
-}
-
-app.use(checkAuth)
-```
-
-Go to any route and see if the `Checking authentication` is logged in the terminal. Once it is, let's use the new `req.user` object to create a `currentUser` object that we use to hid the login and sign up links if a user is logged in.
-
-```html
-<ul class="nav navbar-nav navbar-right">
-  {{#unless currentUser}}
-    <li><a href="/login">Login</a></li>
-    <li><a href="/sign-up">Sign Up</a></li>
-  {{/unless}}
-</ul>
-```
-
-
-```js
-app.get('/', function (req, res) {
-  var currentUser = req.user;
-
-  Post.find().exec(function (err, posts) {
-    res.render('posts-index', { posts: posts, currentUser: currentUser });
-  });
-})
-```
-
-Add `currentUser` to all of the routes that call `res.render()` so the templates can use it.
-
 # Let's Logout
 
 Now that we have signed up, let's log out. Since "being logged in" just means that the cookie is set, we can create a new `/logout` route that just removes this cookie.
 
-> [info]
-> It might be more accurate to use the DELETE method, because we are sort of deleting something, but we will just use the get method to simplify our requests at this point.
-
 ```html
 <ul class="nav navbar-nav navbar-right">
-  {{#if currentUser}}
-    <li><a href="/logout">Logout</a></li>
-  {{else}}
-    <li><a href="/login">Login</a></li>
-    <li><a href="/sign-up">Sign Up</a></li>
-  {{/if}}
+  <li><a href="/logout">Logout</a></li>
+  <li><a href="/login">Login</a></li>
+  <li><a href="/sign-up">Sign Up</a></li>
 </ul>
 ```
+
+> [info]
+> It might be more accurate to use the DELETE method, because we are sort of deleting something, but we will just use the get method to simplify our requests at this point.
 
 ```js
 // LOGOUT
@@ -297,7 +246,7 @@ app.get('/logout', function(req, res, next) {
 });
 ```
 
-Are the Login and Sign Up links back?
+After you click the "Logout" link is the cookie still present in the server in `req.cookies` or in the client in Dev Tools > Application > Cookies?
 
 # Let's Login
 
