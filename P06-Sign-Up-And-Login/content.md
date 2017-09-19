@@ -113,6 +113,14 @@ All this bcrypt logic will live in the user model. What we'll do is:
 1. Add a method to our user model that detects if the `password` attribute is being modified, and if it is salt and has the password to produce a password digest that we'll save into the database.
 1. Lastly, make a model method called `comparePassword()` that takes in an attempted password and returns true or false if the attempt matches what is in the database.
 
+You'll need to 'salt' the password. Read about 'salting' [here](https://en.wikipedia.org/wiki/Salt_(cryptography)). While you can include a your secret 'salt' value in an environment variable that is accessible throughout node. We can use `dotenv` library to help. 
+
+1. Install `dotenv`. 
+1. Then you'll need to create a file in the root of your project named `.env` and define a variable with `SECRET=somehashvalue`, where 'somehashvalue' can be any random set of character. 
+1. Last, `require('dotenv')` as early as possible in your project. Adding it at the top of `server.js` is probably a good idea. 
+
+Read more about `dotenv` [here](https://www.npmjs.com/package/dotenv).
+
 Read this implementation closely and add implement the same into your `User` model.
 
 ```js
