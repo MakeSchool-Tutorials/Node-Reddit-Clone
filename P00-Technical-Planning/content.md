@@ -5,20 +5,20 @@ slug: technical-planning
 
 This tutorial is part of a four part series with the [Giphy Search Tutorial](https://www.makeschool.com/online-courses/tutorials/giphy-search-app-with-node-js/your-node-environment), the [Concentration Game](https://www.makeschool.com/online-courses/tutorials/javascript-concentration-game/javascript-game-tutorial-intro), the [Rotten Potatoes Tutorial](https://www.makeschool.com/online-courses/tutorials/rotten-potatoes-movie-reviews-with-express-js/bootstrap-an-express-project). Whereas those tutorials gave you 100% of the code or starter code you needed to build them, this project will be more demanding of you to write your own code, or find the proper code snippets from your other projects and framework documentation.
 
-In this tutorial you will develop a clone of Reddit with posts, subreddits, authentication, and even a search bar. The tools you will use are:
+In this tutorial you will develop a clone of Reddit with posts, subreddits, and authentication. The tools you will use are:
 
 1. Node.js
 1. Express.js
 1. MongoDB & Mongoose (ODM)
 1. JSON Web Tokens (JWT)
 
-This tutorial should take much longer than those to complete and it will require that you read instructions very carefully and follow them step by step. You might encounter errors that you will need to troubleshoot and google to solve. If you would like to provide feedback on this tutorial, please leave github issues on the [github repo](https://github.com/MakeSchool-Tutorials/Node-Reddit-Clone).
+This tutorial should take much longer than the previous tutorials to complete and it will require that you read instructions very carefully and follow them step by step. You might encounter errors that you will need to troubleshoot and google to solve. If you would like to provide feedback on this tutorial, please leave github issues on the [github repo](https://github.com/MakeSchool-Tutorials/Node-Reddit-Clone).
 
 # Tutorial structure
 
 This tutorial will walk you through a pattern of "user-centered" or outside-in development with route tests, meaning you will first develop a simple template for a route, then its actual backend logic. By following this pattern software is built step-wise and organically without leaps or guesses. This avoids large architectural bugs which are the biggest drain on the speed of a dev team.
 
-As you design your interfaces, use inspirations (like Reddit.com!), and keep in mind the rules of a good user interface - you can review those here: [goodui.org](http://goodui.org/).
+As you design your interfaces, keep in mind the rules of a good user interface - you can review those here: [goodui.org](http://goodui.org/).
 
 # Getting Started: User Narratives & Wireframes
 
@@ -32,9 +32,9 @@ Now its time to get started by making a step-by-step plan.
 
 Here are some of the routes and features we could build
 
-* Comment on posts
 * Create a post
 * Show all posts
+* Comment on posts
 * Make comments on comments
 * Sign up
 * Login
@@ -49,7 +49,7 @@ Here are some of the routes and features we could build
 
 In what order should we fulfill these tasks? Write the order down somewhere that you would do these tasks. When you are done, hover over the solution to see what order these tasks in this tutorial.
 
-We should work from the most fundamental out to things that are more wants and not needs. Here's what we'll do this this tutorial. It is generally best to not start with authentication because that can cause some initial complexity, so we'll do authentication in the middle. Voting could come sooner or later, I put it at the very end so we'll have a kind of themed Twitter or Facebook wall until there is voting and sorting on votes.
+We should work from the most fundamental out to things that are more wants and not needs. It is generally best to not start with authentication because that can cause some initial complexity, so we'll do authentication in the middle. Voting could come sooner or later, I put it at the very end so we'll have a kind of themed Twitter or Facebook wall until there is voting and sorting on votes.
 
 1. Create a post
 1. Show all posts
