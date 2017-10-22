@@ -3,7 +3,7 @@ title: "Create a Post"
 slug: create-a-post
 ---
 
-We'll follow this little technical planning list we made, and we can even make sub tasks for each major feature.
+Follow the technical planning list we made, and make sub tasks for each major feature.
 
 1. **Create a post**
   1. Make a posts#new route (`/posts/new`) and template (`posts-new.handlebars`)
@@ -79,7 +79,6 @@ module.exports = function(app) {
   app.post('/posts', function(req,res) {
     console.log(req.body)
   });
-
 };
 ```
 
