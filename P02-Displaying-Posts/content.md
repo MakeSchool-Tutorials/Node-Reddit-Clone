@@ -20,6 +20,19 @@ Alright next step! Now that we can create posts, let's display them.
 1. Vote a post up
 1. Sort posts by # of votes
 
+# Connection Script
+
+You'll need to make a connection to Mongoose from server.js/app/js.
+
+I'm going to encourage the use of promises to handle asynchronous transactions. Mongoose doesn't supply it's own Promise library, instead Mongoose asks you to set a Promise library. The tutorial will use the default JavaScript Promise. 
+
+Last, for testing, we can add an error handler for connection errors. 
+
+```js
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/redditclone', { useMongoClient: true });
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection Error:'));
+```
 
 # Posts#Index Route
 
