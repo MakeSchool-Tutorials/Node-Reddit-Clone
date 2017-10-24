@@ -7,7 +7,7 @@ So now we can create and show posts, but we are never done with code until we've
 
 # Installing Mocha and Chai & Hello World Test
 
-Mocha.js is a test framework for Node.js, and Chai.js is a helper library that makes tests run and look cleaner. `chai-http` makes it easy for us to make test http requests to our server. Let's add them to our project and run our first test.
+Mocha.js is a test framework for Node.js, and Chai.js is an assertion library that does the work of determining whether a test passes or fails. `chai-http` makes it easy for us to make test http requests to our server. Let's add them to our project and run our first test.
 
 We're going to add these to our `devDependencies` in our `package.json` file because we don't need the testing libraries in production.
 
@@ -20,19 +20,23 @@ Now create a folder called `test` in the root of your project.
 Add a file called `index.js` and let's require our testing libraries and then create our first hello world style test.
 
 ```js
-var chai = require('chai')
-var chaiHttp = require('chai-http');
-var should = chai.should();
+const chai = require('chai')
+const chaiHttp = require('chai-http');
+const should = chai.should();
 
 chai.use(chaiHttp);
 
-describe('Site', function() {
-  it('should have a live home page', function (done) {
+describe('site', () => {                  // Describe what you are testing
+  it('Should have home page', (done) => { // Describe what should happen
+    // In this case we test that the home page loads
     chai.request('localhost:3000')
       .get('/')
-      .end(function (err, res){
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        }
         res.status.should.be.equal(200);
-        done();
+        done();                           // Call done if the test completed successfully.
       });
   });
 });
@@ -44,16 +48,13 @@ Now let's run the test. First update your `package.js` file to have a test comma
 
 ```json
 "scripts": {
-  "test": "mocha --timeout 10000"
+  "test": "mocha"
 },
 ```
 
-We'll use the `--timeout 10000` option in case requests to our database are slower than the 2 second default mocha timeout.
-
-Now we can run our tests one of two ways:
+Now we can run our tests with:
 ```bash
-$ mocha
-$ npm test
+$ npm run test
 ```
 
 What was the result? Can you make the test fail?
@@ -63,11 +64,13 @@ What was the result? Can you make the test fail?
 Next let's make a test for the posts#create route we made. We can make a new file in `test` called `posts.js`.
 
 ```js
-var chai = require('chai')
-var chaiHttp = require('chai-http');
-var should = chai.should();
+const chai = require('chai')
+const chaiHttp = require('chai-http');
+const should = chai.should();
 
 chai.use(chaiHttp);
+
+const Post
 
 describe('Posts', function() {
   it('should create with valid attributes at POST /posts', function (done) {
@@ -88,6 +91,7 @@ The order of pseudocode we want to see is as follows
 So if we write that in:
 
 ```js
+// Import your Post model
 // How many tours are there now?
 Tour.find(function(err, tours) {
   var tourCount = tours.count;
