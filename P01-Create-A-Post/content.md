@@ -73,10 +73,9 @@ Ok so what happens when you submit this form? No POST `/posts` route! Let's make
 First make a new folder called `controllers` and in there put the file `posts.js`.
 
 ```js
-module.exports = function(app) {
-
+module.exports = (app) => {
   // CREATE
-  app.post('/posts', function(req,res) {
+  app.post('/posts', (req,res) => {
     console.log(req.body)
   });
 };
@@ -123,12 +122,12 @@ var Post = require('../models/post');
 module.exports = function(app) {
 
   // CREATE
-  app.post('/posts', function (req, res) {
+  app.post('/posts', (req, res) => {
     // INSTANTIATE INSTANCE OF POST MODEL
     var post = new Post(req.body);
 
     // SAVE INSTANCE OF POST MODEL TO DB
-    post.save(function (err, post) {
+    post.save((err, post) => {
       // REDIRECT TO THE ROOT
       return res.redirect(`/`);
     })
@@ -161,7 +160,7 @@ var PostSchema = new Schema({
   , summary         : { type: String, required: true }
 });
 
-PostSchema.pre('save', function(next){
+PostSchema.pre('save', (next) => {
   // SET createdAt AND updatedAt
   var now = new Date();
   this.updatedAt = now;
