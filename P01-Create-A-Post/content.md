@@ -56,11 +56,9 @@ Now use the [bootstrap form classes](http://getbootstrap.com/css/#forms) to add 
         <label for="post-summary">Summary</label>
         <textarea name="summary" class="form-control" id="post-summary" placeholder="Title"></textarea>
       </div>
-
       <div class='text-right'>
-        <button type="submit" class="btn btn-primary">Reply<button>
+        <button type="submit" class="btn btn-primary">Reply</button>
       </div>
-
     </form>
   </div>
 </div>
@@ -75,7 +73,7 @@ First make a new folder called `controllers` and in there put the file `posts.js
 ```js
 module.exports = (app) => {
   // CREATE
-  app.post('/posts', (req,res) => {
+  app.post('/posts/new', (req,res) => {
     console.log(req.body)
   });
 };
@@ -96,22 +94,22 @@ In order to interact with the MongoDB database we're going to use the npm module
 Create the folder `models` and inside put the `post.js` file. Here's a sample model for our `Post` resource.
 
 ```js
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-var PostSchema = new Schema({
-  title             : { type: String, required: true }
-  , url             : { type: String, required: true }
-  , summary         : { type: String, required: true }
-});
+const PostSchema = new Schema({
+  title:    { type: String, required: true },
+  url:      { type: String, required: true },
+  summary:  { type: String, required: true }
+})
 
-module.exports = mongoose.model('Post', PostSchema);
+module.exports = mongoose.model('Post', PostSchema)
 ```
 
 Now that we have a model, we can require it at the top of our posts controller (`controllers/posts.js`):
 
 ```js
-var Post = require('../models/post');
+const Post = require('../models/post')
 ```
 
 And put it to use in our create posts endpoint:
