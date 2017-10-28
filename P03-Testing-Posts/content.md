@@ -21,10 +21,10 @@ Add a file called `index.js` and let's require our testing libraries and then cr
 
 ```js
 const chai = require('chai')
-const chaiHttp = require('chai-http');
-const should = chai.should();
+const chaiHttp = require('chai-http')
+const should = chai.should()
 
-chai.use(chaiHttp);
+chai.use(chaiHttp)
 
 describe('site', () => {                  // Describe what you are testing
   it('Should have home page', (done) => { // Describe what should happen
@@ -33,13 +33,13 @@ describe('site', () => {                  // Describe what you are testing
       .get('/')
       .end((err, res) => {
         if (err) {
-          done(err);
+          done(err)
         }
-        res.status.should.be.equal(200);
-        done();                           // Call done if the test completed successfully.
-      });
-  });
-});
+        res.status.should.be.equal(200)
+        done()                           // Call done if the test completed successfully.
+      })
+  })
+})
 ```
 
 This test tests that the reponses status should be equal to 200 - which if you recall your HTTP status codes, means the response is successful.
@@ -66,27 +66,23 @@ What was the result? Can you make the test fail?
 Next let's make a test for the posts#create route we made. We can make a new file in `test` called `posts.js`.
 
 ```js
-const chai = require('chai')
-const chaiHttp = require('chai-http');
-const should = chai.should();
+...
+const Post = require('../models/post')
+...
 
-chai.use(chaiHttp);
-
-const Post
-
-describe('Posts', function() {
-  it('should create with valid attributes at POST /posts', function (done) {
+describe('Posts', () => {
+  it('should create with valid attributes at POST /posts', (done) => {
     // test code
-  });
-});
+  })
+})
 ```
 
 The order of pseudocode we want to see is as follows
 
 ```js
-// How many tours are there now?
+// How many posts are there now?
 // Make a request to create another
-// Check that the database has one more tour in it
+// Check that the database has one more post in it
 // Check that the response is a successful
 ```
 
