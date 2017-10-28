@@ -145,30 +145,26 @@ Use either the mongo shell or robomongo to confirm you are creating posts.
 Let's
 
 ```js
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
-
-var PostSchema = new Schema({
-  createdAt       : { type: Date }
-  , updatedAt       : { type: Date }
-
-  , title           : { type: String, required: true }
-  , url             :
-  , summary         : { type: String, required: true }
-});
+const PostSchema = new Schema({
+  createdAt:  { type: Date },
+  updatedAt:  { type: Date },
+  title:      { type: String, required: true },
+  url:        { type: String, required: true },
+  summary:    { type: String, required: true }
+})
 
 PostSchema.pre('save', (next) => {
   // SET createdAt AND updatedAt
-  var now = new Date();
-  this.updatedAt = now;
-  if ( !this.createdAt ) {
-    this.createdAt = now;
+  const now = new Date()
+  this.updatedAt = now
+  if (!this.createdAt) {
+    this.createdAt = now
   }
+  next()
+})
 
-  next();
-});
-
-module.exports = mongoose.model('Post', PostSchema);
-
+module.exports = mongoose.model('Post', PostSchema)
 ```
