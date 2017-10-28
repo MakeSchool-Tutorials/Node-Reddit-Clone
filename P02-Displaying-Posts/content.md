@@ -29,10 +29,16 @@ I'm going to encourage the use of promises to handle asynchronous transactions. 
 Last, for testing, we can add an error handler for connection errors. 
 
 ```js
-mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/redditclone', { useMongoClient: true });
-mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection Error:'));
+mongoose.Promise = global.Promise
+mongoose.connect('mongodb://localhost/redditclone', { useMongoClient: true })
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection Error:'))
 ```
+
+**Bonus**
+
+Add this to get debug info from Mongoose in the console. 
+
+`mongoose.set('debug', true)`
 
 # Posts#Index Route
 
@@ -41,9 +47,11 @@ Let's have the root route (`/`) render the `posts-index` template.
 Can you get the template to display anything like `hello world` for example? Once you can we need to now pull the posts out of the database and send them along with the response.
 
 ```js
-  Post.find().exec(function (err, posts) {
-    res.render('posts-index', { posts: posts });
-  });
+Post.find({}).then((posts) => {
+  res.render('posts-index.hbs', { posts })
+}).catch((err) => {
+  console.log(err.message);
+})
 ```
 
 In your template can you output the variable `{{posts}}`?
@@ -73,10 +81,14 @@ Now that we have `{{posts}}`, we can use handlebar's [built in `each` operator](
 In each post, let's use bootstrap's `list-group` and `list-group-item` classes. Let's display the post title in a `lead` classed div and add an anchor tag to link to the post's url. Add `target="_blank"` to the anchor tag so that the url opens in a new tab.
 
 ```html
-<li class="list-group-item">
-  <div class="lead">{{post.title}}</div>
-  <a href="{{post.url}}" target="_blank">{{post.url}}<a>
-</li>
+<ul>
+  {{#each posts}}
+  <li class="list-group-item">
+    <div class="lead">{{this.title}}</div>
+    <a href="{{this.url}}" target="_blank">{{this.url}}<a>
+  </li>
+  {{/each}}
+</ul>
 ```
 
 # Viewing One Post
@@ -86,10 +98,7 @@ Now we'd like for each post, when you click on it, to navigate to that particula
 So let's start with what the user can do - click on a post in the `post-index` template.
 
 ```html
-<li class="list-group-item">
-  <a href="/posts/{{post._id}}" class="lead">{{post.title}}</a>
-  <a href="{{post.url}}" target="_blank">{{post.url}}<a>
-</li>
+<a href="/posts/{{this._id}}" class="lead">{{this.title}}</a>
 ```
 
 Now the title is a link to the show page. If we click it what do we see? No route! Let's fix that.
@@ -101,13 +110,13 @@ Now we need the path `/posts/:id` to resolve to displaying a `post-show` templat
 
 ```js
   app.get('/posts/:id', function (req, res) {
-    // LOOK UP THE POST
-    Post.findById(req.params.id).exec(function(err, post) {
-
-      // RESPOND BY RENDERING THE TEMPLATE
-      res.render('post-show', { post: post });
-    });
-  });
+   // LOOK UP THE POST
+   Post.findById(req.params.id).then((post) => {
+     res.render('post-show.hbs', { post })
+   }).catch((err) => {
+     console.log(err.message)
+   })
+ })
 ```
 
 Now what happens if we refresh? No template!
