@@ -42,7 +42,7 @@ Now use the [bootstrap form classes](http://getbootstrap.com/css/#forms) to add 
 ```html
 <div class="row">
   <div class="col-sm-4 col-sm-offset-4">
-    <form action="/posts">
+    <form action="/posts/new" method="post">
       <legend>New Post</legend>
       <div class="form-group">
         <label for="post-title">Title</label>
