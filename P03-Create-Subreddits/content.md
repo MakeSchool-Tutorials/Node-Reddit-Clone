@@ -28,33 +28,35 @@ It might seem quite complex to create subreddits, but using the flexibility and 
 
 # Thinking Like MongoDB
 
-If we were using a SQL database we would have to make a new table called "subreddits" and then we would do a join between posts and their parent subreddit. Pretty straightforward. However, in a schemaless database we can actually just save the name of the subreddit a post is in, and then update our queries when we display them. Let's look at how we'd implement this simple solution.
+If we were using a SQL database we would have to make a new table called "subreddits" and then we would do a join between posts and their parent subreddit. However, in a schemaless database we can save the name of the subreddit with the post, and search for all posts with a subreddit. Let's look at how we'd implement this simple solution.
 
 First, we work from what the users sees, so we need to add a subreddit field to our posts form.
 
 ```html
 <div class="form-group">
-  <label for="post-subreddit">Title</label>
-  <input type="subreddit" class="form-control" id="post-subreddit" placeholder="Subreddit">
+  <label for="post-subreddit">Subreddit</label>
+  <input name="subreddit" type="text" class="form-control" id="post-subreddit" placeholder="Subreddit">
 </div>
 ```
 
-Next we update our `Post` model in `post.js` to have a `subreddit` attribute. This attribute will just be a string.
+Next we update our `Post` model to have a `subreddit` attribute. This attribute will just be a string.
 
 ```js
-  , subreddit        : { type: String, required: true }
+subreddit: { type: String, required: true }
 ```
 
 > [challenge]
-> Do you want to make it so people can submit a post to multiple subreddits or just one? What would be the changes you would have to make to do that?
+> Make it possible for a post to have multiple subreddits. What would be the changes you would have to make to do that?
 
 Now you should be able to type in a subreddit string and save the post and the post should save with its new subreddit string. Let's see that subreddit by adding it to the display of our posts.
 
 ```html
 <li class="list-group-item">
-  <div class="lead">{{post.title}}</div>
-  <a href="{{post.url}}" target="_blank">{{post.url}}<a>
-  <div class="text-right">{{post.subreddit}}</div>
+  <div class="lead">
+    <a href="/posts/{{this._id}}" class="lead">{{this.title}}</a>
+  </div>
+  <a href="{{this.url}}" target="_blank">{{this.url}}<a>
+  <div class="text-right">{{this.subreddit}}</div>
 </li>
 ```
 
@@ -67,9 +69,9 @@ Once again, we start with what the user sees and can do. Let's make each post su
 ```html
 <li class="list-group-item">
   <div class="lead">{{post.title}}</div>
-  <a href="{{post.url}}" target="_blank">{{post.url}}<a>
+  <a href="{{post.url}}" target="_blank">{{post.url}}</a>
   <div class="text-right">
-    <a href="/n/{{post.subreddit}}">{{post.subreddit}}<a>
+    <a href="/n/{{this.subreddit}}">{{this.subreddit}}</a>
   </div>
 </li>
 ```
@@ -85,7 +87,6 @@ Let's see if we can make this route work. Does the terminal output the subreddit
   app.get('/n/:subreddit', function(req, res) {
     console.log(req.params.subreddit)
   });
-
 ```
 
 Now we can return only posts that have a `subreddit` that matches the one passed into the url. We can also reuse our `posts-index` template!
@@ -93,8 +94,10 @@ Now we can return only posts that have a `subreddit` that matches the one passed
 ```js
   // SUBREDDIT
   app.post('/n/:subreddit', function(req, res) {
-    Post.find({ subreddit: req.params.subreddit }).exec(function (err, posts) {
-      res.render('posts-index', { posts: posts });
+    Post.find({ subreddit: req.params.subreddit }).then((posts) => {
+      res.render('posts-index.hbs', { posts })
+    }).catch((err) => {
+      console.log(err)
     })
   });
 ```
