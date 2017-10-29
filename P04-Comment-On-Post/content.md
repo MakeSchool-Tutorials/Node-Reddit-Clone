@@ -31,8 +31,8 @@ Let's use a textarea for the comment attribute `body`.
 
 ```html
 ...
-  <form action="/posts/{{post._id}}/comments">
-    <textarea class='form-control' name="body" placeholder="Comment"></textarea>
+  <form action="/posts/{{post._id}}/comments" method="post">
+    <textarea class='form-control' name="content" placeholder="Comment"></textarea>
     <div class="text-right">
       <button type="submit">Save</button>
     </div>
@@ -50,7 +50,7 @@ Now we need a create comment route. We can start with the code we used for the c
 
 Follow the pattern you used for the Post resource to create a Comment resource.
 
-1. Create a comments controller in a new file `comments.js` in your `controllers` folder
+1. Create a comments controller in a new file `comments-controller.js` in your `controllers` folder
 
   ```js
   module.exports = function(app) {
@@ -61,43 +61,44 @@ Follow the pattern you used for the Post resource to create a Comment resource.
 1. Export the comments controller into the `server.js`
 
   ```js
-    require('./controllers/posts.js')(app);
+    require('./controllers/comments-controller.js')(app);
   ```
 
 1. Make the CREATE in a nested route (hint: `/posts/:postId/comments`)
 
-  ```js
-  // CREATE
-  app.post('/posts/:postId/comments', function (req, res) {
-    // INSTANTIATE INSTANCE OF MODEL
-    var comment = new Comment(req.body);
+```js
+// CREATE Comment
+app.post('/posts/:postId/comments', function (req, res) {
+  // INSTANTIATE INSTANCE OF MODEL
+  const comment = new Comment(req.body)
 
-    // SAVE INSTANCE OF POST MODEL TO DB
-    comment.save(function (err, comment) {
-      // REDIRECT TO THE ROOT
-      return res.redirect(`/`);
-    })
-  });
-
-  ```
+  // SAVE INSTANCE OF Comment MODEL TO DB
+  comment.save().then((comment) => {
+    // REDIRECT TO THE ROOT
+    return res.redirect(`/`)
+  }).catch((err) => {
+    console.log(err);
+  })
+})
+```
 
 1. Create a Comment model in a `comment.js` file
 
-  ```js
-  var mongoose = require('mongoose'),
-      Schema = mongoose.Schema;
+```js
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-  var CommentSchema = new Schema({
-    content             : { type: String, required: true }
-  });
+const CommentSchema = new Schema({
+   content: { type: String, required: true }
+})
 
-  module.exports = mongoose.model('Comment', CommentSchema);
-  ```
+module.exports = mongoose.model('Comment', CommentSchema)
+```
 
 1. Require the comment model in the comments controller
 
   ```js
-  var Comment = require('../models/comment');
+  const Comment = require('../models/comment')
   ```
 
 1. Create a comment by submitting your form
@@ -112,19 +113,23 @@ First we can do the controller logic, then model logic.
 In the controller we need find the parent Post from the `:postId` we have in the url parameters, then associate this parent with the comment by pushing the comment into an array in the parent's attribute `comments` that we haven't created yet.
 
 ```js
-// CREATE
+// CREATE Comment
 app.post('/posts/:postId/comments', function (req, res) {
-  var comment = new Comment(req.body);
+  // INSTANTIATE INSTANCE OF MODEL
+  const comment = new Comment(req.body)
 
-  Post.findById(req.params.postId).exec(function (err, post) {
-    comment.save(function (err, comment) {
-      post.comments.unshift(comment);
-      post.save();
-
-      return res.redirect(`/posts/` + post._id);
-    })
+  // SAVE INSTANCE OF Comment MODEL TO DB
+  comment.save().then((comment) => {
+    return Post.findById(req.params.postId)
+  }).then((post) => {
+    post.comments.unshift(comment)
+    return post.save()
+  }).then((post) => {
+    res.redirect(`/`)
+  }).catch((err) => {
+    console.log(err)
   })
-});
+})
 ```
 
 Why did I recommend we use unshift here instead of push?
@@ -135,7 +140,7 @@ Why did I recommend we use unshift here instead of push?
 Next we need to add an array attribute to the mongoose `Post` model.
 
 ```js
-  , comments       : [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
+comments:   [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
 ```
 
 Finally, create some new comments and confirm that their `_id`'s are being added to this `comments` attribute.
@@ -155,9 +160,12 @@ What do you see?
 Just the id's right? When we do a reference association, we only save the id's into the parent's document. In order to replace these id's with the actual child document, we have to use the mongoose function `.populate()` when we fetch the parent from the database. Like this:
 
 ```js
-Post.findById(req.params.id).populate('comments').exec(function (err, post) {
-  res.render('posts-show', { post: post });
-});
+// LOOK UP THE POST
+Post.findById(req.params.id).populate('comments').then((post) => {
+  res.render('post-show.hbs', { post })
+}).catch((err) => {
+  console.log(err.message)
+})
 ```
 
 Now do we see the comments?
