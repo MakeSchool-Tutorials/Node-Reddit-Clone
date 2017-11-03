@@ -117,7 +117,7 @@ And put it to use in our create posts endpoint:
 ```js
 var Post = require('../models/post');
 
-module.exports = function(app) {
+module.exports = (app) => {
 
   // CREATE
   app.post('/posts', (req, res) => {
