@@ -43,10 +43,12 @@ Always think first about what the user's experience should be, and then develop 
 Now that we have the links, let's make the `/sign-up` route work. We can make a new controller file called `auth.js` to put all our authentication routes.
 
 ```js
-// SIGN UP FORM
-app.get('/sign-up', function(req, res, next) {
-  res.render('sign-up');
-});
+module.exports = function(app) {
+  // SIGN UP FORM
+  app.get('/sign-up', (req, res) => {
+    res.render('sign-up');
+  });
+}
 ```
 
 Now we can create our sign up form with `username` and `password` fields.
