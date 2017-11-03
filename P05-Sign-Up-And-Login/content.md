@@ -61,46 +61,51 @@ Use the template code you used to create a post but alter it to fit a username/p
 1. Set the action of the form to `/sign-up`
 1. Put the form in the middle third of the grid.
 
-If you submit the form, you'll see that there is no POST `/sign-up` route yet. Let's make it.
+Define a User model. Add a new file called `user.js` in your `models` folder.
 
 ```js
-// SIGN UP POST
-app.post('/sign-up', function(req, res, next) {
-  // Create User and JWT
-  var user = new User(req.body);
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema;
 
-  user.save(function (err) {
-    if (err) { return res.status(400).send({ err: err }) }
-
-    res.redirect('/');
-  })
-});
-```
-
-Oh no! We don't have a user model yet. Let's make a new file called `user.js` on your `models` folder.
-
-```js
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
-
-var UserSchema = new Schema({
-    createdAt       : { type: Date }
-  , updatedAt       : { type: Date }
-
-  , password        : { type: String, select: false }
-  , username        : { type: String, required: true }
+const UserSchema = new Schema({
+  createdAt       : { type: Date },
+  updatedAt       : { type: Date },
+  password        : { type: String, select: false },
+  username        : { type: String, required: true }
 });
 
-UserSchema.pre('save', function(next){
+UserSchema.pre('save', (next) => {
   // SET createdAt AND updatedAt
-  var now = new Date();
+  const now = new Date();
   this.updatedAt = now;
   if ( !this.createdAt ) {
     this.createdAt = now;
   }
+  next();
 });
 
 module.exports = mongoose.model('User', UserSchema);
+```
+
+Next define a route `/sign-up`.
+
+```js
+const User = require('../models/user');
+
+module.exports = function(app) {
+  ...
+  // SIGN UP POST
+  app.post('/sign-up', (req, res) => {
+    // Create User
+    const user = new User(req.body);
+
+    user.save().then((user) => {
+      res.redirect('/');
+    }).catch((err) => {
+      console.log(err.message);
+    });
+  });
+}
 ```
 
 Now we have a user model, but if we save our password it will be saved in our database as plaintext and not be secure.
@@ -118,42 +123,41 @@ All this bcrypt logic will live in the user model. What we'll do is:
 You'll need to 'salt' the password. Read about 'salting' [here](https://en.wikipedia.org/wiki/Salt_(cryptography)). While you can include a your secret 'salt' value in an environment variable that is accessible throughout node. We can use `dotenv` library to help. 
 
 1. Install `dotenv`. 
-1. Then you'll need to create a file in the root of your project named `.env` and define a variable with `SECRET=somehashvalue`, where 'somehashvalue' can be any random set of character. 
-1. Last, `require('dotenv')` as early as possible in your project. Adding it at the top of `server.js` is probably a good idea. 
+1. Then you'll need to create a file in the root of your project named `.env` and define a variable with `SECRET=somehashvalue`, where 'somehashvalue' can be any random set of characters. 
+1. Last, `require('dotenv').config();` as early as possible in your project. Adding it at the top of `server.js` is probably a good idea. 
 
 Read more about `dotenv` [here](https://www.npmjs.com/package/dotenv).
 
 Read this implementation closely and add implement the same into your `User` model.
 
 ```js
-var mongoose = require('mongoose'),
-    bcrypt = require('bcrypt'),
-    Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const Schema = mongoose.Schema;
 
-var UserSchema = new Schema({
-    createdAt       : { type: Date }
-  , updatedAt       : { type: Date }
-
-  , password        : { type: String, select: false }
-  , username        : { type: String, required: true }
+const UserSchema = new Schema({
+    createdAt       : { type: Date },
+    updatedAt       : { type: Date },
+    password        : { type: String, select: false },
+    username        : { type: String, required: true }
 });
 
-UserSchema.pre('save', function(next){
+// Must use function here! ES6 => functions do not bind this!
+UserSchema.pre('save', function(next) {
   // SET createdAt AND updatedAt
-  var now = new Date();
+  const now = new Date();
   this.updatedAt = now;
   if ( !this.createdAt ) {
     this.createdAt = now;
   }
 
   // ENCRYPT PASSWORD
-  var user = this;
+  const user = this;
   if (!user.isModified('password')) {
     return next();
   }
-  bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash(user.password, salt, function(err, hash) {
-
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(user.password, salt, (err, hash) => {
       user.password = hash;
       next();
     });
@@ -161,8 +165,8 @@ UserSchema.pre('save', function(next){
 });
 
 
-UserSchema.methods.comparePassword = function(password, done) {
-  bcrypt.compare(password, this.password, function(err, isMatch) {
+UserSchema.methods.comparePassword = (password, done) => {
+  bcrypt.compare(password, this.password, (err, isMatch) => {
     done(err, isMatch);
   });
 };
@@ -182,46 +186,57 @@ In our case, being logged in will mean that there is an authentic JWT token - a 
 $ npm install cookie-parser jsonwebtoken -s
 ```
 
+# Use Middleware to handle tokens
 
+Use middleware to to authenticate tokens and attach them to `req` object passed to routes. 
 
-First we generate JSON Web Tokens (JWTs) so we need to require the npm module `jsonwebtoken` we just installed into our `auth.js` controller and then use it to generate a JWT after the new user document is saved.
+First we generate JSON Web Tokens (JWTs) so we need to require the npm module `jsonwebtoken` we just installed into our `auth-controller.js` and then use it to generate a JWT after the new user document is saved.
 
 ```js
-var jwt = require('jsonwebtoken');
-
+const jwt = require('jsonwebtoken');
 ...
+// SIGN UP POST
+  app.post('/sign-up', (req, res) => {
+    // Create User and JWT
+    const user = new User(req.body);
 
-user.save(function (err) {
-  if (err) { return res.status(400).send({ err: err }) }
-
-  var token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
-
-  res.redirect('/');
-})
-
+    user.save().then((user) => {
+      var token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
+      res.redirect('/');
+    }).catch((err) => {
+      console.log(err.message);
+      return res.status(400).send({ err: err });
+    });
+  });
+ ...
 ```
 
 Next we need to set the JWT as a cookie so that it will be included in all future requests from the current user's client. First we include cookieParser in the project in the `server.js` file so cookie methods can be used anywhere in the app.
 
-```js
-var express = require('express')
-var cookieParser = require('cookie-parser')
+`$ npm install --save cookie-parser`
 
-var app = express()
-app.use(cookieParser())
+Next import cookie parser in `server.js` and add it as middelware. 
+
+```js
+...
+var cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+...
+var app = express();
+...
+app.use(cookieParser()); // Add this after you initialize express. 
+...
 ```
 
-Next we'll set the cookie. (We'll want our JWT cookie variable's name to bit unique so it doesn't get confusing with other sites, so we'll use the variable `nToken`.)
+Next we'll set the cookie. (We'll want our JWT cookie variable's name to bit unique so it doesn't get confusing with other sites, so we'll use the variable `nToken`.) We want to set the cookie when someone signs up and logsin. In `auth-controller.js` update the post /sign-up route. 
 
 ```js
-user.save(function (err) {
-  if (err) { return res.status(400).send({ err: err }) }
-
-  var token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
-  res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
-
-  res.redirect('/');
-})
+...
+  user.save().then((user) => {
+      var token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
+      res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
+      res.redirect('/');
+...
 ```
 
 Now lets see if the cookie is set by examining the cookies in another request, say just to the root route `/`.
@@ -248,12 +263,11 @@ Now that we have signed up, let's log out. Since "being logged in" just means th
 > It might be more accurate to use the DELETE method, because we are sort of deleting something, but we will just use the get method to simplify our requests at this point.
 
 ```js
-// LOGOUT
-app.get('/logout', function(req, res, next) {
-  res.clearCookie('nToken');
-
-  res.redirect('/');
-});
+  // LOGOUT
+  app.get('/logout', (req, res) => {
+    res.clearCookie('nToken');
+    res.redirect('/');
+  });
 ```
 
 After you click the "Logout" link is the cookie still present in the server in `req.cookies` or in the client in Dev Tools > Application > Cookies?
@@ -262,13 +276,13 @@ After you click the "Logout" link is the cookie still present in the server in `
 
 Now that we've signed up, logged out, now let's login. We can use the same pattern as we did with the `/sign-up` routes, with one GET and one POST both with the path `/login`.
 
-First let's build the GET route and template
+First let's build the GET route and template. You can copy and modify the sign up template to create login template. 
 
 ```js
-// LOGIN FORM
-app.get('/login', function(req, res, next) {
-  res.render('login');
-});
+  // LOGIN FORM
+  app.get('/login', (req, res) => {
+    res.render('login.hbs');
+  });
 ```
 
 Use the `sign-up` template code to make a login form.
@@ -278,21 +292,33 @@ Now let's make the logic for the POST route to `/login` work.
 ```js
 // LOGIN
 app.post('/login', function(req, res, next) {
-  User.findOne({ email: req.body.email }, "+password", function (err, user) {
-    if (!user) { return res.status(401).send({ message: 'Wrong email or password' }) };
-    user.comparePassword(req.body.password, function (err, isMatch) {
+  const username = req.body.username;
+  const password = req.body.password;
+  // Find this user name
+  User.findOne({ username }, 'username password').then((user) => {
+    if (!user) {
+      // User not found
+      return res.status(401).send({ message: 'Wrong Username or Password' });
+    }
+    // Check the password
+    user.comparePassword(password, (err, isMatch) => {
       if (!isMatch) {
-        return res.status(401).send({ message: 'Wrong email or password' });
+        // Password does not match
+        return res.status(401).send({ message: "Wrong Username or password"});
       }
-
-      var token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
+      // Create a token
+      const token = jwt.sign(
+        { _id: user._id, username: user.username }, process.env.SECRET,
+        { expiresIn: "60 days" }
+      );
+      // Set a cookie and redirect to root
       res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
-
       res.redirect('/');
     });
-  })
+  }).catch((err) => {
+    console.log(err);
+  });
 });
-
 ```
 
 Phew!
