@@ -140,7 +140,7 @@ Why did I recommend we use unshift here instead of push?
 Next we need to add an array attribute to the mongoose `Post` model.
 
 ```js
-comments:   [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
+comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
 ```
 
 Finally, create some new comments and confirm that their `_id`'s are being added to this `comments` attribute.
