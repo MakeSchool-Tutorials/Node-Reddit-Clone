@@ -27,24 +27,24 @@ So now that we are setting the cookie to be logged in, and can see this cookie o
 We can always check if `req.cookies.nToken` is present, but shouldn't we also check if it is valid? And don't we really want the user `_id`of the user this token represents? This is a lot of code to include in every route! In order to refactor this code, we can make our own custom middleware and put it in `server.js` so it is used for every route.
 
 ```js
-var checkAuth = function (req, res, next) {
+var checkAuth = (req, res, next) => {
   console.log("Checking authentication");
-
   if (typeof req.cookies.nToken === 'undefined' || req.cookies.nToken === null) {
     req.user = null;
   } else {
     var token = req.cookies.nToken;
-    var decodedToken = jsonwebtoken.decode(token, { complete: true }) || {};
+    var decodedToken = jwt.decode(token, { complete: true }) || {};
     req.user = decodedToken.payload;
   }
 
   next()
 }
-
-app.use(checkAuth)
+app.use(checkAuth);
 ```
 
 Go to any route and see if the `Checking authentication` is logged in the terminal.
+
+Note: this is your own custom middleware like `body-parser` and `cookie-parser`. Middleware is run in the order it is added to the with `app.use()` or `server.use()`. You must add middelware after initializing Express js, and sometimes the order will matter. 
 
 
 # Updating Templates
@@ -69,8 +69,10 @@ Now in any route we can set `currentUser` equal to req.user which will either be
 app.get('/', function (req, res) {
   var currentUser = req.user;
 
-  Post.find().exec(function (err, posts) {
-    res.render('posts-index', { posts: posts, currentUser: currentUser });
+  Post.find({}).then((posts) => {
+    res.render('posts-index.hbs', { posts, currentUser })
+  }).catch((err) => {
+    console.log(err.message);
   });
 })
 ```
