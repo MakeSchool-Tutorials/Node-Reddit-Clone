@@ -35,7 +35,7 @@ describe('User', function() {
 Now we can write our first test that tests that you can't login if you haven't signed up. How would you make this test not pass, and then pass?
 
 ```js
-it('should not be able to login if they have not registered', function (done) {
+it('should not be able to login if they have not registered', (done) => {
    agent
      .post('/login', { email: "wrong@wrong.com", password: "nope" })
      .end(function (err, res){
@@ -52,7 +52,7 @@ Next test is to sign up. Read the following code very carefully, then add it to 
 
 ```js
 // signup
-it('should be able to signup', function (done) {
+it('should be able to signup', (done) => {
   User.findOneAndRemove({ username: "testone" }, function() {
     agent
       .post('/sign-up')
@@ -71,7 +71,7 @@ Next is a test logout.
 
 ```js
 // login
-it('should be able to logout', function (done) {
+it('should be able to logout', (done) => {
  agent
    .get('/logout')
    .end(function (err, res) {
@@ -86,7 +86,7 @@ Finally we test login.
 
 ```js
 // login
-it('should be able to login', function (done) {
+it('should be able to login', (done) => {
  agent
    .post('/login')
    .send({ email: "username", password: "password" })
@@ -107,7 +107,7 @@ In order for the test agent to be logged in, you have to use a `before` action t
 ```js
 // test/posts.js
 
-before(function (done) {
+before((done) => {
   agent
     .post('/login')
     .send({ username: "testone", password: "password" })
