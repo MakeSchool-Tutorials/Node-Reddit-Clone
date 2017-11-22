@@ -142,7 +142,7 @@ Use either the mongo shell or robomongo to confirm you are creating posts.
 
 # STRETCH: Adding Created At and Updated At attributes
 
-Let's
+Create a new model. 
 
 ```js
 const mongoose = require('mongoose')
