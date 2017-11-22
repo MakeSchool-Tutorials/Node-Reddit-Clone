@@ -35,7 +35,8 @@ Users should be able to click on up and down arrows to vote a post up or down. T
 
 # Submitting a Form Through AJAX
 
-We start by adding a vote up form to our post. But this form, remember, needs to be su
+We start by adding a vote up form to our post. But this form, remember, needs to be submitted via AJAX without 
+refreshing the page. 
 
 ```html
 <li class="list-group-item">
