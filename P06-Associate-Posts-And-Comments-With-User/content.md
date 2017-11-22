@@ -95,7 +95,7 @@ Right now if you aren't logged in, you could still just navigate to `/posts/new`
 
 ```js
 // CREATE
-app.post('/posts', function (req, res) {
+app.post('/posts', (req, res) => {
   if (req.user) {
     var post = new Post(req.body);
 
@@ -114,38 +114,48 @@ Can you rewrite the above code into its own middleware called `CheckAuth`?
 
 # Associating the `author` of Comments and Posts
 
-So now we want people to take responsibility for their silly posts on our Node Reddit (Noddit? Reddode?). We need to make each post and each comment point back to its author and each user to track the posts and comments they create. We'll do this by saving the author's user id into the child post or comment, and by tracking the post and comment id's in the user. Then we can use the `.populate()` method to pull in the details whenever we need.
+So now we want people to take responsibility for their silly posts on our Node Reddit (Noddit? Reddode?). 
+We need to make each post and each comment point back to its author and each user to track the posts and 
+comments they create. We'll do this by sving the author's user id into the child post or comment, and 
+by tracking the post and comment id's in the user. Then we can use the `.populate()` method to pull in 
+the details whenever we need.
 
-To accomplish this there is no change to the views to start, so we can go straight to updating model and controller code.
+To accomplish this there is no change to the views to start, so we can go straight to updating model and 
+controller code.
 
-First let's add an `author` attribute to both the `comment.js` and the `post.js` files. It's type will be a single ObjectId and we'll make it required because only logged in people can create posts.
+First let's add an `author` attribute to both the `comment.js` and the `post.js` files. It's type will 
+be a single ObjectId and we'll make it required because only logged in people can create posts.
 
 ```js
 ...
-, author         : { type: Schema.Types.ObjectId, ref: 'User', required: true }
+ author : { type: Schema.Types.ObjectId, ref: 'User', required: true }
 ...
 ```
 
 And let's add the `posts` attribute to the `User` model. It will be an array of ObjectId's.
 
 ```js
-, posts         : [{ type: Schema.Types.ObjectId, ref: 'Post' }]
+  ...
+  posts : [{ type: Schema.Types.ObjectId, ref: 'Post' }]
+  ...
 ```
 
-Now we can update the posts controller to save the current user as the author when we create a post, and we can look up the current user and add the new post to their `posts`.
+Now we can update the posts controller to save the current user as the author when we create a post, 
+and we can look up the current user and add the new post to their `posts`.
 
 ```js
-var post = new Post(req.params.tourId);
+var post = new Post(req.body);
 post.author = req.user._id
 
-post.save(function (err, post) {
-  User.findById(req.user._id).exec(function (err, user) {
-    user.posts.unshift(post);
-    user.save();
-
-    // REDIRECT TO THE NEW POST
-    res.redirect('/posts/'+ post._id)
-  });
+post.save().then((post) => {
+  return User.findById(req.user._id)
+}).then((user) => {
+  user.posts.unshift(post);
+  user.save();
+  // REDIRECT TO THE NEW POST
+  res.redirect('/posts/'+ post._id)
+}).catch((err) => {
+  console.log(err.message);
 });
 ```
 
