@@ -66,7 +66,7 @@ Once our `checkAuth` middleware is running on every route, let's use the new `re
 Now in any route we can set `currentUser` equal to req.user which will either be `{ _id: <<ID>> }` or `null`.
 
 ```js
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
   var currentUser = req.user;
 
   Post.find({}).then((posts) => {
