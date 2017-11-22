@@ -81,20 +81,20 @@ Mongoose allows us to represent embedded documents by embedding the schema objec
 
 ```js
 var Comments = new Schema({
-    title     : String
-  , body      : String
-  , date      : Date
+  title     : String,
+  body      : String,
+  date      : Date
 });
 
 var BlogPost = new Schema({
-    author    : ObjectId
-  , title     : String
-  , body      : String
-  , date      : Date
-  , comments  : [Comments]
-  , meta      : {
-        votes : Number
-      , favs  : Number
+  author    : ObjectId,
+  title     : String,
+  body      : String,
+  date      : Date,
+  comments  : [Comments],
+  meta      : {
+    votes : Number,
+    favs  : Number
     }
 });
 
@@ -104,15 +104,15 @@ mongoose.model('BlogPost', BlogPost);
 So for our purposes we need to get that CommentsSchema into our Post model. We can either require the Comment model into our `post.js` field. Or we can just move the code right into it.
 
 ```js
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
-    Comment = require('comment')
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const Comment = require('comment')
 
 var PostSchema = new Schema({
-  title             : { type: String, required: true }
-  , url             : { type: String, required: true }
-  , summary         : { type: String, required: true }
-  , comments        : [Comment.schema]
+  title             : { type: String, required: true },
+  url             : { type: String, required: true },
+  summary         : { type: String, required: true },
+  comments        : [Comment.schema]
 });
 ```
 
@@ -139,18 +139,22 @@ var Post = require('../models/post');
 var Comment = require('../models/comment');
 var User = require('../models/user');
 
-module.exports = function(app) {
+module.exports = (app) => {
   // NEW REPLY
-  app.get('/posts/:postId/comments/:commentId/replies/new', function(req, res, next) {
-    Post.findById(req.params.postId).exec(function (err, post) {
-      Comment.findById(req.params.commentId).exec(function (err, comment) {
-        res.render('replies-new', { post: post, comment: comment });
-      })
-    });
+  app.get('/posts/:postId/comments/:commentId/replies/new', (req, res) => {
+  let post
+  Post.findById(req.params.postId).then((p) => {
+    post = p
+    return Comment.findById(req.params.commentId)
+  }).then((comment) => {
+    res.render('replies-new', { post, comment });
+  }).catch((err) => {
+    console.log(err.message);
   });
+});
 
   // CREATE REPLY
-  app.post('/posts/:postId/comments/:commentId/replies', function(req, res, next) {
+  app.post('/posts/:postId/comments/:commentId/replies', (req, res) => {
     console.log(req.body);
   });
 
@@ -182,18 +186,20 @@ The next step is to write our replies#create route logic.
 
 ```js
   // CREATE REPLY
-  app.post('/posts/:postId/comments/:commentId/replies', function(req, res, next) {
+  app.post('/posts/:postId/comments/:commentId/replies', (req, res) => {
     // LOOKUP THE PARENT POST
-    Post.findById(req.params.postId).exec(function (err, post) {
+    Post.findById(req.params.postId).then((post) => {
       // FIND THE CHILD COMMENT
       var comment = post.comments.id(req.params.commentId);
       // ADD THE REPLY
       comment.comments.unshift(req.body);
       // SAVE THE CHANGE TO THE PARENT DOCUMENT
-      post.save();
-
+      return post.save();
+    }).then((post) => {
       // REDIRECT TO THE PARENT POST#SHOW ROUTE
       res.redirect('/posts/' + post._id);
+    }).catch((err) => {
+      console.log(err.message);
     });
   });
 ```
@@ -201,12 +207,12 @@ The next step is to write our replies#create route logic.
 And lastly we need to update our model so that comments have embedded instances of its self.
 
 ```js
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema;
 
-var CommentSchema = new Schema({
-  content            : { type: String, required: true }
-  , comments           : [CommentSchema]
+const CommentSchema = new Schema({
+  content            : { type: String, required: true },
+  comments           : [CommentSchema]
 });
 
 module.exports = mongoose.model('Comment', CommentSchema);
