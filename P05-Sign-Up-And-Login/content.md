@@ -43,7 +43,7 @@ Always think first about what the user's experience should be, and then develop 
 Now that we have the links, let's make the `/sign-up` route work. We can make a new controller file called `auth.js` to put all our authentication routes.
 
 ```js
-module.exports = function(app) {
+module.exports = (app) => {
   // SIGN UP FORM
   app.get('/sign-up', (req, res) => {
     res.render('sign-up');
@@ -74,7 +74,8 @@ const UserSchema = new Schema({
   username        : { type: String, required: true }
 });
 
-UserSchema.pre('save', (next) => {
+// Define the callback with a regular function to avoid problems with this
+UserSchema.pre('save', function(next) {
   // SET createdAt AND updatedAt
   const now = new Date();
   this.updatedAt = now;
@@ -92,7 +93,7 @@ Next define a route `/sign-up`.
 ```js
 const User = require('../models/user');
 
-module.exports = function(app) {
+module.exports = (app) => {
   ...
   // SIGN UP POST
   app.post('/sign-up', (req, res) => {
@@ -291,7 +292,7 @@ Now let's make the logic for the POST route to `/login` work.
 
 ```js
 // LOGIN
-app.post('/login', function(req, res, next) {
+app.post('/login', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   // Find this user name
@@ -323,7 +324,9 @@ app.post('/login', function(req, res, next) {
 
 Phew!
 
-If we did everything right, now we should be able to sign up, log out, and login securely. We even got a little bit of authorization working showing and hiding the login, sign up, logout links. Nice! In the next chapter we'll associate our user record with our posts and comments.
+If we did everything right, now we should be able to sign up, log out, and login securely. We even got a 
+little bit of authorization working showing and hiding the login, sign up, logout links. Nice! In the next 
+chapter we'll associate our user record with our posts and comments.
 
 WOOOHOOO!
 
