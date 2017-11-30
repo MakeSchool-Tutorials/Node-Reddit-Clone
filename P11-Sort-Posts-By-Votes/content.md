@@ -1,6 +1,6 @@
 ---
-title: "Sort Posts on Votes"
-slug: sort-posts-on-votes
+title: "Sort Posts by Votes"
+slug: sort-posts-by-votes
 ---
 
 What's next?
