@@ -52,7 +52,7 @@ Now let's run the test. First update your `package.js` file to have a test comma
 },
 ```
 
-In order for this test to run the server will have to be running on localhost 3000. To do this you will need to have two terminal windows open. Run your server in one then run the script below in the other. 
+In order for this test to run the server will have to be running on localhost 3000. To do this you will need to have two terminal windows open. Run your server in one then run the script below in the other.
 
 Now we can run our tests with:
 ```bash

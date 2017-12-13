@@ -1,3 +1,8 @@
+Editing posts
+Updating posts
+Deleting posts
+More stretches
+
 Error handling
 ```js
 app.get('/', (request, response) => {  
