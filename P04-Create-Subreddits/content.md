@@ -68,8 +68,8 @@ Once again, we start with what the user sees and can do. Let's make each post su
 
 ```html
 <li class="list-group-item">
-  <div class="lead">{{post.title}}</div>
-  <a href="{{post.url}}" target="_blank">{{post.url}}</a>
+  <div class="lead">{{this.title}}</div>
+  <a href="{{this.url}}" target="_blank">{{this.url}}</a>
   <div class="text-right">
     <a href="/n/{{this.subreddit}}">{{this.subreddit}}</a>
   </div>
