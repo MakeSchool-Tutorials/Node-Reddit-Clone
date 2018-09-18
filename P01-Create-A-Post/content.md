@@ -87,6 +87,87 @@ Now require this file in your `server.js` file and pass in the `app` variable as
 
 Now what happens when you submit the form. Is `req.body` defined? No? that's because you need to add the [body parser](https://www.npmjs.com/package/body-parser) module. Add that and get `req.body` to reflect your form inputs.
 
+# Req.body for middleware
+
+Research what [body parser](https://www.npmjs.com/package/body-parser) is on the npm website. Essentially this is necessary middleware to communicate with your POST requests.
+
+Add this requirement to the top of your `server.js` file, and pass the body-parser through the `app.use()` module:
+
+```js
+
+const bodyParser = require('body-parser');
+
+...
+
+// Use Body Parser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(expressValidator()); // Add after Body parser!
+
+```
+
+# Connecting to your database
+
+You're going to need to connect to a NOSQL database called [MongoDB](https://docs.mongodb.com/), look through the documention as a reference if you get stuck and plus its just a good habit to get into.
+
+Lets start off by creating a new `/data` folder in the top-level structure of your project and create a new Javascript file. Open your terminal and type:
+
+```bash
+
+mkdir data
+cd data
+touch reddit-db.js
+
+```
+Now we need to make sure that we have mongodb installed by doing a `which` command, you should see a destination to Mongo. We're also going to make sure that our Mongo database is ON:
+
+```bash
+
+which mongod
+brew services restart mongodb
+
+```
+
+Great, now were going to use the `reddit-db.js` file we made earlier to connect to the database. So go ahead and open it, and past this code into it:
+
+```js
+
+/* Mongoose Connection */
+
+const mongoose = require('mongoose');
+assert = require('assert');
+
+const url = 'mongodb://localhost/reddit-db';
+mongoose.Promise = global.Promise;
+mongoose.connect(
+  url,
+  { useNewUrlParser: true },
+  function(err, db) {
+    assert.equal(null, err);
+    console.log('Connected successfully to database');
+
+    // db.close(); turn on for testing
+  }
+);
+mongoose.connection.on(
+  'error',
+  console.error.bind(console, 'MongoDB connection Error:')
+);
+mongoose.set('debug', true);
+
+module.exports = mongoose.connection;
+
+```
+
+Now all that's left is to tie this into our main `server.js` file, so open that file up again, and paste this in:
+
+```js
+
+// Set db
+require('./data/reddit-clone-db');
+
+```
+
 # Saving to the Database
 
 In order to interact with the MongoDB database we're going to use the npm module [`mongoose`](https://www.npmjs.com/package/mongoose). Mongoose is the ODM - the Object Document Mapper. That means that it maps JavaScript objects in our application to documents in the database. The way Mongoose works is through schemas written in code called Models.
@@ -98,7 +179,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const PostSchema = new Schema({
-  title:    { type: String, required: true },
+  title:    { type: String, required: true }
   url:      { type: String, required: true },
   summary:  { type: String, required: true }
 })
