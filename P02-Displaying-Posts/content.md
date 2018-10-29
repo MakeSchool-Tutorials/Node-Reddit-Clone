@@ -22,36 +22,43 @@ Alright next step! Now that we can create posts, let's display them.
 
 # Connection Script
 
-You'll need to make a connection to Mongoose from server.js/app/js.
+You'll need to make a connection to Mongoose from `server.js`/`app.js`.
 
-I'm going to encourage the use of promises to handle asynchronous transactions. Mongoose doesn't supply it's own Promise library, instead Mongoose asks you to set a Promise library. The tutorial will use the default JavaScript Promise. 
+I'm going to encourage the use of promises to handle asynchronous transactions. Mongoose doesn't supply it's own Promise library; instead Mongoose asks you to set a Promise library of your choosing. The tutorial will use the default JavaScript Promise.
 
-Last, for testing, we can add an error handler for connection errors. 
+Finally, for testing, we can add an error handler for connection errors.
 
 ```js
-mongoose.Promise = global.Promise
-mongoose.connect('mongodb://localhost/redditclone', { useMongoClient: true })
-mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection Error:'))
+mongoose.Promise = global.Promise;
+mongoose.connect(
+  "mongodb://localhost/redditclone",
+  { useMongoClient: true }
+);
+mongoose.connection.on("error", console.error.bind(console, "MongoDB connection Error:"));
 ```
 
-**Bonus**
+## Bonus
 
-Add this to get debug info from Mongoose in the console. 
+Add the following to display debug info from Mongoose in the console:
 
-`mongoose.set('debug', true)`
+```js
+mongoose.set('debug', true);
+```
 
 # Posts#Index Route
 
-Let's have the root route (`/`) render the `posts-index` template.
+Next, let's have the root route (`/`) render the `posts-index` template.
 
-Can you get the template to display anything like `hello world` for example? Once you can we need to now pull the posts out of the database and send them along with the response.
+Can you get the template to display anything like `hello world`, for example? Once you can, we need to then pull the posts out of the database, and send them along with the response.
 
 ```js
-Post.find({}).then((posts) => {
-  res.render('posts-index.hbs', { posts })
-}).catch((err) => {
-  console.log(err.message);
-})
+Post.find({})
+  .then(posts => {
+    res.render("posts-index.hbs", { posts });
+  })
+  .catch(err => {
+    console.log(err.message);
+  });
 ```
 
 In your template can you output the variable `{{posts}}`?
@@ -76,9 +83,9 @@ Now let's put this list of posts into the middle 8 columns of the grid.
 </div>
 ```
 
-Now that we have `{{posts}}`, we can use handlebar's [built in `each` operator](http://handlebarsjs.com/builtin_helpers.html) to loop over the posts and display each one.
+Now that we have `{{posts}}`, we can use handlebars' [built in `each` operator](http://handlebarsjs.com/builtin_helpers.html) to loop over the posts, and display each one.
 
-In each post, let's use bootstrap's `list-group` and `list-group-item` classes. Let's display the post title in a `lead` classed div and add an anchor tag to link to the post's url. Add `target="_blank"` to the anchor tag so that the url opens in a new tab.
+In each post, use bootstrap's `list-group` and `list-group-item` classes. Display the post title in a div with the class `lead`, and add an anchor tag that links to the post's url. Finally, add `target="_blank"` to the anchor tag, so that the url opens in a new tab.
 
 ```html
 <ul>
@@ -93,37 +100,38 @@ In each post, let's use bootstrap's `list-group` and `list-group-item` classes. 
 
 # Viewing One Post
 
-Now we'd like for each post, when you click on it, to navigate to that particular post's own page.
+In order to view a single post when a user clicks on it, we'll need to establish a route for individual posts, and render them in their own template.
 
-So let's start with what the user can do - click on a post in the `post-index` template.
+Let's begin with the **user action** - clicking on a post in the `post-index` template.
 
 ```html
 <a href="/posts/{{this._id}}" class="lead">{{this.title}}</a>
 ```
 
-Now the title is a link to the show page. If we click it what do we see? No route! Let's fix that.
-
+The title is a link to the show page. If we click it, what happens? Error! No route! It's time to fix that.
 
 # Posts#Show Route
 
-Now we need the path `/posts/:id` to resolve to displaying a `post-show` template. So from inside the posts controller file, we need to have a new GET endpoint.
+We need the path `/posts/:id` to resolve to displaying a `post-show` template. To accomplish this, open `controllers/post.js`, and add a new GET endpoint:
 
 ```js
-  app.get('/posts/:id', function (req, res) {
-   // LOOK UP THE POST
-   Post.findById(req.params.id).then((post) => {
-     res.render('post-show.hbs', { post })
-   }).catch((err) => {
-     console.log(err.message)
-   })
- })
+app.get("/posts/:id", function(req, res) {
+  // LOOK UP THE POST
+  Post.findById(req.params.id)
+    .then(post => {
+      res.render("post-show.hbs", { post });
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
+});
 ```
 
-Now what happens if we refresh? No template!
+What happens if we refresh? No template!
 
 # Making the Template
 
-Let's get a template in there. As a bare minimum we'll use some bootstrap classes to make things look ok.
+Time to template. As a bare minimum we'll use some bootstrap classes to make things look reasonable as we continue to develop the application.
 
 ```html
 <div class="row">
@@ -134,4 +142,4 @@ Let's get a template in there. As a bare minimum we'll use some bootstrap classe
 </div>
 ```
 
-Now can you see your post? :D
+Now can you see your post?
