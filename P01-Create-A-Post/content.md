@@ -56,7 +56,7 @@ Now, use the [bootstrap form classes](http://getbootstrap.com/css/#forms) to add
         <textarea name="summary" class="form-control" id="post-summary" placeholder="Title"></textarea>
       </div>
       <div class='text-right'>
-        <button type="submit" class="btn btn-primary">Reply</button>
+        <button type="submit" class="btn btn-primary">Create Post</button>
       </div>
     </form>
   </div>
@@ -72,10 +72,10 @@ No POST `/posts` route! Let's make it.
 First, make a new folder called `controllers`. Within, create the file `posts.js`.
 
 ```js
-module.exports = (app) => {
+module.exports = app => {
   // CREATE
-  app.post('/posts/new', (req,res) => {
-    console.log(req.body)
+  app.post("/posts/new", (req, res) => {
+    console.log(req.body);
   });
 };
 ```
@@ -198,7 +198,7 @@ const Post = require('../models/post');
 module.exports = (app) => {
 
   // CREATE
-  app.post('/posts', (req, res) => {
+  app.post('/posts/new', (req, res) => {
     // INSTANTIATE INSTANCE OF POST MODEL
     const post = new Post(req.body);
 
