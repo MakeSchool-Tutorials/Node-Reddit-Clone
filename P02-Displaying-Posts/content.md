@@ -21,7 +21,7 @@ Alright next step! Now that we can create posts, let's display them.
 
 # Connection Script
 
-You'll need to make a connection to Mongoose from `server.js`/`app.js`.
+You'll need to make a connection to Mongoose from `server.js`.
 
 I'm going to encourage the use of promises to handle asynchronous transactions. Mongoose doesn't supply it's own Promise library; instead Mongoose asks you to set a Promise library of your choosing. The tutorial will use the default JavaScript Promise.
 
