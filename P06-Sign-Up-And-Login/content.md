@@ -115,17 +115,17 @@ Now we have a user model, but if we save our password it will be saved in our da
 
 The special issue we have with users is we can't know the users' password, we have to encrypt it. To do that we'll use a project called `bcrypt` that gives us some easy methods to encrypt passwords and save a secure "password digest" instead of the actual password.
 
-All this bcrypt logic will live in the user model. What we'll do is:
+All this `bcrypt` logic will live in the user model. What we'll do is:
 
-1. Install `bcrypt` to our project and require it in our model
+1. Install `bcryptjs` to our project and require it in our model.
 1. Add a method to our user model that detects if the `password` attribute is being modified, and if it is salt and has the password to produce a password digest that we'll save into the database.
 1. Lastly, make a model method called `comparePassword()` that takes in an attempted password and returns true or false if the attempt matches what is in the database.
 
-You'll need to 'salt' the password. Read about 'salting' [here](https://en.wikipedia.org/wiki/Salt_(cryptography)). While you can include a your secret 'salt' value in an environment variable that is accessible throughout node. We can use `dotenv` library to help. 
+You'll need to 'salt' the password. Read about 'salting' [here](https://en.wikipedia.org/wiki/Salt_(cryptography)). While you can include a your secret 'salt' value in an environment variable that is accessible throughout node. We can use `dotenv` library to help.
 
-1. Install `dotenv`. 
-1. Then you'll need to create a file in the root of your project named `.env` and define a variable with `SECRET=somehashvalue`, where 'somehashvalue' can be any random set of characters. 
-1. Last, `require('dotenv').config();` as early as possible in your project. Adding it at the top of `server.js` is probably a good idea. 
+1. Install `dotenv`.
+1. Then you'll need to create a file in the root of your project named `.env` and define a variable with `SECRET=somehashvalue`, where 'somehashvalue' can be any random set of characters.
+1. Last, `require('dotenv').config();` as early as possible in your project. Adding it at the top of `server.js` is probably a good idea.
 
 Read more about `dotenv` [here](https://www.npmjs.com/package/dotenv).
 
@@ -190,7 +190,7 @@ $ npm install cookie-parser jsonwebtoken -s
 
 # Use Middleware to handle tokens
 
-Use middleware to to authenticate tokens and attach them to `req` object passed to routes. 
+Use middleware to to authenticate tokens and attach them to `req` object passed to routes.
 
 First we generate JSON Web Tokens (JWTs) so we need to require the npm module `jsonwebtoken` we just installed into our `auth-controller.js` and then use it to generate a JWT after the new user document is saved.
 
@@ -217,7 +217,7 @@ Next we need to set the JWT as a cookie so that it will be included in all futur
 
 `$ npm install --save cookie-parser`
 
-Next import cookie parser in `server.js` and add it as middelware. 
+Next import cookie parser in `server.js` and add it as middelware.
 
 ```js
 ...
@@ -226,11 +226,11 @@ const jwt = require('jsonwebtoken');
 ...
 var app = express();
 ...
-app.use(cookieParser()); // Add this after you initialize express. 
+app.use(cookieParser()); // Add this after you initialize express.
 ...
 ```
 
-Next we'll set the cookie. (We'll want our JWT cookie variable's name to bit unique so it doesn't get confusing with other sites, so we'll use the variable `nToken`.) We want to set the cookie when someone signs up and logsin. In `auth-controller.js` update the post /sign-up route. 
+Next we'll set the cookie. (We'll want our JWT cookie variable's name to bit unique so it doesn't get confusing with other sites, so we'll use the variable `nToken`.) We want to set the cookie when someone signs up and logsin. In `auth-controller.js` update the post /sign-up route.
 
 ```js
 ...
@@ -278,7 +278,7 @@ After you click the "Logout" link is the cookie still present in the server in `
 
 Now that we've signed up, logged out, now let's login. We can use the same pattern as we did with the `/sign-up` routes, with one GET and one POST both with the path `/login`.
 
-First let's build the GET route and template. You can copy and modify the sign up template to create login template. 
+First let's build the GET route and template. You can copy and modify the sign up template to create login template.
 
 ```js
   // LOGIN FORM
@@ -325,8 +325,8 @@ app.post('/login', (req, res) => {
 
 Phew!
 
-If we did everything right, now we should be able to sign up, log out, and login securely. We even got a 
-little bit of authorization working showing and hiding the login, sign up, logout links. Nice! In the next 
+If we did everything right, now we should be able to sign up, log out, and login securely. We even got a
+little bit of authorization working showing and hiding the login, sign up, logout links. Nice! In the next
 chapter we'll associate our user record with our posts and comments.
 
 WOOOHOOO!
