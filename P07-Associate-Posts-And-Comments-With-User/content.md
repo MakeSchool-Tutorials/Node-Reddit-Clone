@@ -29,7 +29,7 @@ We can always check if `req.cookies.nToken` is present, but shouldn't we also ch
 ```js
 var checkAuth = (req, res, next) => {
   console.log("Checking authentication");
-  if (typeof req.cookies.nToken === 'undefined' || req.cookies.nToken === null) {
+  if (typeof req.cookies.nToken === "undefined" || req.cookies.nToken === null) {
     req.user = null;
   } else {
     var token = req.cookies.nToken;
@@ -37,20 +37,18 @@ var checkAuth = (req, res, next) => {
     req.user = decodedToken.payload;
   }
 
-  next()
-}
+  next();
+};
 app.use(checkAuth);
 ```
 
 Go to any route and see if the `Checking authentication` is logged in the terminal.
 
-Note: this is your own custom middleware like `body-parser` and `cookie-parser`. Middleware is run in the order it is added to the with `app.use()` or `server.use()`. You must add middelware after initializing Express js, and sometimes the order will matter. 
-
+Note: this is your own custom middleware like `body-parser` and `cookie-parser`. Middleware is run in the order it is added via `app.use()`. You must add middleware after initializing Express, and the order will matter.
 
 # Updating Templates
 
 Once our `checkAuth` middleware is running on every route, let's use the new `req.user` object we created to create a `currentUser` object. We'll use this `currentUser` object to hid the login and sign up links if a user is logged in.
-
 
 ```html
 <ul class="nav navbar-nav navbar-right">
@@ -63,23 +61,25 @@ Once our `checkAuth` middleware is running on every route, let's use the new `re
 </ul>
 ```
 
-Now in any route we can set `currentUser` equal to req.user which will either be `{ _id: <<ID>> }` or `null`.
+Now in any route we can set `currentUser` equal to `req.user` which will either be `{ _id: <<ID>> }` or `null`.
 
 ```js
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   var currentUser = req.user;
 
-  Post.find({}).then((posts) => {
-    res.render('posts-index.hbs', { posts, currentUser })
-  }).catch((err) => {
-    console.log(err.message);
-  });
-})
+  Post.find({})
+    .then(posts => {
+      res.render("posts-index.hbs", { posts, currentUser });
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
+});
 ```
 
-Do the login and sign up links appear and disappear if you are logged in or not?
+Do the login and sign up links appear and disappear depending upon whether a user is logged in?
 
-Now let's hide the button to create a new post for those who are loggedin.
+Now, hide the "New Post" button for those who are logged in.
 
 ```html
 {{#if currentUser}}
@@ -87,21 +87,21 @@ Now let's hide the button to create a new post for those who are loggedin.
 {{/if}}
 ```
 
-Remember you'll have to add `currentUser` to all of the routes that call `res.render()` so the main templates work. This may seem like some duplication of code, and it is. Can you brainstorm a solution with a friend where there wouldn't be duplication and the code could be 100% DRY?
+Remember, you'll have to add `currentUser` to all of the routes that call `res.render()` so the main templates work. This may seem like some duplication of code, and it is. Can you brainstorm a 100% DRY solution with a friend, without code duplication?
 
 # Requiring User to Be Logged In to Post
 
-Right now if you aren't logged in, you could still just navigate to `/posts/new` and create a post. Let's be a bit more secure and prevent someone from creating a post unless they are logged in.
+Right now, if you aren't logged in, you could still just navigate to `/posts/new` and create a post. Let's be a bit more secure and prevent someone from creating a post unless they are logged in.
 
 ```js
 // CREATE
-app.post('/posts', (req, res) => {
+app.post("/posts", (req, res) => {
   if (req.user) {
     var post = new Post(req.body);
 
-    post.save(function (err, post) {
+    post.save(function(err, post) {
       return res.redirect(`/`);
-    })
+    });
   } else {
     return res.status(401); // UNAUTHORIZED
   }
@@ -114,64 +114,64 @@ Can you rewrite the above code into its own middleware called `CheckAuth`?
 
 # Associating the `author` of Comments and Posts
 
-So now we want people to take responsibility for their silly posts on our Node Reddit (Noddit? Reddode?). 
-We need to make each post and each comment point back to its author and each user to track the posts and 
-comments they create. We'll do this by sving the author's user id into the child post or comment, and 
-by tracking the post and comment id's in the user. Then we can use the `.populate()` method to pull in 
-the details whenever we need.
+So now we want people to take responsibility for their silly posts on Reddit.js.
 
-To accomplish this there is no change to the views to start, so we can go straight to updating model and 
-controller code.
+We need to make each post and each comment point back to it's author, as well as ensure the posts and comments are persisted with associations to the user that creates them. We'll do this by saving the author's user id in each child post or comment, and by tracking the post and comment id's for each user. Then we can use the `.populate()` method to pull in the details whenever we need.
 
-First let's add an `author` attribute to both the `comment.js` and the `post.js` files. It's type will 
-be a single ObjectId and we'll make it required because only logged in people can create posts.
+To accomplish this, there are no changes required to the views we've already created. We can go straight to updating model and controller appropriately.
+
+First, let's add an `author` attribute to both the `models/comment.js` and the `models/post.js` files. It's type will be a single `ObjectId`. We'll make it required because only logged in people can create posts.
 
 ```js
 ...
- author : { type: Schema.Types.ObjectId, ref: 'User', required: true }
+ author : { type: Schema.Types.ObjectId, ref: "User", required: true }
 ...
 ```
 
-And let's add the `posts` attribute to the `User` model. It will be an array of ObjectId's.
+Additionally, add the `posts` attribute to the `User` model. It will be an array of `ObjectId`s.
 
 ```js
   ...
-  posts : [{ type: Schema.Types.ObjectId, ref: 'Post' }]
+  posts : [{ type: Schema.Types.ObjectId, ref: "Post" }]
   ...
 ```
 
-Now we can update the posts controller to save the current user as the author when we create a post, 
+Now we can update the posts controller to save the current user as the author when we create a post,
 and we can look up the current user and add the new post to their `posts`.
 
 ```js
 var post = new Post(req.body);
-post.author = req.user._id
+post.author = req.user._id;
 
-post.save().then((post) => {
-  return User.findById(req.user._id)
-}).then((user) => {
-  user.posts.unshift(post);
-  user.save();
-  // REDIRECT TO THE NEW POST
-  res.redirect('/posts/'+ post._id)
-}).catch((err) => {
-  console.log(err.message);
-});
+post
+  .save()
+  .then(post => {
+    return User.findById(req.user._id);
+  })
+  .then(user => {
+    user.posts.unshift(post);
+    user.save();
+    // REDIRECT TO THE NEW POST
+    res.redirect("/posts/" + post._id);
+  })
+  .catch(err => {
+    console.log(err.message);
+  });
 ```
 
 Test that both the `author` and the `posts` are being saved by looking in your database or logging to the console.
 
-Now can you do this same pattern for the comments controller for when someone creates a comment?
+Now, can you do this same pattern for the comments controller when someone creates a comment?
 
 # Displaying the Author
 
-Now populate the author in posts and display their username on every post wherever it appears.
+Next, populate the author in posts and display their username on every post wherever it appears.
 
 # Now For Comments
 
 Using the previous instructions for associating users and posts, can you make it so users and comments are equally associated?
 
-# Extra Challenges:
+# Stretch Challenges
 
 1. Can you make an author's username a link that displays that users's profile at `/users/:username`?
 1. Can you do the same for comments?

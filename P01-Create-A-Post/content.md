@@ -220,7 +220,7 @@ Use either the `mongo` shell or [Robo 3T](https://robomongo.org/download) to con
 
 # STRETCH: Adding Created At and Updated At Attributes
 
-Create a new model.
+Create a new model:
 
 ```js
 const mongoose = require("mongoose");
