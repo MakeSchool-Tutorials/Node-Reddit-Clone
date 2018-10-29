@@ -325,9 +325,7 @@ app.post('/login', (req, res) => {
 
 Phew!
 
-If we did everything right, now we should be able to sign up, log out, and login securely. We even got a
-little bit of authorization working showing and hiding the login, sign up, logout links. Nice! In the next
-chapter we'll associate our user record with our posts and comments.
+If we did everything right, now we should be able to sign up, log out, and login securely. Nice! In the next chapter we'll associate our user record with our posts and comments.
 
 WOOOHOOO!
 
