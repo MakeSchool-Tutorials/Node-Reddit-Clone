@@ -41,8 +41,7 @@ Now it's time to get started by making a step-by-step plan. Here are some of the
 * Create subreddit
 * Create a post on a subreddit
 * Show all subreddits
-* Vote up a post
-* Vote up a comment
+* Vote a post up or down
 
 In what order should we fulfill these tasks? What do you think? Write it down step by step somewhere. When you are done, hover over the solution to see what order these tasks are implemented from within this tutorial.
 
@@ -57,8 +56,7 @@ We should work from the fundamental to the desirable --- the structure of our pr
 1. Sign up and Login
 1. Associate posts, comments with their author
 1. Make comments on comments
-1. Vote a post up
-1. Vote a comment up
+1. Vote a post up or down
 
 # Bootstrapping Express.js
 

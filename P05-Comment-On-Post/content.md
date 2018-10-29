@@ -9,10 +9,10 @@ Alright next step! We can see those posts, let's comment on them.
 1. Show all posts
 1. Show one post
 1. **Comment on posts**
-  1. Make a new comment form in the posts#show template
-  1. Make a create route for comments
-  1. Associate comments with posts
-  1. Display comments
+    1. Make a new comment form in the posts#show template
+    1. Make a create route for comments
+    1. Associate comments with posts
+    1. Display comments
 1. Create subreddits
 1. Sign up and Login
 1. Associate posts and comments with their author
