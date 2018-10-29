@@ -67,7 +67,7 @@ Now, use the [bootstrap form classes](http://getbootstrap.com/css/#forms) to add
 
 So what happens when you submit this form?
 
-No POST `/posts` route! Let's make it.
+No POST `/posts/new` route! Let's make it.
 
 First, make a new folder called `controllers`. Within, create the file `posts.js`.
 
@@ -106,7 +106,7 @@ const bodyParser = require('body-parser');
 // Use Body Parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(expressValidator()); // Add after Body parser!
+app.use(expressValidator()); // Add after body parser initialization!
 ```
 
 # Connecting to your database
@@ -214,9 +214,9 @@ module.exports = (app) => {
 
 # Confirming Posts are Saving
 
-So we can save to the database, but how can we be sure? There are a couple of ways! We could go into the `mongo` shell and inspect our database, observing that the `posts` collection is now populated with documents. Alternatively, we can use a program, Robo3d, to graphically inspect our database and observe what collections and documents we've created.
+So we can save to the database, but how can we be sure? There are a couple of ways! We could go into the `mongo` shell and inspect our database, observing that the `posts` collection is now populated with documents. Alternatively, we can use a program, [Robo 3T](https://robomongo.org/download), to graphically inspect our database and observe what collections and documents we've created.
 
-Use either the `mongo` shell or Robo3d to confirm you are successfully creating posts before moving on.
+Use either the `mongo` shell or [Robo 3T](https://robomongo.org/download) to confirm you are successfully creating posts before moving on.
 
 # STRETCH: Adding Created At and Updated At Attributes
 
