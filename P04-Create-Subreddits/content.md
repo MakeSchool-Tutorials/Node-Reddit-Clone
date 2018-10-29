@@ -39,7 +39,7 @@ First, we work from what the users sees, so we need to add a subreddit field to 
 </div>
 ```
 
-Next we update our `Post` model to have a `subreddit` attribute. This attribute will just be a string.
+Next we update our `Post` model to have a `subreddit` attribute. This attribute will just be a `String`.
 
 ```js
 subreddit: { type: String, required: true }
@@ -83,23 +83,25 @@ Now if you click this link what happens? No route!
 Let's see if we can make this route work. Does the terminal output the subreddit name in the url when you navigate to it?
 
 ```js
-  // SUBREDDIT
-  app.get('/n/:subreddit', function(req, res) {
-    console.log(req.params.subreddit)
-  });
+// SUBREDDIT
+app.get("/n/:subreddit", function(req, res) {
+  console.log(req.params.subreddit);
+});
 ```
 
 Now we can return only posts that have a `subreddit` that matches the one passed into the url. We can also reuse our `posts-index` template!
 
 ```js
   // SUBREDDIT
-  app.post('/n/:subreddit', function(req, res) {
-    Post.find({ subreddit: req.params.subreddit }).then((posts) => {
-      res.render('posts-index.hbs', { posts })
-    }).catch((err) => {
-      console.log(err)
+app.post("/n/:subreddit", function(req, res) {
+  Post.find({ subreddit: req.params.subreddit })
+    .then(posts => {
+      res.render("posts-index.hbs", { posts });
     })
-  });
+    .catch(err => {
+      console.log(err);
+    });
+});
 ```
 
 How does that look? Are you getting just posts with that subreddit?

@@ -68,37 +68,40 @@ Follow the pattern you used for the Post resource to create a Comment resource.
 
 ```js
 // CREATE Comment
-app.post('/posts/:postId/comments', function (req, res) {
+app.post("/posts/:postId/comments", function(req, res) {
   // INSTANTIATE INSTANCE OF MODEL
-  const comment = new Comment(req.body)
+  const comment = new Comment(req.body);
 
   // SAVE INSTANCE OF Comment MODEL TO DB
-  comment.save().then((comment) => {
-    // REDIRECT TO THE ROOT
-    return res.redirect(`/`)
-  }).catch((err) => {
-    console.log(err);
-  })
-})
+  comment
+    .save()
+    .then(comment => {
+      // REDIRECT TO THE ROOT
+      return res.redirect(`/`);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
 ```
 
 1. Create a Comment model in a `comment.js` file
 
 ```js
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const CommentSchema = new Schema({
-   content: { type: String, required: true }
-})
+  content: { type: String, required: true }
+});
 
-module.exports = mongoose.model('Comment', CommentSchema)
+module.exports = mongoose.model("Comment", CommentSchema);
 ```
 
 1. Require the comment model in the comments controller
 
   ```js
-  const Comment = require('../models/comment')
+  const Comment = require('../models/comment');
   ```
 
 1. Create a comment by submitting your form
@@ -114,22 +117,27 @@ In the controller we need find the parent Post from the `:postId` we have in the
 
 ```js
 // CREATE Comment
-app.post('/posts/:postId/comments', function (req, res) {
+app.post("/posts/:postId/comments", function(req, res) {
   // INSTANTIATE INSTANCE OF MODEL
-  const comment = new Comment(req.body)
+  const comment = new Comment(req.body);
 
   // SAVE INSTANCE OF Comment MODEL TO DB
-  comment.save().then((comment) => {
-    return Post.findById(req.params.postId)
-  }).then((post) => {
-    post.comments.unshift(comment)
-    return post.save()
-  }).then((post) => {
-    res.redirect(`/`)
-  }).catch((err) => {
-    console.log(err)
-  })
-})
+  comment
+    .save()
+    .then(comment => {
+      return Post.findById(req.params.postId);
+    })
+    .then(post => {
+      post.comments.unshift(comment);
+      return post.save();
+    })
+    .then(post => {
+      res.redirect(`/`);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
 ```
 
 Why did I recommend we use unshift here instead of push?
@@ -150,7 +158,7 @@ Finally, create some new comments and confirm that their `_id`'s are being added
 Now that we have the comments associate we can see them in the parent `post` object. Let's add them to the posts#show template below the new comment form.
 
 ```html
-{{#each post.comments}}   
+{{#each post.comments}}
   {{this}}
 {{/each}}
 ```
@@ -173,7 +181,7 @@ Now do we see the comments?
 Just one more change, you have to access the `content` attribute of each comment. You can add more style to these if you like. Perhaps a paragraph tag to start.
 
 ```html
-{{#each post.comments}}   
+{{#each post.comments}}
   <p>{{this.content}}</p>
 {{/each}}
 ```

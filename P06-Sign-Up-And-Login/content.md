@@ -45,8 +45,8 @@ Now that we have the links, let's make the `/sign-up` route work. We can make a 
 ```js
 module.exports = (app) => {
   // SIGN UP FORM
-  app.get('/sign-up', (req, res) => {
-    res.render('sign-up');
+  app.get("/sign-up", (req, res) => {
+    res.render("sign-up");
   });
 }
 ```
@@ -64,49 +64,52 @@ Use the template code you used to create a post but alter it to fit a username/p
 Define a User model. Add a new file called `user.js` in your `models` folder.
 
 ```js
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-  createdAt       : { type: Date },
-  updatedAt       : { type: Date },
-  password        : { type: String, select: false },
-  username        : { type: String, required: true }
+  createdAt: { type: Date },
+  updatedAt: { type: Date },
+  password: { type: String, select: false },
+  username: { type: String, required: true }
 });
 
 // Define the callback with a regular function to avoid problems with this
-UserSchema.pre('save', function(next) {
+UserSchema.pre("save", function(next) {
   // SET createdAt AND updatedAt
   const now = new Date();
   this.updatedAt = now;
-  if ( !this.createdAt ) {
+  if (!this.createdAt) {
     this.createdAt = now;
   }
   next();
 });
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model("User", UserSchema);
 ```
 
 Next define a route `/sign-up`.
 
 ```js
-const User = require('../models/user');
+const User = require("../models/user");
 
-module.exports = (app) => {
+module.exports = app => {
   ...
   // SIGN UP POST
-  app.post('/sign-up', (req, res) => {
+  app.post("/sign-up", (req, res) => {
     // Create User
     const user = new User(req.body);
 
-    user.save().then((user) => {
-      res.redirect('/');
-    }).catch((err) => {
-      console.log(err.message);
-    });
+    user
+      .save()
+      .then(user => {
+        res.redirect("/");
+      })
+      .catch(err => {
+        console.log(err.message);
+      });
   });
-}
+};
 ```
 
 Now we have a user model, but if we save our password it will be saved in our database as plaintext and not be secure.
@@ -124,37 +127,37 @@ All this `bcrypt` logic will live in the user model. What we'll do is:
 You'll need to 'salt' the password. Read about 'salting' [here](https://en.wikipedia.org/wiki/Salt_(cryptography)). While you can include a your secret 'salt' value in an environment variable that is accessible throughout node. We can use `dotenv` library to help.
 
 1. Install `dotenv`.
-1. Then you'll need to create a file in the root of your project named `.env` and define a variable with `SECRET=somehashvalue`, where 'somehashvalue' can be any random set of characters.
+1. Create a file in the root of your project named `.env` and define a variable with the following key-value syntax. Define `SECRET` as the key, and `somehashvalue` as the value: `SECRET=somehashvalue`. `somehashvalue` can be **any** random set of characters.
 1. Last, `require('dotenv').config();` as early as possible in your project. Adding it at the top of `server.js` is probably a good idea.
 
 Read more about `dotenv` [here](https://www.npmjs.com/package/dotenv).
 
-Read this implementation closely and add implement the same into your `User` model.
+Read this implementation closely and implement the same into your `User` model.
 
 ```js
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-    createdAt       : { type: Date },
-    updatedAt       : { type: Date },
-    password        : { type: String, select: false },
-    username        : { type: String, required: true }
+  createdAt: { type: Date },
+  updatedAt: { type: Date },
+  password: { type: String, select: false },
+  username: { type: String, required: true }
 });
 
 // Must use function here! ES6 => functions do not bind this!
-UserSchema.pre('save', function(next) {
+UserSchema.pre("save", function(next) {
   // SET createdAt AND updatedAt
   const now = new Date();
   this.updatedAt = now;
-  if ( !this.createdAt ) {
+  if (!this.createdAt) {
     this.createdAt = now;
   }
 
   // ENCRYPT PASSWORD
   const user = this;
-  if (!user.isModified('password')) {
+  if (!user.isModified("password")) {
     return next();
   }
   bcrypt.genSalt(10, (err, salt) => {
@@ -165,15 +168,14 @@ UserSchema.pre('save', function(next) {
   });
 });
 
-//Need to use function to enable this.password to work
+// Need to use function to enable this.password to work.
 UserSchema.methods.comparePassword = function(password, done) {
-    bcrypt.compare(password, this.password, (err, isMatch) => {
-        done(err, isMatch);
-    });
+  bcrypt.compare(password, this.password, (err, isMatch) => {
+    done(err, isMatch);
+  });
 };
 
-
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model("User", UserSchema);
 ```
 
 Now let's sign up and check if our password was encrypted. We'll be able to see if the password is salted and hashed, and later we'll be able to test if the encryption actually worked when we create the login form.
@@ -185,32 +187,35 @@ Besides just creating a user document when the user signs up, we also want to lo
 In our case, being logged in will mean that there is an authentic JWT token - a JSON Web Token - set as a cookie. This token is another piece of neat encryption that uniquely identifies a specific user.We'll use a one library called `jsonwebtoken` to generate this token, and then we'll use `cookie-parser` to set this token as a cookie.
 
 ```bash
-$ npm install cookie-parser jsonwebtoken -s
+npm install cookie-parser jsonwebtoken -s
 ```
 
 # Use Middleware to handle tokens
 
 Use middleware to to authenticate tokens and attach them to `req` object passed to routes.
 
-First we generate JSON Web Tokens (JWTs) so we need to require the npm module `jsonwebtoken` we just installed into our `auth-controller.js` and then use it to generate a JWT after the new user document is saved.
+First, we generate **JSON Web Tokens (JWTs)** --- consequently, we need to require the `jsonwebtoken` module we just installed at the top of `auth-controller.js`. We will use it to generate a JWT _after_ the new user document is saved.
 
 ```js
 const jwt = require('jsonwebtoken');
 ...
 // SIGN UP POST
-  app.post('/sign-up', (req, res) => {
-    // Create User and JWT
-    const user = new User(req.body);
+app.post("/sign-up", (req, res) => {
+  // Create User and JWT
+  const user = new User(req.body);
 
-    user.save().then((user) => {
+  user
+    .save()
+    .then(user => {
       var token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
-      res.redirect('/');
-    }).catch((err) => {
+      res.redirect("/");
+    })
+    .catch(err => {
       console.log(err.message);
       return res.status(400).send({ err: err });
     });
-  });
- ...
+});
+...
 ```
 
 Next we need to set the JWT as a cookie so that it will be included in all future requests from the current user's client. First we include cookieParser in the project in the `server.js` file so cookie methods can be used anywhere in the app.
@@ -293,33 +298,34 @@ Now let's make the logic for the POST route to `/login` work.
 
 ```js
 // LOGIN
-app.post('/login', (req, res) => {
+app.post("/login", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   // Find this user name
-  User.findOne({ username }, 'username password').then((user) => {
-    if (!user) {
-      // User not found
-      return res.status(401).send({ message: 'Wrong Username or Password' });
-    }
-    // Check the password
-    user.comparePassword(password, (err, isMatch) => {
-      if (!isMatch) {
-        // Password does not match
-        return res.status(401).send({ message: "Wrong Username or password"});
+  User.findOne({ username }, "username password")
+    .then(user => {
+      if (!user) {
+        // User not found
+        return res.status(401).send({ message: "Wrong Username or Password" });
       }
-      // Create a token
-      const token = jwt.sign(
-        { _id: user._id, username: user.username }, process.env.SECRET,
-        { expiresIn: "60 days" }
-      );
-      // Set a cookie and redirect to root
-      res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
-      res.redirect('/');
+      // Check the password
+      user.comparePassword(password, (err, isMatch) => {
+        if (!isMatch) {
+          // Password does not match
+          return res.status(401).send({ message: "Wrong Username or password" });
+        }
+        // Create a token
+        const token = jwt.sign({ _id: user._id, username: user.username }, process.env.SECRET, {
+          expiresIn: "60 days"
+        });
+        // Set a cookie and redirect to root
+        res.cookie("nToken", token, { maxAge: 900000, httpOnly: true });
+        res.redirect("/");
+      });
+    })
+    .catch(err => {
+      console.log(err);
     });
-  }).catch((err) => {
-    console.log(err);
-  });
 });
 ```
 
