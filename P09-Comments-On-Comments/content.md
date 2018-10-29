@@ -19,9 +19,9 @@ Alright next step!
 
 # Make a Plan
 
-A software developer follows instructions, but a software developer also writes their own instructions! You are writing the instructions
+A software developer follows instructions, but a software developer _also_ writes their own instructions!
 
-For this step of the tutorial, I'm not going to tell you the step by step, instead you have to make one up yourself. I'm going to write some descriptive text in English about how this feature works in code and you will need to translate that into a few steps.
+**You are writing the instructions for this step of the tutorial; I'm not going to tell you the step by step.** Instead, you have to make one up yourself! I'm going to write some descriptive text in English about how this feature works, and you will need to translate that into code.
 
 # Comments on Comments - Reference Documents
 
@@ -39,7 +39,7 @@ Currently comments are a reference document on a post. Any comment is a child do
 }
 ```
 
-So what if we tried this same strategy for comments on comments? What would be the pro's and the con's? Would there be problems down stream that would make this pattern unusable? Could we nest comments this way? How would we query a post and all its comments? Would this make it hard to vote on comments? Would it make it hard to count the number of votes an show the most voted on comments on the top? Discuss these questions with a partner who is at this same step.
+So what if we tried this same strategy for comments on comments? What would be the pros and the cons? Would there be problems downstream that would make this pattern unusable? Could we nest comments this way? How would we query a post and all its comments? Would this make it hard to vote on comments? Would it make it hard to count the number of votes an show the most voted on comments on the top? Discuss these questions with a partner who is at this same step.
 
 # Another Strategy: Embedded Documents
 
@@ -68,13 +68,20 @@ Another strategy we could try is using a "[Embedded Document](http://mongoosejs.
 }
 ```
 
-The pros of this would be we could nest comments, and we'd always have this giant tree of comments every time we had its parent post record. The con there would be when we asked for just the parent post, we will necessarily have to fetch and then send over the network that entire tree of comments. But so long as we don't have more than a few hundred comments it won't be too slow, and when we do get that kind of traffic (fingers crossed!), we can probably find a solution to speed things up, like excluding the comments field when we query our db for all the posts, and include it when we query for a single post.
+## Pros
+
+* We can nest comments, and we'd always have this giant tree of comments every time we had it's parent post record.
+
+## Cons
+
+* When we ask for just the parent post, we will have to fetch and then send over the network that entire tree of comments.
+* As long as we don't have more than a few hundred comments, it won't be too slow. When we do get a high influx of traffic (fingers crossed!), we can probably find a solution to speed things up. For example, we could exclude the comments field when querying our DB for all posts, and include it when we query for a single post.
 
 # Another Strategy: Reference Comments, Embedded Replies
 
 There is always more than one way to skin a cat.
 
-What if we made comments (the first comments on posts) reference documents, but then we embedded all "replies" or comments on comments inside the top-level comments?
+What if we made comments (the first comments on posts) reference documents, but then we embedded all "replies" (comments on comments) inside the top-level comments?
 
 ```json
 /*POST*/
