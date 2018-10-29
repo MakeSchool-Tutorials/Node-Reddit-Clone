@@ -18,7 +18,6 @@ So last lesson we were thinking through how to put comments inside other comment
   1. Make comments embedded inside comments.
   1. Test comments on comments are working.
 1. Vote a post up
-1. Sort posts by # of votes
 
 # Embedding Comments in Posts
 

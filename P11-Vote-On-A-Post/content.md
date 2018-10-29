@@ -27,9 +27,6 @@ Let's start with how to vote up, and then see how we can vote down.
   1. Write vote up and vote down routes
   1. Add new attributes to `Post` model
   1. Update DOM with response
-  1. Restrict to 1 vote per user
-  1. Let people 'undo' their vote
-1. Sort posts by # of votes
 
 # Voting Plan
 

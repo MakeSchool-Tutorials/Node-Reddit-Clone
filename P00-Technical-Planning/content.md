@@ -43,7 +43,6 @@ Now it's time to get started by making a step-by-step plan. Here are some of the
 * Show all subreddits
 * Vote up a post
 * Vote up a comment
-* Sort posts by # of votes
 
 In what order should we fulfill these tasks? What do you think? Write it down step by step somewhere. When you are done, hover over the solution to see what order these tasks are implemented from within this tutorial.
 
@@ -60,7 +59,6 @@ We should work from the fundamental to the desirable --- the structure of our pr
 1. Make comments on comments
 1. Vote a post up
 1. Vote a comment up
-1. Sort posts by # of votes
 
 # Bootstrapping Express.js
 

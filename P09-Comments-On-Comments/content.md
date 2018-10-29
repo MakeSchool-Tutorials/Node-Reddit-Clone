@@ -15,7 +15,6 @@ Alright next step!
 1. **Make comments on comments**
   1. ... :D
 1. Vote a post up
-1. Sort posts by # of votes
 
 # Make a Plan
 
