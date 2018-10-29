@@ -12,12 +12,12 @@ Alright next step! Its time to allow people to take responsibility for the silly
 1. Create subreddits
 1. Sign up and Login
 1. **Association posts and comments with their author**
-  1. Check authentication and make `req.user` and `currentUser` objects
-  1. Add `author` attribute to comments and posts
-  1. Save the user as the author of posts
-  1. Display the author's username on posts and comments
+    1. Check authentication and make `req.user` and `currentUser` objects
+    1. Add `author` attribute to comments and posts
+    1. Save the user as the author of posts
+    1. Display the author's username on posts and comments
 1. Make comments on comments
-1. Vote a post up
+1. Vote a post up or down
 
 # Checking Login Status
 

@@ -11,17 +11,17 @@ Alright next step! Its time to allow people to take responsibility for the silly
 1. Comment on posts
 1. Create subreddits
 1. **Sign up and Login**
-  1. Make `/sign-up` route, template and form
-  1. Make POST `/sign-up` route and logic
-  1. Make `User` model
-  1. Encrypt users' passwords
-  1. Create JWT and add Cookies
-  1. Demonstrate that user is logged in and password is encrypted
-  1. Make `/login` route, template and form
-  1. Make POST `/login` route and logic
+    1. Make `/sign-up` route, template and form
+    1. Make POST `/sign-up` route and logic
+    1. Make `User` model
+    1. Encrypt users' passwords
+    1. Create JWT and add cookies
+    1. Demonstrate that user is logged in and password is encrypted
+    1. Make `/login` route, template and form
+    1. Make POST `/login` route and logic
 1. Associate posts and comments with their author
 1. Make comments on comments
-1. Vote a post up
+1. Vote a post up or down
 
 # Make `/sign-up` Route
 

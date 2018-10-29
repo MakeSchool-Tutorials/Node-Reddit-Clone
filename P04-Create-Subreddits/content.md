@@ -10,12 +10,12 @@ We've got posts, but let's categorize them into subreddits.
 1. Show one post
 1. Comment on posts
 1. **Create subreddits**
-  1. Add a `subreddit` attribute to our post resource
-  1. Navigate to view all the posts of the same subreddit
+    1. Add a `subreddit` attribute to our post resource
+    1. Navigate to view all the posts of the same subreddit
 1. Sign up and Login
 1. Associate posts and comments with their author
 1. Make comments on comments
-1. Vote a post up
+1. Vote a post up or down
 
 # Create Subreddits
 

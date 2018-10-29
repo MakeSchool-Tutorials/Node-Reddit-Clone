@@ -13,11 +13,11 @@ So last lesson we were thinking through how to put comments inside other comment
 1. Sign up and Login
 1. Associate posts and comments with their author
 1. **Make comments on comments**
-  1. Make comments embedded documents instead of reference.
-  1. Make comments on posts work.
-  1. Make comments embedded inside comments.
-  1. Test comments on comments are working.
-1. Vote a post up
+    1. Make comments embedded documents instead of reference.
+    1. Make comments on posts work.
+    1. Make comments embedded inside comments.
+    1. Test that comments on comments are working.
+1. Vote a post up or down
 
 # Embedding Comments in Posts
 

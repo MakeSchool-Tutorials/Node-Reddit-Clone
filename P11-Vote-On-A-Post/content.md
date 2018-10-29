@@ -21,12 +21,12 @@ Let's start with how to vote up, and then see how we can vote down.
 1. Sign up and Login
 1. Associate posts and comments with their author
 1. Make comments on comments
-1. **Vote a post up**
-  1. Make vote form
-  1. Add jQuery AJAX scripts
-  1. Write vote up and vote down routes
-  1. Add new attributes to `Post` model
-  1. Update DOM with response
+1. **Vote a post up or down**
+    1. Make vote form
+    1. Add jQuery AJAX scripts
+    1. Write vote up and vote down routes
+    1. Add new attributes to `Post` model
+    1. Update DOM with response
 
 # Voting Plan
 

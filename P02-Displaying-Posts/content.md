@@ -7,17 +7,17 @@ Alright next step! Now that we can create posts, let's display them.
 
 1. Create a post
 1. **Show all posts and show one post**
-  1. Make the root route (`/`) go to the posts#index route render a `posts-index` template
-  1. Style the template and loop over the `posts` object
-  1. Make route to posts#show route (`/posts/:id`)
-  1. Style the template and display the `post` object
+    1. Make the root route (`/`) go to the posts#index route render a `posts-index` template
+    1. Style the template and loop over the `posts` object
+    1. Make route to posts#show route (`/posts/:id`)
+    1. Style the template and display the `post` object
 1. Show one post
 1. Comment on posts
 1. Create subreddits
 1. Sign up and Login
 1. Associate posts and comments with their author
 1. Make comments on comments
-1. Vote a post up
+1. Vote a post up or down
 
 # Connection Script
 

@@ -6,11 +6,11 @@ slug: create-a-post
 Follow the technical planning list we made, and make sub tasks for each major feature.
 
 1. **Create a post**
-  1. Make a posts#new route (`/posts/new`) and template (`posts-new.handlebars`)
-  1. Add form to `posts-new` template
-  1. Make `create` posts route and check that form data is sending to new route
-  1. Add `Post` model with mongoose
-  1. Confirm posts are saving to database
+    1. Make a posts#new route (`/posts/new`) and template (`posts-new.handlebars`)
+    1. Add form to `posts-new` template
+    1. Make `create` posts route and check that form data is sending to new route
+    1. Add `Post` model with mongoose
+    1. Confirm posts are saving to database
 1. Show all posts
 1. Show one post
 1. Comment on posts
@@ -18,9 +18,7 @@ Follow the technical planning list we made, and make sub tasks for each major fe
 1. Sign up and Login
 1. Associate posts and comments with their author
 1. Make comments on comments
-1. Vote a post up
-1. Vote a comment up
-1. Sort posts by # of votes
+1. Vote a post up or down
 
 # New Post Form
 

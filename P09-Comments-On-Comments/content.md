@@ -13,8 +13,7 @@ Alright next step!
 1. Sign up and Login
 1. Associate posts and comments with their author
 1. **Make comments on comments**
-  1. ... :D
-1. Vote a post up
+1. Vote a post up or down
 
 # Make a Plan
 
