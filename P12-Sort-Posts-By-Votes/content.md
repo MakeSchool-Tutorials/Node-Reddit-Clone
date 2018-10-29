@@ -80,14 +80,13 @@ We're going to add an AJAX request in a new file `public/js/posts.js` (I know an
 
 ```js
 $(document).ready(function() {
-
-  $('.vote-up').submit(function (e) {
+  $(".vote-up").submit(function(e) {
     e.preventDefault();
 
-    var postId = $(this).data('id');
+    var postId = $(this).data("id");
     $.ajax({
-      type: 'PUT',
-      url: 'posts/' + postId + '/vote-up',
+      type: "PUT",
+      url: "posts/" + postId + "/vote-up",
       success: function(data) {
         console.log("voted up!");
       },
@@ -97,13 +96,13 @@ $(document).ready(function() {
     });
   });
 
-  $('.vote-down').submit(function (e) {
+  $(".vote-down").submit(function(e) {
     e.preventDefault();
 
-    var postId = $(this).data('id');
+    var postId = $(this).data("id");
     $.ajax({
-      type: 'PUT',
-      url: 'posts/' + postId + '/vote-down',
+      type: "PUT",
+      url: "posts/" + postId + "/vote-down",
       success: function(data) {
         console.log("voted down!");
       },
@@ -112,7 +111,6 @@ $(document).ready(function() {
       }
     });
   });
-
 });
 ```
 
@@ -127,23 +125,23 @@ Reminder: we're using PUT because we are editing an existing resource.
 We want to track who voted on what, and we want to know what the total score of votes is. So we can pretend the `Post` model has three new attributes: `upVotes`, `downVotes`, and `voteScore`.
 
 ```js
-app.put('posts/:id/vote-up', function (req, res) {
-  Post.findById(req.params.id).exec(function (err, post) {
-    post.upVotes.push(req.user._id)
-    post.voteScore = post.voteTotal + 1
+app.put("/posts/:id/vote-up", function(req, res) {
+  Post.findById(req.params.id).exec(function(err, post) {
+    post.upVotes.push(req.user._id);
+    post.voteScore = post.voteTotal + 1;
     post.save();
 
     res.status(200);
-  })
-})
+  });
+});
 
-app.put('posts/:id/vote-down', function (req, res) {
-  Post.findById(req.params.id).exec(function (err, post) {
-    post.downVotes.push(req.user._id)
-    post.voteScore = post.voteTotal - 1
+app.put("/posts/:id/vote-down", function(req, res) {
+  Post.findById(req.params.id).exec(function(err, post) {
+    post.downVotes.push(req.user._id);
+    post.voteScore = post.voteTotal - 1;
     post.save();
 
     res.status(200);
-  })
-})
+  });
+});
 ```
