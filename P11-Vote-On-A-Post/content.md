@@ -5,13 +5,13 @@ slug: vote-on-a-post
 
 What's next?
 
-To vote on something, you can usually can vote up and down. "Liking" in Facebook is like voting up, and there is no down. In Reddit however, we can vote things up and down. This is a bit tricky! A few things make it quite tricky.
+To vote on something, you can usually can vote up and down. "Liking" in Facebook is like voting up, and there is no down. In Reddit however, we can vote things up and down. A few things make it quite tricky:
 
-* When you submit a form with HTML the whole page refreshes, but we don't want that.
-* We will only want people to vote once either way
+* When you submit a form with HTML, the whole page refreshes --- but we don't want that.
+* People should only vote once either way.
 * People generally want to be able to change their votes.
 
-Let's start with how to vote up, and then see how we can vote down too.
+Let's start with how to vote up, and then see how we can vote down.
 
 1. Create a post
 1. Show all posts
@@ -31,12 +31,15 @@ Let's start with how to vote up, and then see how we can vote down too.
 
 Let's make a plan by doing what we always do and look very carefully at what the user will be able to see and do with our app.
 
-Users should be able to click on up and down arrows to vote a post up or down. The page should not refresh and there should be some indication that you voted up. Once you've voted up or down once, you can't vote up or down again. Ideally, a user could reverse their vote down by voting up to get back to no votes, and then vote up or vise versa, but let's leave this off to the end.
+* Users should be able to click on up and down arrows to vote a post up or down.
+* The page should not refresh, and there should be some indication that you voted up.
+* Once you've voted up or down once, you can't vote up or down again.
+* Ideally, a user could reverse their vote down by voting up to get back to no votes, and then vote up or vise versa, but let's leave this until the end.
 
-# Submitting a Form Through AJAX
+# Submitting a Form via AJAX
 
-We start by adding a vote up form to our post. But this form, remember, needs to be submitted via AJAX without 
-refreshing the page. 
+Start by adding a vote up form to our post. Remember, this form, needs to be submitted via AJAX without
+refreshing the page!
 
 ```html
 <li class="list-group-item">
