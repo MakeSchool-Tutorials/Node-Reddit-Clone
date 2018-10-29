@@ -11,90 +11,88 @@ Maybe not so fun, but writing tests is a critical skill for a young engineer. At
 
 # Testing Authentication
 
-Testing RESTful routes for a regular resource is pretty straightforward, there might be some querks but pretty much you just GET, POST, PUT, and DELETE data and check that the responses are successful. With authentication, however, testing gets a little more complicated. You have to check that JWTs are creating, that passwords are correct, and then you have to be prepared to test authorization.
+Testing RESTful routes for a regular resource is pretty straightforward. There might be some quirks, but pretty much you just `GET`, `POST`, `PUT`, and `DELETE` data and verify that the responses are successful.
+
+With authentication, however, testing gets a little more complicated. You have to check that JWTs are creating, that passwords are correct, and then you have to be prepared to test authorization.
 
 The biggest challenge is tracking the cookie set by the server when a user logs in. In order to handle this cookie we can use chai's [request agent](https://github.com/chaijs/chai-http#retaining-cookies-with-each-request) functionality to track the cookie in our tests.
 
-First create the file `test/auth.js` and we'll require the libraries we're going to need.
+First, create the file `test/auth.js`. Within, we'll require the libraries we're going to need.
 
 ```js
-var chai = require('chai');
-var chaiHttp = require('chai-http');
-var server = require('../app');
+var chai = require("chai");
+var chaiHttp = require("chai-http");
+var server = require("../app");
 var should = chai.should();
 chai.use(chaiHttp);
 
 var agent = chai.request.agent(server);
 
-var User = require('../models/user');
+var User = require("../models/user");
 
-describe('User', function() {
+describe("User", function() {
+  // TESTS WILL GO HERE.
 });
 ```
 
-Now we can write our first test that tests that you can't login if you haven't signed up. How would you make this test not pass, and then pass?
+We can now write our first test that verifies that you cannot login if you haven't signed up yet. How would you make this test? Can you make it not pass, and then pass?
 
 ```js
-it('should not be able to login if they have not registered', (done) => {
-   agent
-     .post('/login', { email: "wrong@wrong.com", password: "nope" })
-     .end(function (err, res){
-       res.status.should.be.equal(401);
-       done();
-     });
-
- });
+it("should not be able to login if they have not registered", done => {
+  agent.post("/login", { email: "wrong@wrong.com", password: "nope" }).end(function(err, res) {
+    res.status.should.be.equal(401);
+    done();
+  });
+});
 ```
 
 # Testing Sign Up, Logout, and Login
 
-Next test is to sign up. Read the following code very carefully, then add it to your project. Can you make the test red (not pass) and then green (pass)?
+What should we test next? Sign up! Read the following code very carefully, then add it to your project. Can you make the test red (not pass) and then green (pass)?
 
 ```js
 // signup
-it('should be able to signup', (done) => {
+it("should be able to signup", done => {
   User.findOneAndRemove({ username: "testone" }, function() {
     agent
-      .post('/sign-up')
+      .post("/sign-up")
       .send({ username: "testone", password: "password" })
-      .end(function (err, res) {
-        console.log(res.body)
+      .end(function(err, res) {
+        console.log(res.body);
         res.should.have.status(200);
         res.should.have.cookie("nToken");
         done();
       });
   });
-})
-```
-
-Next is a test logout.
-
-```js
-// login
-it('should be able to logout', (done) => {
- agent
-   .get('/logout')
-   .end(function (err, res) {
-     res.should.have.status(200);
-     res.should.not.have.cookie("nToken");
-     done();
-   });
 });
 ```
 
-Finally we test login.
+Next, write a test that verifies that your logout implementation works properly:
 
 ```js
 // login
-it('should be able to login', (done) => {
- agent
-   .post('/login')
-   .send({ email: "username", password: "password" })
-   .end(function (err, res) {
-     res.should.have.status(200);
-     res.should.have.cookie("nToken");
-     done();
-   });
+it("should be able to logout", done => {
+  agent.get("/logout").end(function(err, res) {
+    res.should.have.status(200);
+    res.should.not.have.cookie("nToken");
+    done();
+  });
+});
+```
+
+Finally, we write a test to verify that the login functionality works as expected.
+
+```js
+// login
+it("should be able to login", done => {
+  agent
+    .post("/login")
+    .send({ email: "username", password: "password" })
+    .end(function(err, res) {
+      res.should.have.status(200);
+      res.should.have.cookie("nToken");
+      done();
+    });
 });
 ```
 
@@ -107,11 +105,11 @@ In order for the test agent to be logged in, you have to use a `before` action t
 ```js
 // test/posts.js
 
-before((done) => {
+before(done => {
   agent
-    .post('/login')
+    .post("/login")
     .send({ username: "testone", password: "password" })
-    .end(function (err, res) {
+    .end(function(err, res) {
       done();
     });
 });
@@ -121,7 +119,7 @@ Now the agent has the JWT cookie when it makes other requests like to view the p
 
 This is good we have this now, because when we made it impossible to create posts when a user was not logged in broke the posts#create route test!
 
-**Challenges**
+# Stretch Challenges
 
 1. Can you use this code or something like it to fix the posts#create test?
 1. Can you write another test to test that it is impossible to create a post if a user is not logged in?
