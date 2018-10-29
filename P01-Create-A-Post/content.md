@@ -30,12 +30,11 @@ To create a new instance of a resource, we first have to make a button to make a
 <a href="/posts/new" class="btn btn-primary navbar-btn">New Post</a>
 ```
 
+Next, we have to create the form. Let's follow RESTful routing and make the url match this pattern: `/<<RESOURCE NAME PLURAL>>/new`. In the case of a resource `Post`, the path will be `/posts/new`.
 
-Then we have to make the form. We'll follow RESTful routing and make the url match this pattern: `/<<RESOURCE NAME PLURAL>>/new`. So in the case of a resource `Post`, the path will be `/posts/new`.
+Create this `/posts/new` route and have it render a newly created template named `posts-new.handlebars`.
 
-Create this new route and have it render a new template `posts-new.handlebars`.
-
-Now use the [bootstrap form classes](http://getbootstrap.com/css/#forms) to add a form for an object with a `title`, `url`, and `summary` attributes. Your form should have an action that points to a `create` route => `/posts`.
+Now, use the [bootstrap form classes](http://getbootstrap.com/css/#forms) to add a form for an object with a `title`, `url`, and `summary` attributes. Your form should have an action that points to a `create` route => `/posts`.
 
 **Remember** to put this form in the center 4 columns of a grid.
 
@@ -66,9 +65,11 @@ Now use the [bootstrap form classes](http://getbootstrap.com/css/#forms) to add 
 
 # Submit the Form
 
-Ok so what happens when you submit this form? No POST `/posts` route! Let's make it.
+So what happens when you submit this form?
 
-First make a new folder called `controllers` and in there put the file `posts.js`.
+No POST `/posts` route! Let's make it.
+
+First, make a new folder called `controllers`. Within, create the file `posts.js`.
 
 ```js
 module.exports = (app) => {
@@ -79,131 +80,127 @@ module.exports = (app) => {
 };
 ```
 
-Now require this file in your `server.js` file and pass in the `app` variable as an argument.
+Next, require this file in your `server.js` file, and pass in the `app` variable as an argument.
 
 ```js
   require('./controllers/posts.js')(app);
 ```
 
-Now what happens when you submit the form. Is `req.body` defined? No? that's because you need to add the [body parser](https://www.npmjs.com/package/body-parser) module. Add that and get `req.body` to reflect your form inputs.
+What happens when you submit the form?
 
-# Req.body for middleware
+Is `req.body` defined? No?
+
+That's because you need to add the [body parser](https://www.npmjs.com/package/body-parser) module.
+
+Install the npm module in order to begin the process --- it's time to get `req.body` to reflect and contain the submitted form inputs from your front-end.
+
+# Req.body for Middleware
 
 Research what [body parser](https://www.npmjs.com/package/body-parser) is on the npm website. Essentially this is necessary middleware to communicate with your POST requests.
 
 Add this requirement to the top of your `server.js` file, and pass the body-parser through the `app.use()` module:
 
 ```js
-
 const bodyParser = require('body-parser');
-
-...
 
 // Use Body Parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expressValidator()); // Add after Body parser!
-
 ```
 
 # Connecting to your database
 
-You're going to need to connect to a NOSQL database called [MongoDB](https://docs.mongodb.com/), look through the documention as a reference if you get stuck and plus its just a good habit to get into.
+You're going to need to connect to a NoSQL database called [MongoDB](https://docs.mongodb.com/). Look through the documentation as a reference if you get stuck. It's just a good habit to get into.
 
-Lets start off by creating a new `/data` folder in the top-level structure of your project and create a new Javascript file. Open your terminal and type:
+Let's start off by creating a new `/data` folder in the top-level structure of your project, then create a new JavaScript file.
+
+Open your terminal and type:
 
 ```bash
 
 mkdir data
 cd data
 touch reddit-db.js
-
 ```
-Now we need to make sure that we have mongodb installed by doing a `which` command, you should see a destination to Mongo. We're also going to make sure that our Mongo database is ON:
+
+Now, we need to make sure that we have `mongodb` installed by doing a `which` command. You should see a destination path to the Mongo executable. We're also going to make sure that our Mongo database is running:
 
 ```bash
-
 which mongod
 brew services restart mongodb
-
 ```
 
-Great, now were going to use the `reddit-db.js` file we made earlier to connect to the database. So go ahead and open it, and past this code into it:
+Great! Next, we're going to use the `reddit-db.js` file we made earlier to connect to the database. Open it, and paste the following code inside:
 
 ```js
-
 /* Mongoose Connection */
+const mongoose = require("mongoose");
+assert = require("assert");
 
-const mongoose = require('mongoose');
-assert = require('assert');
-
-const url = 'mongodb://localhost/reddit-db';
+const url = "mongodb://localhost/reddit-db";
 mongoose.Promise = global.Promise;
 mongoose.connect(
   url,
   { useNewUrlParser: true },
   function(err, db) {
     assert.equal(null, err);
-    console.log('Connected successfully to database');
+    console.log("Connected successfully to database");
 
     // db.close(); turn on for testing
   }
 );
-mongoose.connection.on(
-  'error',
-  console.error.bind(console, 'MongoDB connection Error:')
-);
-mongoose.set('debug', true);
+mongoose.connection.on("error", console.error.bind(console, "MongoDB connection Error:"));
+mongoose.set("debug", true);
 
 module.exports = mongoose.connection;
-
 ```
 
 Now all that's left is to tie this into our main `server.js` file, so open that file up again, and paste this in:
 
 ```js
-
 // Set db
 require('./data/reddit-clone-db');
-
 ```
 
 # Saving to the Database
 
-In order to interact with the MongoDB database we're going to use the npm module [`mongoose`](https://www.npmjs.com/package/mongoose). Mongoose is the ODM - the Object Document Mapper. That means that it maps JavaScript objects in our application to documents in the database. The way Mongoose works is through schemas written in code called Models.
+In order to interact with the MongoDB database we're going to use the npm module [`mongoose`](https://www.npmjs.com/package/mongoose). Mongoose is the ODM - the Object Document Mapper. That means that it maps JavaScript objects in our application to documents in the database. Mongoose works through schemas, written in code, called Models.
 
 Create the folder `models` and inside put the `post.js` file. Here's a sample model for our `Post` resource.
 
 ```js
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
-  title:    { type: String, required: true }
-  url:      { type: String, required: true },
-  summary:  { type: String, required: true }
-})
+  title: { type: String, required: true },
+  url: { type: String, required: true },
+  summary: { type: String, required: true }
+});
 
-module.exports = mongoose.model('Post', PostSchema)
+module.exports = mongoose.model("Post", PostSchema);
 ```
 
-Now that we have a model, we can require it at the top of our posts controller (`controllers/posts.js`):
+Now that we have a model, require it at the top of the posts controller:
+
+`controllers/posts.js`:
 
 ```js
-const Post = require('../models/post')
+const Post = require('../models/post');
 ```
 
-And put it to use in our create posts endpoint:
+Put it to use in our "create posts" endpoint:
 
 ```js
-var Post = require('../models/post');
+const Post = require('../models/post');
 
 module.exports = (app) => {
 
   // CREATE
   app.post('/posts', (req, res) => {
     // INSTANTIATE INSTANCE OF POST MODEL
-    var post = new Post(req.body);
+    const post = new Post(req.body);
 
     // SAVE INSTANCE OF POST MODEL TO DB
     post.save((err, post) => {
@@ -217,35 +214,37 @@ module.exports = (app) => {
 
 # Confirming Posts are Saving
 
-So we can save to the database but how can we be sure? There are a couple of ways, we could go into the mongo shell and inspect our database and see that the posts collection has documents in it. Or we can use a program called robomongo to graphically see our database and see what collections and documents we've created.
+So we can save to the database, but how can we be sure? There are a couple of ways! We could go into the `mongo` shell and inspect our database, observing that the `posts` collection is now populated with documents. Alternatively, we can use a program, Robo3d, to graphically inspect our database and observe what collections and documents we've created.
 
-Use either the mongo shell or robomongo to confirm you are creating posts.
+Use either the `mongo` shell or Robo3d to confirm you are successfully creating posts before moving on.
 
-# STRETCH: Adding Created At and Updated At attributes
+# STRETCH: Adding Created At and Updated At Attributes
 
-Create a new model. 
+Create a new model.
 
 ```js
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
-  createdAt:  { type: Date },
-  updatedAt:  { type: Date },
-  title:      { type: String, required: true },
-  url:        { type: String, required: true },
-  summary:    { type: String, required: true }
-})
+  createdAt: { type: Date },
+  updatedAt: { type: Date },
+  title: { type: String, required: true },
+  url: { type: String, required: true },
+  summary: { type: String, required: true }
+});
 
-PostSchema.pre('save', (next) => {
+PostSchema.pre("save", function(next) {
   // SET createdAt AND updatedAt
-  const now = new Date()
-  this.updatedAt = now
-  if (!this.createdAt) {
-    this.createdAt = now
-  }
-  next()
-})
+  const now = new Date();
+  this.updatedAt = now;
 
-module.exports = mongoose.model('Post', PostSchema)
+  if (!this.createdAt) {
+    this.createdAt = now;
+  }
+
+  next();
+});
+
+module.exports = mongoose.model("Post", PostSchema);
 ```

@@ -16,21 +16,19 @@ This tutorial should take much longer than the previous tutorials to complete an
 
 # Tutorial structure
 
-This tutorial will walk you through a pattern of "user-centered" or outside-in development with route tests, meaning you will first develop a simple template for a route, then its actual backend logic. By following this pattern software is built step-wise and organically without leaps or guesses. This avoids large architectural bugs which are the biggest drain on the speed of a dev team.
+This tutorial will walk you through a pattern of "user-centered" or outside-in development with route tests, meaning you will first develop a simple template for a route, then it's actual backend logic. By following this pattern, software is built step-wise and organically without leaps or guesses. This avoids large architectural bugs which are the biggest drain on the speed of a development team.
 
-As you design your interfaces, keep in mind the rules of a good user interface - you can review those here: [goodui.org](http://goodui.org/).
+As you build, keep in mind the rules of a good user interface. Review those here: [goodui.org](http://goodui.org/).
 
 # Getting Started: User Narratives & Wireframes
 
-If you are not familiar with [Reddit](https://www.reddit.com/), navigate there now and explore this internet wonderland. Check out its [history](https://en.wikipedia.org/wiki/Reddit#History) if you like. It was founded by Alexis Ohanian who is now an investor in Make School. Kinda neat!
+If you are not familiar with [Reddit](https://www.reddit.com/), navigate there now and explore this internet wonderland. Check out its [history](https://en.wikipedia.org/wiki/Reddit#History) if you like. It was founded by Alexis Ohanian --- now an investor in Make School. Sweet!
 
-While you're there, draw a wireframe of each page on some scratch paper. The basic layout is two navbars (one for subreddits and one for sorts/filters) and then a two column layout in a proportion of about 10:2, with no side gutters or padding.
+While you're there, draw a wireframe of each page on some scratch paper. The basic layout contains two navbars (one for subreddits, and one for sorts/filters) and  a two column layout in a proportion of about 10:2, with no side gutters or padding.
 
 # Technical Planning
 
-Now its time to get started by making a step-by-step plan.
-
-Here are some of the routes and features we could build
+Now it's time to get started by making a step-by-step plan. Here are some of the routes and features we could build:
 
 * Create a post
 * Show all posts
@@ -47,9 +45,9 @@ Here are some of the routes and features we could build
 * Vote up a comment
 * Sort posts by # of votes
 
-In what order should we fulfill these tasks? Write the order down somewhere that you would do these tasks. When you are done, hover over the solution to see what order these tasks in this tutorial.
+In what order should we fulfill these tasks? What do you think? Write it down step by step somewhere. When you are done, hover over the solution to see what order these tasks are implemented from within this tutorial.
 
-We should work from the most fundamental out to things that are more wants and not needs. It is generally best to not start with authentication because that can cause some initial complexity, so we'll do authentication in the middle. Voting could come sooner or later, I put it at the very end so we'll have a kind of themed Twitter or Facebook wall until there is voting and sorting on votes.
+We should work from the fundamental to the desirable --- the structure of our program comes first, then any nice-to-haves. Generally, it's best to delay the implementation of authentication as that can cause some initial complexity; we'll do authentication in the middle. Voting could come sooner or later; we put it at the very end. Until that point, we'll have a somewhat-themed Twitter or Facebook wall... until there is voting and sorting on votes, that is!
 
 1. Create a post
 1. Show all posts
@@ -66,7 +64,7 @@ We should work from the most fundamental out to things that are more wants and n
 
 # Bootstrapping Express.js
 
-Ok, we've got user narratives, wireframes, and a plan for the first few features we'll do. Time to get started coding! Remember not to "work ahead", instead always do the absolute minimum work to get what you are working on to function and then move to the next.
+Ok --- we've got user narratives, wireframes, and a plan for the first few features to implement. Time to get started coding! Remember not to "work ahead", instead always do the absolute minimum work to get what you are working on to function and then move to the next.
 
 1. Create an npm project (hint: `$ npm init`) - remember to make your main file called `server.js`.
 1. Bootstrap Express.js. You can use Handlebars or Jade as a templating engine if you like. [Express documentation](https://expressjs.com/en/starter/hello-world.html). Now run your server and get "hello world" to appear.
