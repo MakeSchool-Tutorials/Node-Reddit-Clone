@@ -30,7 +30,7 @@ Finally, for testing, we can add an error handler for connection errors. Open `/
 ```js
 mongoose.Promise = global.Promise;
 mongoose.connect(
-  "mongodb://localhost/redditclone",
+  "mongodb://localhost/reddit-db",
   { useMongoClient: true }
 );
 mongoose.connection.on("error", console.error.bind(console, "MongoDB connection Error:"));
