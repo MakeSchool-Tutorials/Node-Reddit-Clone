@@ -92,7 +92,7 @@ Now we can return only posts that have a `subreddit` that matches the one passed
 
 ```js
   // SUBREDDIT
-app.post("/n/:subreddit", function(req, res) {
+app.get("/n/:subreddit", function(req, res) {
   Post.find({ subreddit: req.params.subreddit })
     .then(posts => {
       res.render("posts-index.hbs", { posts });
