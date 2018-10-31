@@ -36,16 +36,16 @@ describe("site", () => {
       .get("/")
       .end((err, res) => {
         if (err) {
-          done(err);
+          return done(err);
         }
         res.status.should.be.equal(200);
-        done(); // Call done if the test completed successfully.
+        return done(); // Call done if the test completed successfully.
       });
   });
 });
 ```
 
-This test tests that the reponses status should be equal to 200 - which if you recall your HTTP status codes, means the response is successful.
+This test tests that the response's status should be equal to 200 - which if you recall your HTTP status codes, means the response is successful.
 
 Now let's run the test. First update your `package.js` file to have a test command:
 
@@ -98,23 +98,26 @@ Post.find(function(err, posts) {
   var postCount = posts.count;
 
   var post = { title: "post title", url: "https://www.google.com", summary: "post summary" };
-  chai
-    .request("localhost:3000")
-    .post("/posts", post)
-    .end(function(err, res) {
-      // Check that the database has one more posts in it
-      Post.find(function(err, posts) {
-        postCount.should.be.equal(posts.length - 1);
-
-        // Check that the response is a successful
-        res.should.have.status(200);
-        done();
-      });
+    chai
+        .request("localhost:3000")
+        .post('/posts')
+        .send(post)
+        .then((res) => {
+          Post.find(function(err, posts) {
+            postCount.should.be.equal(posts.length - 1);
+            res.should.have.status(200);
+            return done();
+          });
+        })
+        .catch((err) => {
+            return done(err);
+        });
     });
 });
 ```
 
 This is a good test, except remember that each time we run our test suite we will be creating this post. We need to make sure we delete this post before we run the test. So let's wrap that in a mongoose model `.remove()` method.
+
 
 
 ```js
@@ -124,15 +127,20 @@ Post.findOneAndRemove(post, function() {
   Post.find(function(err, posts) {
     var postCount = posts.count;
     chai
-      .request("localhost:3000")
-      .post("/posts", post)
-      .end(function(err, res) {
-        Post.find(function(err, posts) {
-          postCount.should.be.equal(posts.length + 1);
-          res.should.have.status(200);
-          done();
+        .request("localhost:3000")
+        .post('/posts')
+        .send(post)
+        .then((res) => {
+          Post.find(function(err, posts) {
+            postCount.should.be.equal(posts.length + 1);
+            res.should.have.status(200);
+            return done();
+          });
+        })
+        .catch((err) => {
+            return done(err);
         });
-      });
+    });
   });
 });
 ```
