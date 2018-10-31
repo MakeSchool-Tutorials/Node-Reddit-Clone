@@ -128,7 +128,7 @@ Post.findOneAndRemove(post, function() {
       .post("/posts", post)
       .end(function(err, res) {
         Post.find(function(err, posts) {
-          postCount.should.be.equal(posts + 1);
+          postCount.should.be.equal(posts - 1);
           res.should.have.status(200);
           done();
         });
