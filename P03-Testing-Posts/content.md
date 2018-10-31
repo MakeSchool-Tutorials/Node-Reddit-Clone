@@ -104,7 +104,7 @@ Post.find(function(err, posts) {
     .end(function(err, res) {
       // Check that the database has one more posts in it
       Post.find(function(err, posts) {
-        postCount.should.be.equal(posts + 1);
+        postCount.should.be.equal(posts.length + 1);
 
         // Check that the response is a successful
         res.should.have.status(200);
@@ -128,7 +128,7 @@ Post.findOneAndRemove(post, function() {
       .post("/posts", post)
       .end(function(err, res) {
         Post.find(function(err, posts) {
-          postCount.should.be.equal(posts - 1);
+          postCount.should.be.equal(posts.length - 1);
           res.should.have.status(200);
           done();
         });
