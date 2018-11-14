@@ -71,12 +71,14 @@ Next let's make a test for the posts#create route we made. We can make a new fil
 
 ```js
 ...
+// Import the Post model from our models folder so we
+// we can use it in our tests.
 const Post = require("../models/post");
 ...
 
 describe("Posts", () => {
   it("should create with valid attributes at POST /posts", done => {
-    // test code
+    // TODO: test code goes here!
   });
 });
 ```
@@ -101,7 +103,7 @@ Post.find(function(err, posts) {
 
   chai
     .request("localhost:3000")
-    .post("/posts")
+    .post("/posts/new")
     .send(post)
     .then(res => {
       Post.find(function(err, posts) {
@@ -128,7 +130,7 @@ Post.findOneAndRemove(post, function() {
     var postCount = posts.count;
     chai
       .request("localhost:3000")
-      .post("/posts")
+      .post("/posts/new")
       .send(post)
       .then(res => {
         Post.find(function(err, posts) {

@@ -158,7 +158,7 @@ Now all that's left is to tie this into our main `server.js` file, so open that 
 
 ```js
 // Set db
-require('./data/reddit-clone-db');
+require('./data/reddit-db');
 ```
 
 # Saving to the Database
