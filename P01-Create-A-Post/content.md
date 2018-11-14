@@ -102,7 +102,9 @@ Essentially, `body-parser` is a necessary middleware to communicate with your `P
 
 `express-validator` is a wrapper around [validator.js](https://github.com/chriso/validator.js) that validates and sanitizes string inputs. In production, your users will try to type in all kinds of nonsense into your forms --- even things your site wasn't intended to deal with! `express-validator` plugs into the Express.js ecosystem and helps keep you and your code safe.
 
-Add the following two requirements to the top of your `server.js` file.
+You should install `express-validator` now: `npm install express-validator` so you can continue implementing the code below.
+
+Next, add the following two requirements to the top of your `server.js` file.
 
 Finally, pass `body-parser` through the `app.use()` module:
 

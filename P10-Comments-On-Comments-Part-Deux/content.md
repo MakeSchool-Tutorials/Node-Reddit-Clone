@@ -204,7 +204,15 @@ app.post("/posts/:postId/comments/:commentId/replies", (req, res) => {
 });
 ```
 
-Finally, we need to update our model so that comments have embedded instances of itself.
+Finally, we need to update our model so that comments have [embedded instances](https://docs.mongodb.com/manual/core/data-model-design/#embedded-data-models) of itself.
+
+Below is one way to accomplish the task!
+
+Others have accomplished the task using `[this]`.
+
+What does that mean? Which do you prefer? Take some notes on your theories.
+
+Whatever implementation plan you decide upon, the code below is a foolproof way to embed the related comment data inside the original `CommentSchema`. Keep this strategy handy in your notes; it'll resurface time and time again in a multitude of projects during your career!
 
 ```js
 const mongoose = require("mongoose");
@@ -212,7 +220,7 @@ const Schema = mongoose.Schema;
 
 const CommentSchema = new Schema({
   content: { type: String, required: true },
-  comments: [CommentSchema]
+  comments: [{type: Schema.Types.ObjectId, ref: "Comment"}]
 });
 
 module.exports = mongoose.model("Comment", CommentSchema);
