@@ -94,17 +94,28 @@ Install the npm module in order to begin the process --- it's time to get `req.b
 
 # Req.body for Middleware
 
-Research what [body parser](https://www.npmjs.com/package/body-parser) is on the npm website. Essentially this is necessary middleware to communicate with your POST requests.
+Research what [body parser](https://www.npmjs.com/package/body-parser) is on the [npm website](https://npmjs.com).
 
-Add this requirement to the top of your `server.js` file, and pass the body-parser through the `app.use()` module:
+While you're at it, also research the role of [express validator](https://www.npmjs.com/package/express-validator). What role does it play alongside the `body-parser` middleware?
+
+Essentially, `body-parser` is a necessary middleware to communicate with your `POST` requests.
+
+`express-validator` is a wrapper around [validator.js](https://github.com/chriso/validator.js) that validates and sanitizes string inputs. In production, your users will try to type in all kinds of nonsense into your forms --- even things your site wasn't intended to deal with! `express-validator` plugs into the Express.js ecosystem and helps keep you and your code safe.
+
+Add the following two requirements to the top of your `server.js` file.
+
+Finally, pass `body-parser` through the `app.use()` module:
 
 ```js
 const bodyParser = require('body-parser');
+const expressValidator = require('express-validator');
 
 // Use Body Parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(expressValidator()); // Add after body parser initialization!
+
+// Add after body parser initialization!
+app.use(expressValidator());
 ```
 
 # Connecting to your database
