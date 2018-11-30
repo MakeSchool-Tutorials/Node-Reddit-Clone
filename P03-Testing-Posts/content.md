@@ -24,7 +24,7 @@ const chai = require("chai");
 const chaiHttp = require("chai-http");
 // you could also require your server.js file there
 // const server = require('../server.js')
-const should = chai.should();
+const should = chai.should(); // give the option to use expect() not just should
 
 chai.use(chaiHttp);
 
@@ -61,9 +61,11 @@ This test tests that the response's status should be equal to 200 - which if you
 
 Now let's run the test. First update your `package.js` file to have a test command:
 
+It is best to use the new ones stated below `"test-watch": "nodemon --exec 'npm test'"` to continuously see if your test are running without worrying to exit out of the server and restarting it.
 ```json
 "scripts": {
-  "test": "mocha"
+  "test": "mocha",
+  "test-watch": "nodemon --exec 'npm test'"
 },
 ```
 
@@ -72,7 +74,7 @@ In order for this test to run the server will have to be running on localhost 30
 Now we can run our tests with:
 
 ```bash
-$ npm run test
+$ npm test
 ```
 
 What was the result? Can you make the test fail?
