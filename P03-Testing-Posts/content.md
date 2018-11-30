@@ -24,7 +24,9 @@ const chai = require("chai");
 const chaiHttp = require("chai-http");
 // you could also require your server.js file there
 // const server = require('../server.js')
-const should = chai.should(); // give the option to use expect() not just should
+const should = chai.should();
+// give the option to use expect() not just should
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -108,27 +110,102 @@ The order of pseudocode we want to see is as follows
 
 So if we write that in:
 
+We should create a prior function to delete a lot of inputs into our database
+
 ```js
-// Import your Post model
-Post.find(function(err, posts) {
-  var postCount = posts.count;
 
-  var post = { title: "post title", url: "https://www.google.com", summary: "post summary" };
+// test/seed/seed.js
+// create a folder named seed then create a file named seed.js within the seed folder
+// seed stands for seed data
+const Post = require('./../../models/post');
 
-  chai
-    .request("localhost:3000")
-    .post("/posts/new")
-    .send(post)
-    .then(res => {
-      Post.find(function(err, posts) {
-        postCount.should.be.equal(posts.length - 1);
-        res.should.have.status(200);
-        return done();
-      });
-    })
-    .catch(err => {
-      return done(err);
+const posts = [{
+  title: 'Test post for Reddit',
+  url: 'https://makeschool.com',
+  summary: 'A brief history...'
+}, {
+  title: 'Not another bad test',
+  url: 'https://github.com/jayceazua/',
+  summary: 'Hopefully you learn something'
+}]; // we will later create a messed up post where we missed required inputs
+
+const populatePosts = (done) => {
+    Post.deleteMany({}).then(() => {
+        let postOne = new Post(reviews[0]).save();
+        let postTwo = new Post(reviews[1]).save();
+        // Promise all method waits for all promises to resolve.
+        return Promise.all([postOne, postTwo])
+    }).then(() => done());
+}
+
+module.exports = {
+    posts,
+    populatePosts
+}
+
+```
+
+```js
+
+...
+const Post = require("../models/post");
+const {posts, populatePosts} = require('./seed/seed.js');
+...
+
+describe("Posts", () => {
+    beforeEach(populatePosts) // populate seed data for posts
+
+    // INDEX
+    it('should index ALL posts on / GET', (done) => {
+        Post.find({}).then((_posts) => {
+            chai.request(server)
+                .get('/')
+                .then((res) => {
+                    // start off with a basic test
+                    expect(res).to.have.status(200);
+                    expect(res).to.have.header('content-type', "text/html; charset=utf-8");
+                    // we test with text instead of body because content-type is "text/html"
+                    expect(res.text).to.have.string(`${_posts[0]._id}`);
+                    expect(res.text).to.have.string(`${_posts[1]._id}`);
+                    expect(res.text).to.have.string(`${_posts[1].movieTitle}`);
+                    expect(res.text).to.have.string(`${_posts[0].movieTitle}`);
+                    expect(res.text).to.have.string(`${_posts[0].title}`);
+                    expect(res.text).to.have.string(`${_posts[1].title}`);
+                    return done()
+                })
+                .catch(err => done(err))
+        }).catch(err => err)
     });
+    // CREATE
+    it('should CREATE a new post on / POST', (done) => {
+        const demoPost = ({
+            title: 'This is a test for the sake of testing!',
+            url: 'https://www.chaijs.com/api/bdd/',
+            summary: 'Do you believe in the power of testing?'
+        });
+        chai.request(server)
+            .post('/posts')
+            .send(demoPost)
+            .then((res) => {
+                expect(res).to.have.status(200); // basic test
+                expect(res).to.be.html; // basic test
+                Post.findOne({ title: demoPost.title }).then((post) => { // complex test
+                    expect(demoPost.title).to.equal(post.title);
+                    // need to find the proper way of testing redirecting
+                    expect(res).to.redirect;
+                    expect(res.redirects[0]).to.include(review._id); // makes sure the redirect url includes the Id
+                    expect(res.req.path).to.not.equal(`${app.mountpath}`); // makes sure it redirected
+                }).catch(e => e);
+                // console.log(res.body)
+                return done();
+            })
+            .catch(e => done(e));
+    });
+
+    // think of other RESTful routes you are able to test
+    // READ
+    // UPDATE
+    // DELETE
 });
 ```
 
@@ -137,26 +214,24 @@ This is a good test, except remember that each time we run our test suite we wil
 
 
 ```js
-var post = { title: "post title", url: "https://www.google.com", summary: "post summary" };
-
-Post.findOneAndRemove(post, function() {
-  Post.find(function(err, posts) {
-    var postCount = posts.count;
-    chai
-      .request("localhost:3000")
-      .post("/posts/new")
-      .send(post)
-      .then(res => {
-        Post.find(function(err, posts) {
-          postCount.should.be.equal(posts.length + 1);
-          res.should.have.status(200);
-          return done();
-        });
-      })
-      .catch(err => {
-        return done(err);
-      });
-  });
+// better delete test...
+it('should delete a SINGLE post on /posts/<id> DELETE', (done) => {
+    Post.find({}).then((data) => {
+        let reviewId = String(data[0]._id)
+        expect(data.length).to.equal(2);
+        chai.request(server)
+            .delete(`/posts/${reviewId}`) // deleting the review from index [0]
+            .then((res) => {
+                expect(res).to.have.status(200)
+                Post.find({}).then((_posts) => {
+                    expect(_posts.length).to.equal(1);
+                    expect(data[0]).to.not.equal(_posts[0]);
+                }).catch(e => e);
+                expect(res).to.redirect;
+                return done();
+            })
+            .catch(e => done(e));
+    }).catch(e => e);
 });
 ```
 
