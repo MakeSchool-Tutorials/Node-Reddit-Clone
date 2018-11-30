@@ -22,25 +22,37 @@ Add a file called `index.js` and let's require our testing libraries and then cr
 ```js
 const chai = require("chai");
 const chaiHttp = require("chai-http");
+// you could also require your server.js file there
+// const server = require('../server.js')
 const should = chai.should();
 
 chai.use(chaiHttp);
 
 describe("site", () => {
   // Describe what you are testing
-  it("Should have home page", done => {
+  it("Should have home page", (done) => { // highly suggested not to use
     // Describe what should happen
     // In this case we test that the home page loads
-    chai
-      .request("localhost:3000")
+    chai.request("localhost:3000")
+      // instead of using the hardcoded route pass the server const in
+      //.request(server)
       .get("/")
-      .end((err, res) => {
-        if (err) {
-          return done(err);
-        }
-        res.status.should.be.equal(200);
-        return done(); // Call done if the test completed successfully.
-      });
+      .then((res) => {
+          // look at the magic of what is in store and what to look for
+          //console.log(res)
+          res.should.be.equal(200); // start off with a simple test
+          return done()
+      })
+      .catch((err) => {
+          return done(err)
+      })
+      // .end((err, res) => { // best to use promises .then().catch()
+      //   if (err) {
+      //     return done(err);
+      //   }
+      //   res.status.should.be.equal(200);
+      //   return done(); // Call done if the test completed successfully.
+      // });
   });
 });
 ```
