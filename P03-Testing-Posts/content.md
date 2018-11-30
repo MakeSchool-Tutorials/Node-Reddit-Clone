@@ -215,6 +215,8 @@ This is a good test, except remember that each time we run our test suite we wil
 
 ```js
 // better delete test...
+...
+// DELETE
 it('should delete a SINGLE post on /posts/<id> DELETE', (done) => {
     Post.find({}).then((data) => {
         let reviewId = String(data[0]._id)
@@ -233,6 +235,7 @@ it('should delete a SINGLE post on /posts/<id> DELETE', (done) => {
             .catch(e => done(e));
     }).catch(e => e);
 });
+...
 ```
 
 Now we have a test for the posts#create route that should be green. Can you make it fail? How about if our `post` object doesn't have a title, url, or summary? Those are all required fields. What do you see if you change that and run the test? Does it fail? How do you know what made it fail?
