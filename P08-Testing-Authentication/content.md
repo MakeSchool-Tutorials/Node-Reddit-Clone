@@ -60,7 +60,7 @@ it("should be able to signup", done => {
       .end(function(err, res) {
         console.log(res.body);
         res.should.have.status(200);
-        res.should.have.cookie("nToken");
+        agent.should.have.cookie("nToken");
         done();
       });
   });
@@ -74,7 +74,7 @@ Next, write a test that verifies that your logout implementation works properly:
 it("should be able to logout", done => {
   agent.get("/logout").end(function(err, res) {
     res.should.have.status(200);
-    res.should.not.have.cookie("nToken");
+    agent.should.not.have.cookie("nToken");
     done();
   });
 });
@@ -90,7 +90,7 @@ it("should be able to login", done => {
     .send({ email: "username", password: "password" })
     .end(function(err, res) {
       res.should.have.status(200);
-      res.should.have.cookie("nToken");
+      agent.should.have.cookie("nToken");
       done();
     });
 });
