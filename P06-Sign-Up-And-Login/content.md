@@ -135,7 +135,7 @@ Read this implementation closely and implement the same into your `User` model.
 
 ```js
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
