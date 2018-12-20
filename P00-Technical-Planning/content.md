@@ -45,18 +45,19 @@ Now it's time to get started by making a step-by-step plan. Here are some of the
 
 In what order should we fulfill these tasks? What do you think? Write it down step by step somewhere. When you are done, hover over the solution to see what order these tasks are implemented from within this tutorial.
 
-We should work from the fundamental to the desirable --- the structure of our program comes first, then any nice-to-haves. Generally, it's best to delay the implementation of authentication as that can cause some initial complexity; we'll do authentication in the middle. Voting could come sooner or later; we put it at the very end. Until that point, we'll have a somewhat-themed Twitter or Facebook wall... until there is voting and sorting on votes, that is!
-
-1. Create a post
-1. Show all posts
-1. Comment on posts
-1. Create subreddits
-1. Create a post on a subreddit
-1. Show all subreddits
-1. Sign up and Login
-1. Associate posts, comments with their author
-1. Make comments on comments
-1. Vote a post up or down
+>[solution]
+> We should work from the fundamental to the desirable --- the structure of our program comes first, then any nice-to-haves. Generally, it's best to delay the implementation of authentication as that can cause some initial complexity; we'll do authentication in the middle. Voting could come sooner or later; we put it at the very end. Until that point, we'll have a somewhat-themed Twitter or Facebook wall... until there is voting and sorting on votes, that is!
+>
+> 1. Create a post
+> 1. Show all posts
+> 1. Comment on posts
+> 1. Create subreddits
+> 1. Create a post on a subreddit
+> 1. Show all subreddits
+> 1. Sign up and Login
+> 1. Associate posts, comments with their author
+> 1. Make comments on comments
+> 1. Vote a post up or down
 
 # Bootstrapping Express.js
 
