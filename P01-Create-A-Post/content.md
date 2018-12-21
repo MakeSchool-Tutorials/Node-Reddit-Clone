@@ -22,20 +22,24 @@ Follow the technical planning list we made, and make sub tasks for each major fe
 
 # New Post Form
 
-To create a new instance of a resource, we first have to make a button to make a new post. Since making a post is a very important **Call To Action (CTA)**, we'll put it in the navbar.
+To create a new instance of a resource, we first have to make a button to make a new post.
 
+> [action]
+>Since making a post is a very important **Call To Action (CTA)**, we'll put it in the navbar.
+>
 ```html
 <a href="/posts/new" class="btn btn-primary navbar-btn">New Post</a>
 ```
 
 Next, we have to create the form. Let's follow RESTful routing and make the url match this pattern: `/<<RESOURCE NAME PLURAL>>/new`. In the case of a resource `Post`, the path will be `/posts/new`.
 
-Create this `/posts/new` route and have it render a newly created template named `posts-new.handlebars`.
-
-Now, use the [bootstrap form classes](https://getbootstrap.com/docs/3.3/css/#forms) to add a form for an object with a `title`, `url`, and `summary` attributes. Your form should have an action that points to a `create` route => `/posts`.
-
-**Remember** to put this form in the center 4 columns of a grid.
-
+> [action]
+> Create this `/posts/new` route and have it render a newly created template named `posts-new.handlebars`.
+>
+> Now, use the [bootstrap form classes](https://getbootstrap.com/docs/3.3/css/#forms) to add a form for an object with a `title`, `url`, and `summary` attributes. Your form should have an action that points to a `create` route => `/posts`.
+>
+> **Remember** to put this form in the center 4 columns of a grid.
+>
 ```html
 <div class="row">
   <div class="col-sm-4 col-sm-offset-4">
@@ -67,8 +71,9 @@ So what happens when you submit this form?
 
 No POST `/posts/new` route! Let's make it.
 
-First, make a new folder called `controllers`. Within, create the file `posts.js`.
-
+> [action]
+> First, make a new folder called `controllers`. Within, create the file `posts.js`.
+>
 ```js
 module.exports = app => {
   // CREATE
@@ -77,9 +82,9 @@ module.exports = app => {
   });
 };
 ```
-
-Next, require this file in your `server.js` file, and pass in the `app` variable as an argument.
-
+>
+> Next, require this file in your `server.js` file, and pass in the `app` variable as an argument.
+>
 ```js
   require('./controllers/posts.js')(app);
 ```
@@ -90,7 +95,14 @@ Is `req.body` defined? No?
 
 That's because you need to add the [body parser](https://www.npmjs.com/package/body-parser) module.
 
-Install the npm module in order to begin the process --- it's time to get `req.body` to reflect and contain the submitted form inputs from your front-end.
+> [action]
+> Install the npm module in order to begin the process:
+>
+```bash
+npm install body-parser --save
+```
+
+It's time to get `req.body` to reflect and contain the submitted form inputs from your front-end.
 
 # Req.body for Middleware
 
@@ -100,12 +112,22 @@ While you're at it, also research the role of [express validator](https://www.np
 
 Essentially, `body-parser` is a necessary middleware to communicate with your `POST` requests.
 
-`express-validator` is a wrapper around [validator.js](https://github.com/chriso/validator.js) that validates and sanitizes string inputs. In production, your users will try to type in all kinds of nonsense into your forms --- even things your site wasn't intended to deal with! `express-validator` plugs into the Express.js ecosystem and helps keep you and your code safe.
+`express-validator` is a wrapper around [validator.js](https://github.com/chriso/validator.js) that validates and sanitizes string inputs.
 
-You should install `express-validator` now: `npm install express-validator --save` so you can continue implementing the code below.
+> [info]
+> In production, your users will try to type in all kinds of nonsense into your forms --- even things your site wasn't intended to deal with! `express-validator` plugs into the Express.js ecosystem and helps keep you and your code safe.
 
-Next, add the following two requirements to the top of your `server.js` file, and pass `body-parser` through the `app.use()` module:
+<!-- -->
 
+> [action]
+> Install `express-validator`:
+>
+```bash
+npm install express-validator --save
+```
+>
+> Next, add the following two requirements to the top of your `server.js` file, and pass `body-parser` through the `app.use()` module:
+>
 ```js
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
@@ -122,10 +144,11 @@ app.use(expressValidator());
 
 You're going to need to connect to a NoSQL database called [MongoDB](https://docs.mongodb.com/). Look through the documentation as a reference if you get stuck. It's just a good habit to get into.
 
-Let's start off by creating a new `/data` folder in the top-level structure of your project, then create a new JavaScript file.
-
+> [action]
+> Let's start off by creating a new `/data` folder in the top-level structure of your project, then create a new JavaScript file.
+>
 Open your terminal and type:
-
+>
 ```bash
 
 mkdir data
@@ -133,26 +156,32 @@ cd data
 touch reddit-db.js
 ```
 
-Now, we need to make sure that we have `mongodb` installed by doing a `which` command. You should see a destination path to the Mongo executable:
+Now, we need to make sure that we have `mongodb` installed by doing a `which` command.
 
+> [action]
+> You should see a destination path to the Mongo executable:
+>
 ```bash
 $ which mongod
 /usr/local/bin/mongod
 ```
-
+>
  We're also going to make sure that our Mongo database is running:
-
+>
 ```bash
 brew services restart mongodb
 ```
 
-Great! Next, we're going to use the `reddit-db.js` file we made earlier to connect to the database. Open it, and paste the following code inside:
+Great! Next, we're going to use the `reddit-db.js` file we made earlier to connect to the database.
 
+> [action]
+> Open `reddit-db.js`, and paste the following code inside:
+>
 ```js
 /* Mongoose Connection */
 const mongoose = require("mongoose");
 assert = require("assert");
-
+>
 const url = "mongodb://localhost/reddit-db";
 mongoose.Promise = global.Promise;
 mongoose.connect(
@@ -161,18 +190,21 @@ mongoose.connect(
   function(err, db) {
     assert.equal(null, err);
     console.log("Connected successfully to database");
-
+>
     // db.close(); turn on for testing
   }
 );
 mongoose.connection.on("error", console.error.bind(console, "MongoDB connection Error:"));
 mongoose.set("debug", true);
-
+>
 module.exports = mongoose.connection;
 ```
 
-Now all that's left is to tie this into our main `server.js` file, so open that file up again, and paste this in:
+Now all that's left is to tie this into our main `server.js` file.
 
+> [action]
+> Open up `server.js`, and paste this in:
+>
 ```js
 // Set db
 require('./data/reddit-db');
@@ -182,48 +214,47 @@ require('./data/reddit-db');
 
 In order to interact with the MongoDB database we're going to use the npm module [`mongoose`](https://www.npmjs.com/package/mongoose). Mongoose is the ODM - the Object Document Mapper. That means that it maps JavaScript objects in our application to documents in the database. Mongoose works through schemas, written in code, called Models.
 
-Create the folder `models` and inside put the `post.js` file. Here's a sample model for our `Post` resource.
-
+> [action]
+> Create the folder `models` and inside put the `post.js` file. Here's a sample model for our `Post` resource.
+>
 ```js
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-
+>
 const PostSchema = new Schema({
   title: { type: String, required: true },
   url: { type: String, required: true },
   summary: { type: String, required: true }
 });
-
+>
 module.exports = mongoose.model("Post", PostSchema);
 ```
-
-Now that we have a model, require it at the top of the posts controller:
-
-`controllers/posts.js`:
-
+>
+Now that we have a model, require it at the top of `controllers/posts.js`:
+>
 ```js
 const Post = require('../models/post');
 ```
-
+>
 Put it to use in our "create posts" endpoint:
-
+>
 ```js
 const Post = require('../models/post');
-
+>
 module.exports = (app) => {
-
+>
   // CREATE
   app.post('/posts/new', (req, res) => {
     // INSTANTIATE INSTANCE OF POST MODEL
     const post = new Post(req.body);
-
+>
     // SAVE INSTANCE OF POST MODEL TO DB
     post.save((err, post) => {
       // REDIRECT TO THE ROOT
       return res.redirect(`/`);
     })
   });
-
+>
 };
 ```
 
