@@ -22,7 +22,7 @@ Follow the technical planning list we made, and make sub tasks for each major fe
 
 # New Post Form
 
-To create a new instance of a resource, we first have to make a button to make a new post. Since making a post is very important **Call To Action (CTA)**, we'll put it in the navbar.
+To create a new instance of a resource, we first have to make a button to make a new post. Since making a post is a very important **Call To Action (CTA)**, we'll put it in the navbar.
 
 ```html
 <a href="/posts/new" class="btn btn-primary navbar-btn">New Post</a>
@@ -32,7 +32,7 @@ Next, we have to create the form. Let's follow RESTful routing and make the url 
 
 Create this `/posts/new` route and have it render a newly created template named `posts-new.handlebars`.
 
-Now, use the [bootstrap form classes](http://getbootstrap.com/css/#forms) to add a form for an object with a `title`, `url`, and `summary` attributes. Your form should have an action that points to a `create` route => `/posts`.
+Now, use the [bootstrap form classes](https://getbootstrap.com/docs/3.3/css/#forms) to add a form for an object with a `title`, `url`, and `summary` attributes. Your form should have an action that points to a `create` route => `/posts`.
 
 **Remember** to put this form in the center 4 columns of a grid.
 
@@ -102,11 +102,9 @@ Essentially, `body-parser` is a necessary middleware to communicate with your `P
 
 `express-validator` is a wrapper around [validator.js](https://github.com/chriso/validator.js) that validates and sanitizes string inputs. In production, your users will try to type in all kinds of nonsense into your forms --- even things your site wasn't intended to deal with! `express-validator` plugs into the Express.js ecosystem and helps keep you and your code safe.
 
-You should install `express-validator` now: `npm install express-validator` so you can continue implementing the code below.
+You should install `express-validator` now: `npm install express-validator --save` so you can continue implementing the code below.
 
-Next, add the following two requirements to the top of your `server.js` file.
-
-Finally, pass `body-parser` through the `app.use()` module:
+Next, add the following two requirements to the top of your `server.js` file, and pass `body-parser` through the `app.use()` module:
 
 ```js
 const bodyParser = require('body-parser');
@@ -135,10 +133,16 @@ cd data
 touch reddit-db.js
 ```
 
-Now, we need to make sure that we have `mongodb` installed by doing a `which` command. You should see a destination path to the Mongo executable. We're also going to make sure that our Mongo database is running:
+Now, we need to make sure that we have `mongodb` installed by doing a `which` command. You should see a destination path to the Mongo executable:
 
 ```bash
-which mongod
+$ which mongod
+/usr/local/bin/mongod
+```
+
+ We're also going to make sure that our Mongo database is running:
+
+```bash
 brew services restart mongodb
 ```
 
