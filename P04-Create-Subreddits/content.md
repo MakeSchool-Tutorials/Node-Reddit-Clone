@@ -29,26 +29,34 @@ It might seem quite complex to create subreddits, but using the flexibility and 
 
 If we were using a SQL database we would have to make a new table called "subreddits" and then we would do a join between posts and their parent subreddit. However, in a schemaless database we can save the name of the subreddit with the post, and search for all posts with a subreddit. Let's look at how we'd implement this simple solution.
 
-First, we work from what the users sees, so we need to add a subreddit field to our posts form.
-
+> [action]
+> First, we work from what the users sees, so we need to add a subreddit field to our posts form in `posts-new`.
+>
 ```html
 <div class="form-group">
   <label for="post-subreddit">Subreddit</label>
   <input name="subreddit" type="text" class="form-control" id="post-subreddit" placeholder="Subreddit">
 </div>
 ```
-
-Next we update our `Post` model to have a `subreddit` attribute. This attribute will just be a `String`.
-
+>
+>Next we update our `Post` model to have a `subreddit` attribute. This attribute will just be a `String`.
+>
 ```js
 subreddit: { type: String, required: true }
 ```
 
+<!-- -->
+
 > [challenge]
 > Make it possible for a post to have multiple subreddits. What would be the changes you would have to make to do that?
 
-Now you should be able to type in a subreddit string and save the post and the post should save with its new subreddit string. Let's see that subreddit by adding it to the display of our posts.
+Now when you make a new post, you should be able to type in a subreddit string and save the post.
 
+The post should save with its new subreddit string, but we won't be able to see it just yet.
+
+> [action]
+> Let's see that subreddit by adding it to the display of our posts in `posts-index`.
+>
 ```html
 <li class="list-group-item">
   <div class="lead">
@@ -63,8 +71,11 @@ Now you should be able to type in a subreddit string and save the post and the p
 
 Now that posts can be categorized, let's make it so we can view all the posts of a single subreddit.
 
-Once again, we start with what the user sees and can do. Let's make each post subreddit into a link that links to see all posts of that subreddit. We'll use the same `/r/<<SUBREDDIT NAME>>` pattern as reddit does, but we'll use an 'n' for "Node-Reddit" or any letter you like.
+Once again, we start with what the user sees and can do. Let's turn each post's subreddit into a link that displays all posts of that subreddit. We'll use the same `/r/<<SUBREDDIT NAME>>` pattern as reddit does, but we'll use an 'n' for "Node-Reddit":
 
+> [action]
+> Tweak your code in `posts-index` to allow for the subreddit to be a link:
+>
 ```html
 <li class="list-group-item">
   <div class="lead">{{this.title}}</div>
@@ -79,8 +90,11 @@ Now if you click this link what happens? No route!
 
 # Resolving the `/n/subreddit` Route
 
-Let's see if we can make this route work. Does the terminal output the subreddit name in the url when you navigate to it?
+Let's see if we can make this route work.
 
+> [action]
+> As a sanity check on our route setting, let's have the terminal output the subreddit name in the url when you navigate to it. Add the following code to your `posts` controller:
+>
 ```js
 // SUBREDDIT
 app.get("/n/:subreddit", function(req, res) {
@@ -88,14 +102,19 @@ app.get("/n/:subreddit", function(req, res) {
 });
 ```
 
-Now we can return only posts that have a `subreddit` that matches the one passed into the url. We can also reuse our `posts-index` template!
+Let's switch out our console log for an actual navigation to our subreddit! We want to ensure that we only return posts that have a `subreddit` that matches the one passed into the url.
 
+We can also reuse our `posts-index` template for displaying our posts in the subreddit!
+
+> [action]
+>Tweak your `app.get("/n/:subreddit"` call to return actual posts:
+>
 ```js
   // SUBREDDIT
 app.get("/n/:subreddit", function(req, res) {
   Post.find({ subreddit: req.params.subreddit })
     .then(posts => {
-      res.render("posts-index.hbs", { posts });
+      res.render("posts-index", { posts });
     })
     .catch(err => {
       console.log(err);
@@ -105,4 +124,4 @@ app.get("/n/:subreddit", function(req, res) {
 
 How does that look? Are you getting just posts with that subreddit?
 
-Boom - subreddits!
+**BOOM** - Subreddits!
