@@ -54,7 +54,7 @@ Now you should be able to type in a subreddit string and save the post and the p
   <div class="lead">
     <a href="/posts/{{this._id}}" class="lead">{{this.title}}</a>
   </div>
-  <a href="{{this.url}}" target="_blank">{{this.url}}<a>
+  <a href="{{this.url}}" target="_blank">{{this.url}}</a>
   <div class="text-right">{{this.subreddit}}</div>
 </li>
 ```

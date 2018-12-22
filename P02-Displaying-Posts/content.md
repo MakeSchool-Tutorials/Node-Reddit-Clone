@@ -102,7 +102,7 @@ Now that we have `{{posts}}`, we can use handlebars' [built in `each` operator](
             {{#each posts}}
                 <li class="list-group-item">
                     <div class="lead">{{this.title}}</div>
-                    <a href="{{this.url}}" target="_blank">{{this.url}}<a>
+                    <a href="{{this.url}}" target="_blank">{{this.url}}</a>
                 </li>
             {{/each}}
         </ul>
