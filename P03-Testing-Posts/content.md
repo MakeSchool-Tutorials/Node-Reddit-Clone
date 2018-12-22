@@ -9,23 +9,24 @@ So now we can create and show posts, but we are never done with code until we've
 
 Mocha.js is a test framework for Node.js, and Chai.js is an assertion library that does the work of determining whether a test passes or fails. `chai-http` makes it easy for us to make test http requests to our server. Let's add them to our project and run our first test.
 
-We're going to add these to our `devDependencies` in our `package.json` file because we don't need the testing libraries in production.
-
+> [action]
+> We're going to add these to our `devDependencies` in our `package.json` file because we don't need the testing libraries in production.
+>
 ```bash
 $ npm install mocha chai chai-http --save-dev
 ```
-
+>
 Now create a folder called `test` in the root of your project.
-
-Add a file called `index.js` and let's require our testing libraries and then create our first hello world style test.
-
+>
+> Add a file to your new `test` folder called `index.js` and let's require our testing libraries and then create our first `hello world` style test.
+>
 ```js
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const should = chai.should();
-
+>
 chai.use(chaiHttp);
-
+>
 describe("site", () => {
   // Describe what you are testing
   it("Should have home page", done => {
@@ -47,18 +48,22 @@ describe("site", () => {
 
 This test tests that the response's status should be equal to 200 - which if you recall your HTTP status codes, means the response is successful.
 
-Now let's run the test. First update your `package.js` file to have a test command:
+Now let's run the test.
 
+> [action]
+>First update your `package.js` file to have a test command:
+>
 ```json
 "scripts": {
   "test": "mocha"
 },
 ```
 
-In order for this test to run the server will have to be running on localhost 3000. To do this you will need to have two terminal windows open. Run your server in one then run the script below in the other.
+In order for this test to run the server will have to be running on `localhost 3000`. To do this you will need to have two terminal windows open. Run your server in one then run the script below in the other.
 
-Now we can run our tests with:
-
+>[action]
+> Now we can run our tests with:
+>
 ```bash
 $ npm run test
 ```
