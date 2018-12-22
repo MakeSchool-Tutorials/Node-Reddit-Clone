@@ -64,7 +64,8 @@ In what order should we fulfill these tasks? What do you think? Write it down st
 Ok --- we've got user narratives, wireframes, and a plan for the first few features to implement. Time to get started coding! Remember not to "work ahead", instead always do the absolute minimum work to get what you are working on to function and then move to the next.
 
 1. Create an npm project (hint: `npm init`) - remember to make your main file called `server.js`.
-1. Bootstrap Express.js. You can use Handlebars or Jade as a templating engine if you like. Run your server, and check to see if "hello world" appears. If you run into trouble, consult the [Express documentation](https://expressjs.com/en/starter/hello-world.html).
+1. Bootstrap Express.js. You can use Handlebars or Jade as a templating engine if you like. **This tutorial will use Handlebars**. Should you use Handlebars, you should make sure that `express-handlebars` is installed.
+1. Run your server, and check to see if "hello world" appears. If you run into trouble, consult the [Express documentation](https://expressjs.com/en/starter/hello-world.html).
 1. Once you have "hello world" and a template engine installed, move on to the next step.
 1. Add Bootstrap to your layout template `<head>` using the CDN. Use the following [starter template](https://getbootstrap.com/docs/4.1/getting-started/introduction/#starter-template) as a guide for your own!
 
