@@ -23,8 +23,11 @@ Alright next step! Its time to allow people to take responsibility for the silly
 
 So now that we are setting the cookie to be logged in, and can see this cookie on the server or client side, how do we customize our views and the **authorization** of a user? There are a few ways to do it. We could use client JavaScript to track the presence of the `nToken` cookie and update the DOM based on that. But let's try to find a server-side solution first because our app is very server-side structured now.
 
-We can always check if `req.cookies.nToken` is present, but shouldn't we also check if it is valid? And don't we really want the user `_id`of the user this token represents? This is a lot of code to include in every route! In order to refactor this code, we can make our own custom middleware and put it in `server.js` so it is used for every route.
+We can always check if `req.cookies.nToken` is present, but shouldn't we also check if it is valid? And don't we really want the `_id` of the user this token represents? This is a lot of code to include in every route! In order to refactor this code, we can make our own custom middleware.
 
+> [action]
+> Put `checkAuth` in `server.js` so it is used for every route:
+>
 ```js
 var checkAuth = (req, res, next) => {
   console.log("Checking authentication");
@@ -35,7 +38,7 @@ var checkAuth = (req, res, next) => {
     var decodedToken = jwt.decode(token, { complete: true }) || {};
     req.user = decodedToken.payload;
   }
-
+>
   next();
 };
 app.use(checkAuth);
@@ -43,12 +46,15 @@ app.use(checkAuth);
 
 Go to any route and see if the `Checking authentication` is logged in the terminal.
 
-Note: this is your own custom middleware like `body-parser` and `cookie-parser`. Middleware is run in the order it is added via `app.use()`. You must add middleware after initializing Express, and the order will matter.
+**Note**: this is your own custom middleware like `body-parser` and `cookie-parser`. Middleware is run in the order it is added via `app.use()`. **You must add middleware after initializing Express, and the order will matter.**
 
 # Updating Templates
 
-Once our `checkAuth` middleware is running on every route, let's use the new `req.user` object we created to create a `currentUser` object. We'll use this `currentUser` object to hid the login and sign up links if a user is logged in.
+Once our `checkAuth` middleware is running on every route, let's use the new `req.user` object we created to create a `currentUser` object. We'll use this `currentUser` object to hide the login and sign up links if a user is logged in.
 
+> [action]
+> Update your `navbar` to include the logic around `currentUser`:
+>
 ```html
 <ul class="nav navbar-nav navbar-right">
   {{#if currentUser}}
@@ -62,13 +68,16 @@ Once our `checkAuth` middleware is running on every route, let's use the new `re
 
 Now in any route we can set `currentUser` equal to `req.user` which will either be `{ _id: <<ID>> }` or `null`.
 
+> [action]
+> Update the `INDEX` method in your `posts` controller to include `currentUser`:
+>
 ```js
 app.get("/", (req, res) => {
   var currentUser = req.user;
-
+>
   Post.find({})
     .then(posts => {
-      res.render("posts-index.hbs", { posts, currentUser });
+      res.render("posts-index", { posts, currentUser });
     })
     .catch(err => {
       console.log(err.message);
@@ -78,26 +87,35 @@ app.get("/", (req, res) => {
 
 Do the login and sign up links appear and disappear depending upon whether a user is logged in?
 
-Now, hide the "New Post" button for those who are logged in.
+Now, hide the "New Post" button for those who are NOT logged in.
 
+> [action]
+> Update your `navbar` again to hide the "New Post" button if a user is not logged in:
+>
 ```html
 {{#if currentUser}}
   <a href="/posts/new" class="btn btn-primary navbar-btn">New Post</a>
 {{/if}}
 ```
 
-Remember, you'll have to add `currentUser` to all of the routes that call `res.render()` so the main templates work. This may seem like some duplication of code, and it is. Can you brainstorm a 100% DRY solution with a friend, without code duplication?
+Remember, you'll have to add `currentUser` to all of the routes that call `res.render()` so the main templates work. This may seem like some duplication of code, and it is.
 
-# Requiring User to Be Logged In to Post
+>[challenge]
+> Can you brainstorm a 100% DRY solution with a friend, without code duplication?
+
+# Requiring the User to Be Logged In to Post
 
 Right now, if you aren't logged in, you could still just navigate to `/posts/new` and create a post. Let's be a bit more secure and prevent someone from creating a post unless they are logged in.
 
+> [action]
+> Update your `CREATE` method in the `posts` controller to the following:
+>
 ```js
 // CREATE
-app.post("/posts", (req, res) => {
+app.post("/posts/new", (req, res) => {
   if (req.user) {
     var post = new Post(req.body);
-
+>
     post.save(function(err, post) {
       return res.redirect(`/`);
     });
@@ -119,43 +137,57 @@ We need to make each post and each comment point back to it's author, as well as
 
 To accomplish this, there are no changes required to the views we've already created. We can go straight to updating model and controller appropriately.
 
-First, let's add an `author` attribute to both the `models/comment.js` and the `models/post.js` files. It's type will be a single `ObjectId`. We'll make it required because only logged in people can create posts.
-
+> [ action]
+> First, let's add an `author` attribute to both the `models/comment.js` and the `models/post.js` files. It's type will be a single `ObjectId`. We'll make it required because only logged in people can create posts.
+>
 ```js
 ...
  author : { type: Schema.Types.ObjectId, ref: "User", required: true }
 ...
 ```
-
+>
 Additionally, add the `posts` attribute to the `User` model. It will be an array of `ObjectId`s.
-
+>
 ```js
   ...
   posts : [{ type: Schema.Types.ObjectId, ref: "Post" }]
   ...
 ```
 
-Now we can update the posts controller to save the current user as the author when we create a post,
+Now we can update the `posts` controller to save the current user as the author when we create a post,
 and we can look up the current user and add the new post to their `posts`.
 
+>[action]
+> Update the `CREATE` method of your `posts` controller to the following. Remember to include the `User` model as a new requirement:
+>
 ```js
-var post = new Post(req.body);
-post.author = req.user._id;
-
-post
-  .save()
-  .then(post => {
-    return User.findById(req.user._id);
-  })
-  .then(user => {
-    user.posts.unshift(post);
-    user.save();
-    // REDIRECT TO THE NEW POST
-    res.redirect("/posts/" + post._id);
-  })
-  .catch(err => {
-    console.log(err.message);
-  });
+const User = require('../models/user');
+module.exports = function (app) {
+...
+// CREATE
+    app.post("/posts/new", (req, res) => {
+        if (req.user) {
+            var post = new Post(req.body);
+            post.author = req.user._id;
+>
+            post
+                .save()
+                .then(post => {
+                    return User.findById(req.user._id);
+                })
+                .then(user => {
+                    user.posts.unshift(post);
+                    user.save();
+                    // REDIRECT TO THE NEW POST
+                    res.redirect("/posts/" + post._id);
+                })
+                .catch(err => {
+                    console.log(err.message);
+                });
+        } else {
+            return res.status(401); // UNAUTHORIZED
+        }
+    });
 ```
 
 Test that both the `author` and the `posts` are being saved by looking in your database or logging to the console.
@@ -166,9 +198,134 @@ Now, can you do this same pattern for the comments controller when someone creat
 
 Next, populate the author in posts and display their username on every post wherever it appears.
 
-# Now For Comments
+Let's start by just getting the `author` field to appear on the posts you see on the home page.
 
-Using the previous instructions for associating users and posts, can you make it so users and comments are equally associated?
+> [action]
+> Add the `author` below the `url` in `posts-index`:
+>
+```html
+<div><small>{{this.author}}</small></div>
+```
+
+If you refresh right now, you'll just see an `ObjectId` for the `author`. We need to `populate` the field!
+
+> `populate` the `author` field from the `INDEX` method in the `posts` controller:
+>
+```js
+// INDEX
+    app.get('/', (req, res) => {
+        var currentUser = req.user;
+        // res.render('home', {});
+        console.log(req.cookies);
+        Post.find().populate('author')
+        .then(posts => {
+            res.render('posts-index', { posts, currentUser });
+            // res.render('home', {});
+        }).catch(err => {
+            console.log(err.message);
+        })
+    })
+```
+
+Now you should be seeing a `User` object! We're almost there, just update your `posts-index` to pull from the `username` field within `author`
+> [action]
+> Update the `author` div in `posts-index`:
+>
+```html
+<div><small>{{this.author.username}}</small></div>
+```
+
+Now we have authors properly displayed on the home page! We still need to get authors to display when looking at a single post, and when looking at a specific subreddit.
+
+Let's work on the single post first, this should be very similar to what we just did for the home page.
+
+>[action]
+> Update `posts-show` to include the `author`:
+>
+```html
+<p>{{post.author.username}}</p>
+```
+>
+> Update `SHOW` in the `posts` controller to `populate` the author:
+>
+```js
+app.get("/posts/:id", function (req, res) {
+        var currentUser = req.user;
+        // LOOK UP THE POST
+>
+        Post.findById(req.params.id).populate('comments').populate('author')
+            .then(post => {
+                res.render("posts-show", { post, currentUser });  
+            })
+            .catch(err => {
+                console.log(err.message);
+            });
+    });
+```
+
+Note we did a _double call_ to `populate` in order to get both fields!
+
+Finally, let's get `author` showing for posts on a subreddit.
+
+>[action]
+> Update the `SUBREDDIT` method in `posts` controller to display the `author` on posts:
+>
+```js
+// SUBREDDIT
+app.get("/n/:subreddit", function (req, res) {
+    var currentUser = req.user;
+    Post.find({ subreddit: req.params.subreddit }).populate('author')
+        .then(posts => {
+            res.render("posts-index", { posts, currentUser });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+```
+
+# Now for Comments
+
+Using the previous instructions for associating users and posts, can you make it so users and comments are equally associated? Remember to update the corresponding `view` and `controller` files!
+
+**Hint:** You should review the documentation for [Mongoose's populate](https://mongoosejs.com/docs/populate.html) method. Also look in to how you would nest `populate` calls.
+
+> [solution]
+> Update `posts-comments` to include `author`:
+>
+```html
+{{#each post.comments}}
+    <p>{{this.content}}</p>
+    <p class="text-right">{{this.author.username}}</p>
+{{/each}}
+```
+>
+> Update `comments` controller to include the `author`
+>
+```js
+...
+const comment = new Comment(req.body);
+comment.author = req.user._id;
+...
+```
+>
+> Update the `SHOW` method in the `posts` controller to `populate` the `author` of the `comments`:
+>
+```js
+// SHOW
+app.get("/posts/:id", function (req, res) {
+   var currentUser = req.user;
+   // LOOK UP THE POST
+>
+   Post.findById(req.params.id).populate({path:'comments', populate: {path: 'author'}}).populate('author')
+       .then(post => {
+           res.render("posts-show", { post, currentUser });  
+       })
+       .catch(err => {
+           console.log(err.message);
+       });
+});
+```
 
 # Stretch Challenges
 
