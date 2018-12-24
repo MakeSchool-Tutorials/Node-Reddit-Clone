@@ -50,17 +50,23 @@ module.exports = (app) => {
 }
 ```
 
+Remember to add this new controller as a `require` within `sever.js`:
+
+```js
+require('./controllers/auth.js')(app);
+```
+
 Now we can create our sign up form with `username` and `password` fields.
 
 # Make the POST Route to `/sign-up`
 
-Use the template code you used to create a post but alter it to fit a username/password form. Don't forget:
+Use the template code you used to create a post but alter it to fit a username/password form. This should be a new files in your `views` folder called `sign-up` Don't forget:
 
 1. Set the password input field type to `password`
 1. Set the action of the form to `/sign-up`
 1. Put the form in the middle third of the grid.
 
-Define a User model. Add a new file called `user.js` in your `models` folder.
+Define a `User` model. Add a new file called `user.js` in your `models` folder.
 
 ```js
 const mongoose = require("mongoose");
@@ -115,36 +121,46 @@ Now we have a user model, but if we save our password it will be saved in our da
 
 # Encrypting the Password
 
-The special issue we have with users is we can't know the users' password, we have to encrypt it. To do that we'll use a project called `bcrypt` that gives us some easy methods to encrypt passwords and save a secure "password digest" instead of the actual password.
+The special issue we have with users is that we can't know their password, so we have to encrypt it. To do that we'll use a project called `bcrypt` that gives us some easy methods to encrypt passwords and save a secure **hashed password** instead of the actual password.
 
-All this `bcrypt` logic will live in the user model. What we'll do is:
+>[info]
+> You can think of **hashing** as a function whose input is text (or anything) and whose output is a hashed string: a new, very large string that isn't even remotely similar to the input string.
+>
+This function can also take in the hashed string as an input and provide the original, pre-hashed string as an output. The idea being that only this function can convert between the two, and that unless you have the secret sauce in that specific instance of that function, you won't be able to crack the hashed string.
 
-1. Install `bcryptjs` to our project and require it in our model.
-1. Add a method to our user model that detects if the `password` attribute is being modified, and if it is salt and has the password to produce a password digest that we'll save into the database.
-1. Lastly, make a model method called `comparePassword()` that takes in an attempted password and returns true or false if the attempt matches what is in the database.
+All this `bcrypt` logic will live in the `user` model. What we'll do is:
+
+> [action]
+>
+> 1. Install `bcryptjs` to our project and require it in our model.
+> 1. Add a method to our user model that detects if the `password` attribute is being modified, and if it is, salt and hash the password to produce a hashed password that we'll save into the database.
+> 1. Lastly, make a model method called `comparePassword()` that takes in an attempted password and returns true or false if the attempt matches what is in the database.
 
 You'll need to 'salt' the password. Read about 'salting' [here](https://en.wikipedia.org/wiki/Salt_(cryptography)). While you can include a your secret 'salt' value in an environment variable that is accessible throughout node. We can use `dotenv` library to help.
 
+> [action]
+>
 1. Install `dotenv`.
 1. Create a file in the root of your project named `.env` and define a variable with the following key-value syntax. Define `SECRET` as the key, and `somehashvalue` as the value: `SECRET=somehashvalue`. `somehashvalue` can be **any** random set of characters.
 1. Last, `require('dotenv').config();` as early as possible in your project. Adding it at the top of `server.js` is probably a good idea.
 
 Read more about `dotenv` [here](https://www.npmjs.com/package/dotenv).
 
-Read this implementation closely and implement the same into your `User` model.
-
+> [action]
+> Read this implementation closely and implement the same into your `User` model.
+>
 ```js
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
-
+>
 const UserSchema = new Schema({
   createdAt: { type: Date },
   updatedAt: { type: Date },
   password: { type: String, select: false },
   username: { type: String, required: true }
 });
-
+>
 // Must use function here! ES6 => functions do not bind this!
 UserSchema.pre("save", function(next) {
   // SET createdAt AND updatedAt
@@ -153,7 +169,7 @@ UserSchema.pre("save", function(next) {
   if (!this.createdAt) {
     this.createdAt = now;
   }
-
+>
   // ENCRYPT PASSWORD
   const user = this;
   if (!user.isModified("password")) {
@@ -166,14 +182,14 @@ UserSchema.pre("save", function(next) {
     });
   });
 });
-
+>
 // Need to use function to enable this.password to work.
 UserSchema.methods.comparePassword = function(password, done) {
   bcrypt.compare(password, this.password, (err, isMatch) => {
     done(err, isMatch);
   });
 };
-
+>
 module.exports = mongoose.model("User", UserSchema);
 ```
 
@@ -183,7 +199,7 @@ Now let's sign up and check if our password was encrypted. We'll be able to see 
 
 Besides just creating a user document when the user signs up, we also want to log that user in to our application. What does it mean to be logged in? To be authenticated?
 
-In our case, being logged in will mean that there is an authentic JWT token - a JSON Web Token - set as a cookie. This token is another piece of neat encryption that uniquely identifies a specific user.We'll use a one library called `jsonwebtoken` to generate this token, and then we'll use `cookie-parser` to set this token as a cookie.
+In our case, being logged in will mean that there is an authentic **JWT token - a JSON Web Token - set as a cookie**. This token is another piece of neat encryption that _uniquely identifies a specific user_. We'll use a library called `jsonwebtoken` to generate this token, and then we'll use `cookie-parser` to set this token as a cookie.
 
 ```bash
 npm install cookie-parser jsonwebtoken -s
@@ -193,8 +209,11 @@ npm install cookie-parser jsonwebtoken -s
 
 Use middleware to to authenticate tokens and attach them to `req` object passed to routes.
 
-First, we generate **JSON Web Tokens (JWTs)** --- consequently, we need to require the `jsonwebtoken` module we just installed at the top of `auth-controller.js`. We will use it to generate a JWT _after_ the new user document is saved.
+First, we generate **JSON Web Tokens (JWTs)** --- consequently, we need to require the `jsonwebtoken` module we just installed at the top of the `auth.js` controller. We will use it to generate a JWT _after_ the new user document is saved.
 
+> [action]
+> Update top of `auth.js` with the require, and then edit the `SIGN UP POST` method as shown below:
+>
 ```js
 const jwt = require('jsonwebtoken');
 ...
@@ -202,7 +221,7 @@ const jwt = require('jsonwebtoken');
 app.post("/sign-up", (req, res) => {
   // Create User and JWT
   const user = new User(req.body);
-
+>
   user
     .save()
     .then(user => {
@@ -217,12 +236,17 @@ app.post("/sign-up", (req, res) => {
 ...
 ```
 
-Next we need to set the JWT as a cookie so that it will be included in all future requests from the current user's client. First we include cookieParser in the project in the `server.js` file so cookie methods can be used anywhere in the app.
+Next we need to set the JWT as a cookie so that it will be included in all future requests from the current user's client.
 
-`$ npm install --save cookie-parser`
-
-Next import cookie parser in `server.js` and add it as middelware.
-
+> [action]
+> First we install `cookieParser` in the project:
+>
+```bash
+$ npm install --save cookie-parser
+```
+>
+> Next we include `cookieParser` and `jsonWebToken` in the project by requiring them in the `server.js` file so that their methods can be used anywhere in the app.
+>
 ```js
 ...
 var cookieParser = require('cookie-parser');
@@ -234,7 +258,10 @@ app.use(cookieParser()); // Add this after you initialize express.
 ...
 ```
 
-Next we'll set the cookie. (We'll want our JWT cookie variable's name to bit unique so it doesn't get confusing with other sites, so we'll use the variable `nToken`.) We want to set the cookie when someone signs up and logsin. In `auth-controller.js` update the post /sign-up route.
+Next we'll set the cookie. (We'll want our JWT cookie variable's name to bit unique so it doesn't get confusing with other sites, so we'll use the variable `nToken`.)
+
+>[action]
+> We want to set the cookie when someone signs up and logs in. In the `auth.js` controller, update the `post /sign-up` route:
 
 ```js
 ...
@@ -245,18 +272,18 @@ Next we'll set the cookie. (We'll want our JWT cookie variable's name to bit uni
 ...
 ```
 
-Now lets see if the cookie is set by examining the cookies in another request, say just to the root route `/`.
+Now lets see if the cookie is set by examining the cookies in the client.
 
-```js
-  console.log(req.cookies);
-```
-
-You can also see this cookie in the client under Developer Tools > Application tab > Cookies, or by typing in `document.cookies` in the client console.
+>[action]
+> Go through the Sign Up flow on Reddit.js. Then open the Developer Tools, and view the cookies under Developer Tools > Application tab > Cookies, or by typing in `document.cookies` in the client console. Do you see the cookie?
 
 # Let's Logout
 
 Now that we have signed up, let's log out. Since "being logged in" just means that the cookie is set, we can create a new `/logout` route that just removes this cookie.
 
+> [action]
+> Update your `navbar` to include a Logout item:
+>
 ```html
 <ul class="nav navbar-nav navbar-right">
   <li><a href="/logout">Logout</a></li>
@@ -265,9 +292,16 @@ Now that we have signed up, let's log out. Since "being logged in" just means th
 </ul>
 ```
 
+<!-- -->
+
 > [info]
 > It might be more accurate to use the DELETE method, because we are sort of deleting something, but we will just use the get method to simplify our requests at this point.
 
+<!-- -->
+
+> [action]
+> Update the `auth.js` controller to include a logout method:
+>
 ```js
   // LOGOUT
   app.get('/logout', (req, res) => {
@@ -282,19 +316,20 @@ After you click the "Logout" link is the cookie still present in the server in `
 
 Now that we've signed up, logged out, now let's login. We can use the same pattern as we did with the `/sign-up` routes, with one GET and one POST both with the path `/login`.
 
-First let's build the GET route and template. You can copy and modify the sign up template to create login template.
-
+> [action]
+> First let's build the GET route and template. You can copy and modify the sign up template to create login template.
+>
 ```js
   // LOGIN FORM
   app.get('/login', (req, res) => {
-    res.render('login.hbs');
+    res.render('login');
   });
 ```
-
-Use the `sign-up` template code to make a login form.
-
-Now let's make the logic for the POST route to `/login` work.
-
+>
+> Use the `sign-up` template code to make a new `login` view. It should be a very similar form to what you used for `sign-up`. Be sure to change the `action` field on the form!
+>
+> Now let's make the logic for the POST route to `/login` work.
+>
 ```js
 // LOGIN
 app.post("/login", (req, res) => {
