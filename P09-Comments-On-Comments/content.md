@@ -17,7 +17,7 @@ Alright next step!
 
 # Make a Plan
 
-A software developer follows instructions, but a software developer _also_ writes their own instructions!
+A software engineer follows instructions, but a software engineer _also_ writes their own instructions!
 
 **You are writing the instructions for this step of the tutorial; I'm not going to tell you the step by step.** Instead, you have to make one up yourself! I'm going to write some descriptive text in English about how this feature works, and you will need to translate that into code.
 
@@ -27,7 +27,7 @@ One of the best features in Reddit is the ability for users to comment on commen
 
 Currently comments are a reference document on a post. Any comment is a child document of a parent post document. They are connected because a post has a `comments` attribute that is an array. We store the child comments' `_id`'s in this array and then look them up with the `.populate()` mongoose method.
 
-```json
+```js
 {
   _id: "ji2roi3ji23j2j3",
   user: "fu0fa90faa99a0a",
@@ -43,7 +43,7 @@ So what if we tried this same strategy for comments on comments? What would be t
 
 Another strategy we could try is using a "[Embedded Document](http://mongoosejs.com/docs/2.7.x/docs/embedded-documents.html)" instead. Embedded documents are actually written into the parent document and are returned every time anyone fetches the parent document.
 
-```json
+```js
 {
   _id: "ji2roi3ji23j2j3",
   user: "fu0fa90faa99a0a",
@@ -81,7 +81,7 @@ There is always more than one way to skin a cat.
 
 What if we made comments (the first comments on posts) reference documents, but then we embedded all "replies" (comments on comments) inside the top-level comments?
 
-```json
+```js
 /*POST*/
 {
   _id: "ji2roi3ji23j2j3",
