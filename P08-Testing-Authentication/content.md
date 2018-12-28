@@ -13,30 +13,45 @@ Maybe not so fun, but writing tests is a critical skill for a young engineer. At
 
 Testing RESTful routes for a regular resource is pretty straightforward. There might be some quirks, but pretty much you just `GET`, `POST`, `PUT`, and `DELETE` data and verify that the responses are successful.
 
-With authentication, however, testing gets a little more complicated. You have to check that JWTs are creating, that passwords are correct, and then you have to be prepared to test authorization.
+With authentication, however, testing gets a little more complicated. You have to check that `JWTs` are creating, that passwords are correct, and then you have to be prepared to test authorization.
 
-The biggest challenge is tracking the cookie set by the server when a user logs in. In order to handle this cookie we can use chai's [request agent](https://github.com/chaijs/chai-http#retaining-cookies-with-each-request) functionality to track the cookie in our tests.
+The biggest challenge is tracking the `cookie` set by the server when a user logs in. In order to handle this `cookie` we can use `chai`'s [request agent](https://github.com/chaijs/chai-http#retaining-cookies-with-each-request) functionality to track the cookie in our tests.
 
-First, create the file `test/auth.js`. Within, we'll require the libraries we're going to need.
+Before we can run **any** of our `auth` test, we're going to need to add a line to `server.js` that exports our `app` variable that `mocha` needs in order to successfully run our `auth` tests.
 
+> [action]
+> Add this line to the bottom of `server.js`:
+>
+```js
+module.exports = app;
+```
+
+Now our `auth` tests can be run!
+
+> [action]
+> Create the file `test/auth.js`. Within, we'll require the libraries we're going to need.
+>
 ```js
 var chai = require("chai");
 var chaiHttp = require("chai-http");
-var server = require("../app");
+var server = require("../server");
 var should = chai.should();
 chai.use(chaiHttp);
-
+>
 var agent = chai.request.agent(server);
-
+>
 var User = require("../models/user");
-
+>
 describe("User", function() {
   // TESTS WILL GO HERE.
 });
 ```
 
-We can now write our first test that verifies that you cannot login if you haven't signed up yet. How would you make this test? Can you make it not pass, and then pass?
+We can now write our first test that verifies that you cannot login if you haven't signed up yet.
 
+> [action]
+> Add this test within your `User` block:
+>
 ```js
 it("should not be able to login if they have not registered", done => {
   agent.post("/login", { email: "wrong@wrong.com", password: "nope" }).end(function(err, res) {
@@ -46,10 +61,15 @@ it("should not be able to login if they have not registered", done => {
 });
 ```
 
+Can you make it not pass, and then pass?
+
 # Testing Sign Up, Logout, and Login
 
 What should we test next? Sign up! Read the following code very carefully, then add it to your project. Can you make the test red (not pass) and then green (pass)?
 
+> [action]
+> Add this `signup` test to `test/auth.js`:
+>
 ```js
 // signup
 it("should be able to signup", done => {
@@ -69,8 +89,11 @@ it("should be able to signup", done => {
 
 Next, write a test that verifies that your logout implementation works properly:
 
+> [action]
+> Add this `logout` test to `test/auth.js`:
+>
 ```js
-// login
+// logout
 it("should be able to logout", done => {
   agent.get("/logout").end(function(err, res) {
     res.should.have.status(200);
@@ -82,12 +105,15 @@ it("should be able to logout", done => {
 
 Finally, we write a test to verify that the login functionality works as expected.
 
+> [action]
+> Add this `login` test to `test/auth.js`:
+>
 ```js
 // login
 it("should be able to login", done => {
   agent
     .post("/login")
-    .send({ email: "username", password: "password" })
+    .send({ username: "testone", password: "password" })
     .end(function(err, res) {
       res.should.have.status(200);
       agent.should.have.cookie("nToken");
