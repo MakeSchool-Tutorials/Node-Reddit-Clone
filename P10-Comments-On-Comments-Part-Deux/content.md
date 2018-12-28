@@ -21,9 +21,9 @@ So last lesson we were thinking through how to put comments inside other comment
 
 # Embedding Comments in Posts
 
-In your conversations about how to put comments on comments, did you arrive at the following solution? You can make all comments embedded into posts, and all comments on comments embedded _into those comments_.
+In your conversations about how to put comments on comments, did you arrive at the following solution? **You can make all comments embedded into posts, and all comments on comments embedded _into those comments_.**
 
-```json
+```js
 {
   _id: "ji2roi3ji23j2j3",
   user: "fu0fa90faa99a0a",
@@ -47,7 +47,7 @@ In your conversations about how to put comments on comments, did you arrive at t
 }
 ```
 
-The reasons for using embedded documents is the reference document strategy would not work to create a tree of comments --- you cannot use the `.populate()` method to populate more than one or two layers down the hierarchy. We want all the comments of comments. As long as we track each embedded comment with its own unique `_id`, we'll be easily able to edit and vote on comments. Perhaps we'll even be able to sort them by number of votes --- we'll see.
+The reasons for using embedded documents is because the reference document strategy would not work to create a tree of comments –– you cannot use the `.populate()` method to populate more than one or two layers down the hierarchy. We want all the comments of comments. As long as we track each embedded comment with its own unique `_id`, we'll be easily able to edit and vote on comments. Perhaps we'll even be able to sort them by number of votes –– we'll see.
 
 The first thing we have to do is swap comments from being reference documents to being an embedded document.
 
@@ -55,8 +55,11 @@ The first thing we have to do is swap comments from being reference documents to
 
 We always think about what the user will see first, and change that. In this case, what the user sees won't change at all! Our first step is to change our controller logic, and then propagate the change to our models.
 
-The [mongoose docs](http://mongoosejs.com/docs/2.7.x/docs/embedded-documents.html) on the topic describe that with embedded documents, we are really just updating the parent document, then saving that. Consequently, let's update our comments#create route to look like this:
+The [mongoose docs](http://mongoosejs.com/docs/2.7.x/docs/embedded-documents.html) on the topic describe that with embedded documents, we are really just updating the parent document, then saving that.
 
+>[action]
+> Let's update our `comments` controller's `create` route to look like this:
+>
 ```js
 // CREATE
 app.post("/posts/:postId/comments", function(req, res) {
@@ -66,8 +69,8 @@ app.post("/posts/:postId/comments", function(req, res) {
     post.comments.unshift(req.body);
     // SAVE THE PARENT
     post.save();
-
-    // REDIRECT BACK TO THE PARENT POST#SHOW PAGE TO SEE OUR NEW COMMENT IS CREATE
+>
+    // REDIRECT BACK TO THE PARENT POST#SHOW PAGE TO SEE OUR NEW COMMENT
     return res.redirect(`/posts/` + post._id);
   });
 });
@@ -75,7 +78,7 @@ app.post("/posts/:postId/comments", function(req, res) {
 
 Now, we need the model to expect this embedded doc.
 
-Mongoose allows us to represent embedded documents by embedding the schema object into the parent object's schema. For example:
+`Mongoose` allows us to represent embedded documents by embedding the schema object into the parent object's schema. For example, see how the `Comments` schema is embedded into the `BlogPost` schema below:
 
 ```js
 var Comments = new Schema({
@@ -99,19 +102,25 @@ var BlogPost = new Schema({
 mongoose.model("BlogPost", BlogPost);
 ```
 
-For our purposes, we need to get that `CommentsSchema` into our `Post` model. We can either require the `Comment` model into our `post.js` field. Alternatively, we can simply move the code right into `models/post.js`. The following is an example of the former:
+For our purposes, we need to get our `Comments Schema` into our `Post` model. We can either require the `Comment` model in our `post.js` field, or we can simply move the code right into `models/post.js`. The following is an example of the former:
 
+>[action]
+> Update your `Post` model to the following:
+>
 ```js
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Comment = require("models/comment");
-
+const Comment = require("../models/comment");
+>
 var PostSchema = new Schema({
   title: { type: String, required: true },
   url: { type: String, required: true },
   summary: { type: String, required: true },
   comments: [Comment.schema]
+  author : { type: Schema.Types.ObjectId, ref: "User", required: true }
 });
+>
+module.exports = mongoose.model("Post", PostSchema);
 ```
 
 The model is now set up to be embedded. Test the site and make sure you can create comments. Do you still need to use the method `.populate()` to see the comments of a post? Better remove that!
