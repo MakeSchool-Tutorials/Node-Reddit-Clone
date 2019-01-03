@@ -100,13 +100,13 @@ The order of pseudocode we want to see is as follows
 So if we write that in:
 
 ```js
-// Import your Post model
-Post.find(function(err, posts) {
-  var postCount = posts.count;
+it("should create with valid attributes at POST /posts", (done) => {
+  Post.find(function(err, posts) {
+    var postCount = posts.count;
 
-  var post = { title: "post title", url: "https://www.google.com", summary: "post summary" };
+    var post = { title: "post title", url: "https://www.google.com", summary: "post summary" };
 
-  chai
+    chai
     .request("localhost:3000")
     .post("/posts/new")
     .send(post)
@@ -120,6 +120,7 @@ Post.find(function(err, posts) {
     .catch(err => {
       return done(err);
     });
+  });
 });
 ```
 
