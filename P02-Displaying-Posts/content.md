@@ -34,7 +34,7 @@ Finally, for testing, we can add an error handler for connection errors.
 mongoose.Promise = global.Promise;
 mongoose.connect(
   "mongodb://localhost/reddit-db",
-  { useMongoClient: true }
+  { useNewUrlParser: true }
 );
 mongoose.connection.on("error", console.error.bind(console, "MongoDB connection Error:"));
 ```
