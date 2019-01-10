@@ -20,6 +20,10 @@ This tutorial will walk you through a pattern of "user-centered" or outside-in d
 
 As you build, keep in mind the rules of a good user interface. Review those here: [goodui.org](http://goodui.org/).
 
+# Using Git/GitHub
+
+As you go through this tutorial, you will also be making commits after completing milestones. **This is a requirement, you must make a commit whenever the tutorial prompts you**. This not only further enforces best practices for software engineering, but also will help you more easily figure out where a bug originated from if you break your progress up into discrete, trackable chunks.
+
 # Getting Started: User Narratives & Wireframes
 
 If you are not familiar with [Reddit](https://www.reddit.com/), navigate there now and explore this internet wonderland. Check out its [history](https://en.wikipedia.org/wiki/Reddit#History) if you like. It was founded by Alexis Ohanian --- now an investor in Make School. Sweet!
@@ -92,4 +96,19 @@ Ok --- we've got user narratives, wireframes, and a plan for the first few featu
 ```
 
 1. Now add the [navbar component](https://getbootstrap.com/docs/4.1/components/navbar/) to your layout template.
-1. Onwards!
+1. Now that you have a basic initialized project, let's commit to GitHub.
+
+```bash
+git init
+git add .
+git commit -m 'hello world project init'
+```
+
+Now go to GitHub and create a public repository called `Node-Reddit-Clone`, and now associate it as a remote for your local git project and then push to it.
+
+```bash
+git remote add origin GITHUB-REPO-URL
+git push origin master -u
+```
+
+Onwards!

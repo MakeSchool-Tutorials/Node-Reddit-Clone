@@ -64,7 +64,9 @@ Post.find({})
 
 Try running this and see if your `posts-index` is being displayed. If so, replace your `hello world` with the variable `{{posts}}`. What do you see?
 
-Mmmm....gross! Let's fix this up and display these `posts` properly.
+![Mmmm....gross!](https://media1.tenor.com/images/d7420437d451a30e34ffd952c3e5fcdf/tenor.gif?itemid=10121029)
+
+Now, back to those `posts`! Let's fix them up and display the them properly.
 
 # Styling and Looping Over Posts
 
