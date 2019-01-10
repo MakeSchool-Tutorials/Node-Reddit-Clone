@@ -196,6 +196,14 @@ app.put("/posts/:id/vote-down", function(req, res) {
 
 Create a new post and see if you can vote up or down on your new post. Check the console logs to make sure the votes are being tracked appropriately.
 
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Users can now vote on posts'
+git push
+```
+
 **CONGRATS!!** You've successfully built a clone of Reddit! If you're looking for more, check out the challenges below.
 
 # Challenges

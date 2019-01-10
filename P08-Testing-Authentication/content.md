@@ -145,6 +145,14 @@ Now the agent has the JWT cookie when it makes other requests like to view the `
 
 This is good we have this now, because when we made it impossible to create posts when a user was not logged in broke the `/posts/create` route test!
 
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Implemented authentication tests'
+git push
+```
+
 # Stretch Challenges
 
 1. Can you use this code or something like it to fix the `/posts/create` test?

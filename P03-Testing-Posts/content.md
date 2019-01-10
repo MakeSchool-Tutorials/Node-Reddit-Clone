@@ -155,3 +155,11 @@ Post.findOneAndRemove(post, function() {
 Now we have a test for the `/posts/create` route that should be green. Can you make it fail? How about if our `post` object doesn't have a title, url, or summary? Those are all required fields. What do you see if you change that and run the test? Does it fail? How do you know what made it fail?
 
 When a controller or route test runs, it runs itself and it hits your server endpoint code locally. That means you can put `console.log` or `debugger` statements in either one to check various values.
+
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Post tests implemented'
+git push
+```

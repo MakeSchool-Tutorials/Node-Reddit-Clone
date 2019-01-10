@@ -124,4 +124,12 @@ app.get("/n/:subreddit", function(req, res) {
 
 How does that look? Are you getting just posts with that subreddit?
 
-**BOOM** - Subreddits!
+**BOOM** - Subreddits! But before we forget...
+
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Users can see Subreddits'
+git push
+```

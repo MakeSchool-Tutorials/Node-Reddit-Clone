@@ -112,6 +112,14 @@ Now that we have `{{posts}}`, we can use handlebars' [built in `each` operator](
 </div>
 ```
 
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Users can view a list of posts'
+git push
+```
+
 # Viewing One Post
 
 In order to view a single post when a user clicks on it, we'll need to establish a route for individual posts, and render them in their own template.
@@ -166,3 +174,11 @@ Time to template. As a bare minimum we'll use some bootstrap classes to make thi
 ```
 
 Now can you see your post?
+
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Users can see individual posts'
+git push
+```

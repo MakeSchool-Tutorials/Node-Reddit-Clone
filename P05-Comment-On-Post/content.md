@@ -218,4 +218,12 @@ In order to view just the content of the comment, you have to access the `conten
 {{/each}}
 ```
 
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Users can comment'
+git push
+```
+
 Right on! Let's keep at it!

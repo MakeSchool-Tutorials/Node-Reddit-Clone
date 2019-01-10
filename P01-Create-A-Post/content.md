@@ -69,7 +69,7 @@ Next, we have to create the form. Let's follow RESTful routing and make the url 
 
 So what happens when you submit this form?
 
-No POST `/posts/new` route! Let's make it.
+Nothing! We're missing a `/posts/new` route, so let's make it.
 
 > [action]
 > First, make a new folder called `controllers`. Within, create the file `posts.js`.
@@ -263,6 +263,15 @@ module.exports = (app) => {
 So we can save to the database, but how can we be sure? There are a couple of ways! We could go into the `mongo` shell and inspect our database, observing that the `posts` collection is now populated with documents. Alternatively, we can use a program, [Robo 3T](https://robomongo.org/download), to graphically inspect our database and observe what collections and documents we've created.
 
 Use either the `mongo` shell or [Robo 3T](https://robomongo.org/download) to confirm you are successfully creating posts before moving on.
+
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Users can submit and save posts'
+git push
+```
+
 
 # STRETCH: Adding Created At and Updated At Attributes
 

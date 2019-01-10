@@ -277,6 +277,15 @@ Now lets see if the cookie is set by examining the cookies in the client.
 >[action]
 > Go through the Sign Up flow on Reddit.js. Then open the Developer Tools, and view the cookies under Developer Tools > Application tab > Cookies, or by typing in `document.cookies` in the client console. Do you see the cookie?
 
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Users can sign up'
+git push
+```
+
+
 # Let's Logout
 
 Now that we have signed up, let's log out. Since "being logged in" just means that the cookie is set, we can create a new `/logout` route that just removes this cookie.
@@ -311,6 +320,15 @@ Now that we have signed up, let's log out. Since "being logged in" just means th
 ```
 
 After you click the "Logout" link is the cookie still present in the server in `req.cookies` or in the client in Dev Tools > Application > Cookies?
+
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Users can log out'
+git push
+```
+
 
 # Let's Login
 
@@ -361,6 +379,14 @@ app.post("/login", (req, res) => {
       console.log(err);
     });
 });
+```
+
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Users can log in'
+git push
 ```
 
 Phew!

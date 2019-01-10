@@ -129,6 +129,14 @@ We could do this more elegantly and more DRY if we made another example of [cust
 
 Can you rewrite the above code into its own middleware called `CheckAuth`?
 
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Users must be logged in to submit a post'
+git push
+```
+
 # Associating the `author` of Comments and Posts
 
 So now we want people to take responsibility for their silly posts on Reddit.js.
@@ -284,6 +292,14 @@ app.get("/n/:subreddit", function (req, res) {
 });
 ```
 
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Authors for posts are visible'
+git push
+```
+
 # Now for Comments
 
 Using the previous instructions for associating users and posts, can you make it so users and comments are equally associated? Remember to update the corresponding `view` and `controller` files!
@@ -325,6 +341,14 @@ app.get("/posts/:id", function (req, res) {
            console.log(err.message);
        });
 });
+```
+
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Authors for comments are visible'
+git push
 ```
 
 # Stretch Challenges
