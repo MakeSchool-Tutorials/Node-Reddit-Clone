@@ -131,11 +131,11 @@ npm install express-validator --save
 ```js
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
-
+>
 // Use Body Parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
+>
 // Add after body parser initialization!
 app.use(expressValidator());
 ```
@@ -150,7 +150,7 @@ You're going to need to connect to a NoSQL database called [MongoDB](https://doc
 Open your terminal and type:
 >
 ```bash
-
+>
 mkdir data
 cd data
 touch reddit-db.js
