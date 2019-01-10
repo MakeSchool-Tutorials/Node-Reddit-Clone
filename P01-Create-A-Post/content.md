@@ -6,7 +6,7 @@ slug: create-a-post
 Follow the technical planning list we made, and make sub tasks for each major feature.
 
 1. **Create a post**
-    1. Make a posts#new route (`/posts/new`) and template (`posts-new.handlebars`)
+    1. Make a /posts/new route (`/posts/new`) and template (`posts-new.handlebars`)
     1. Add form to `posts-new` template
     1. Make `create` posts route and check that form data is sending to new route
     1. Add `Post` model with mongoose

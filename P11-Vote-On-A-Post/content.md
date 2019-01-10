@@ -44,7 +44,7 @@ Start by adding "vote up" and "vote down" form to our post. Remember, this form,
 **Classes (Not Ids)** - We'll add two forms, tag them with the class `vote-up` and `vote-down`. We'll use these classes as our selectors to fire off the AJAX request to vote up or down.
 
 > [info]
-> We use classes here because IDs must be unique, but classes can repeat in one html template. In this case, there will be many posts on the posts#index page, so we must use a class instead of an ID.
+> We use classes here because IDs must be unique, but classes can repeat in one html template. In this case, there will be many posts on the `/posts/index` page, so we must use a class instead of an ID.
 
 **Data Attribute** - Each of these posts is unique even if there are many on the page. How do we know which one we are voting on? How do we communicate this to the server? In order to solve this problem, we'll be using the `data-id` attribute and render the post's `_id` attribute in each form. Then we can pull that id into the `/posts/:id/vote-up` or `/posts/:id/vote-down` path when we submit the form.
 

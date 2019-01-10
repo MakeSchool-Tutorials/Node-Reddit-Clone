@@ -9,7 +9,7 @@ Alright next step! We can see those posts, let's comment on them.
 1. Show all posts
 1. Show one post
 1. **Comment on posts**
-    1. Make a new comment form in the posts#show template
+    1. Make a new comment form in the `/posts/show` template
     1. Make a create route for comments
     1. Associate comments with posts
     1. Display comments
@@ -24,7 +24,7 @@ Alright next step! We can see those posts, let's comment on them.
 
 Remember, we are always coding using an agile and user-centric approach, so we are going to always start any feature from what the user sees and does. Then we'll code back towards what the server and code do.
 
-So, if we want to allow users to comment on these posts, first we can add a comment form to our posts#show page. This form will send its data to a path that resolves to the `comments#create` action. The path for this link will follow the standard nested RESTful convention `/<<PARENT RESOURCE PLURAL>>/<<PARENT ID>>/<<CHILD RESOURCE PLURAL>>`.
+So, if we want to allow users to comment on these posts, first we can add a comment form to our `/posts/show` page. This form will send its data to a path that resolves to the `/comments/create` action. The path for this link will follow the standard nested RESTful convention `/<<PARENT RESOURCE PLURAL>>/<<PARENT ID>>/<<CHILD RESOURCE PLURAL>>`.
 
 > [action]
 > Let's add the following `form` to `posts-show` so that we can write a comment if we're viewing a post:

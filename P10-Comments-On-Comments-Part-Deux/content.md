@@ -70,7 +70,7 @@ app.post("/posts/:postId/comments", function(req, res) {
     // SAVE THE PARENT
     post.save();
 >
-    // REDIRECT BACK TO THE PARENT POST#SHOW PAGE TO SEE OUR NEW COMMENT
+    // REDIRECT BACK TO THE PARENT /POST/SHOW PAGE TO SEE OUR NEW COMMENT
     return res.redirect(`/posts/` + post._id);
   });
 });
@@ -188,7 +188,7 @@ Next, create your `replies-new` template and have the content sit in the middle 
 
 Our template and form is there, but what happens when we submit it? We already made the create route and left a `console.log(req.body)` --- if you submit that form, you should see the console log the content of the form submission. Do you see it?
 
-The next step is to write our replies#create route logic.
+The next step is to write our `/replies/create` route logic.
 
 ```js
 // CREATE REPLY
@@ -204,7 +204,7 @@ app.post("/posts/:postId/comments/:commentId/replies", (req, res) => {
       return post.save();
     })
     .then(post => {
-      // REDIRECT TO THE PARENT POST#SHOW ROUTE
+      // REDIRECT TO THE PARENT /POST/SHOW ROUTE
       res.redirect("/posts/" + post._id);
     })
     .catch(err => {

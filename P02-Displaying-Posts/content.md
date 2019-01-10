@@ -7,9 +7,9 @@ Alright next step! Now that we can create posts, let's display them.
 
 1. Create a post
 1. **Show all posts and show one post**
-    1. Make the root route (`/`) go to the posts#index route render a `posts-index` template
+    1. Make the root route (`/`) go to the `/posts/index` route render a `posts-index` template
     1. Style the template and loop over the `posts` object
-    1. Make route to posts#show route (`/posts/:id`)
+    1. Make route to `/posts/show` route (`/posts/:id`)
     1. Style the template and display the `post` object
 1. Show one post
 1. Comment on posts
@@ -45,7 +45,7 @@ Note that the following line we included previously allows us to display debug i
 mongoose.set('debug', true);
 ```
 
-# Posts#Index Route
+# /Posts/Index Route
 
 > [action]
 > Next, let's create a `posts-index` template in our `views` folder. Don't worry about it looking fancy right now, we'll spruce it up in a bit. Just have it display `hello world` for now, or something equally simple.
@@ -125,7 +125,7 @@ Let's begin with the **user action** - clicking on a post in the `post-index` te
 
 The title is a link to the show page. If we click it, what happens? Error! No route! It's time to fix that.
 
-# Posts#Show Route
+# /Posts/Show Route
 
 We need the path `/posts/:id` to resolve to displaying a `posts-show` template.
 
