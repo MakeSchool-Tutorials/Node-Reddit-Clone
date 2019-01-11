@@ -74,21 +74,39 @@ What was the result? Can you make the test fail?
 
 Next let's make a test for the `/posts/create` route we made. We can make a new file in `test` called `posts.js`.
 
+>[action]
+> Create `/test/posts.js` with some boilerplate code that we'll need for testing
+>
 ```js
-...
+// test/posts.js
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+>
 // Import the Post model from our models folder so we
 // we can use it in our tests.
-const Post = require("../models/post");
-...
-
-describe("Posts", () => {
-  it("should create with valid attributes at POST /posts", done => {
+const Post = require('../models/post');
+const server = require('../server');
+>
+chai.should();
+chai.use(chaiHttp);
+>
+describe('Posts', () => {
+  const agent = chai.request.agent(server);
+  // Post that we'll use for testing purposes
+  const post = {
+      title: 'post title',
+      url: 'https://www.google.com',
+      summary: 'post summary',
+  };
+  it("should create with valid attributes at POST /posts", async () => {
     // TODO: test code goes here!
   });
 });
 ```
 
-The order of pseudocode we want to see is as follows
+We'll need to make this test `async`, as our test relies on `promises` that need to be completed before the test can continue.
+
+Let's think about what we want our test to...well, test. It an be helpful to think about test parameters in pseudocode so that we don't get bogged down in code just yet:
 
 ```js
 // How many posts are there now?
@@ -97,62 +115,51 @@ The order of pseudocode we want to see is as follows
 // Check that the response is a successful
 ```
 
-So if we write that in:
+Now let's take this pseudocode and make something of it! For these tests we're going to take advantage of a lot of `mongoose`'s built in functions, such as [countDocuments](https://mongoosejs.com/docs/api.html#model_Model.countDocuments).
 
+> [action]
+> Fill in the `it` statement to fulfill the needs of the pseudocode:
+>
 ```js
-it("should create with valid attributes at POST /posts", (done) => {
-  Post.find(function(err, posts) {
-    var postCount = posts.count;
-
-    var post = { title: "post title", url: "https://www.google.com", summary: "post summary" };
-
-    chai
-    .request("localhost:3000")
-    .post("/posts/new")
-    .send(post)
-    .then(res => {
-      Post.find(function(err, posts) {
-        postCount.should.be.equal(posts.length - 1);
-        res.should.have.status(200);
-        return done();
-      });
-    })
-    .catch(err => {
-      return done(err);
-    });
-  });
+it('Should create with valid attributes at POST /posts/new', async () => {
+  // Tells us how many posts there are now
+  const originalCount = await Post.countDocuments();
+  // Make a request to create another
+  const res = await agent.post('/posts/new').send(post);
+  const newCount = await Post.countDocuments();
+>
+  res.should.be.html;
+  // Check that the response is successful
+  res.should.have.status(200);;
+  // Check that the database has one more post in it
+  originalCount.should.equal(newCount - 1);
 });
 ```
 
-This is a good test, except remember that each time we run our test suite we will be creating this post. We need to make sure we delete this post before we run the test. So let's wrap that in a mongoose model `.remove()` method.
+This is a good test, but there's one problem: **each time we run our test suite we will be creating this post**. We need to make sure we **delete** this post **before** we run the test. We can use `mongoose`'s [findOneAndDelete](https://mongoosejs.com/docs/api.html#model_Model.findOneAndDelete) function to easily help us with this.
 
-
-
+> [action]
+> Update your test to remove the `post` at the end:
+>
 ```js
-var post = { title: "post title", url: "https://www.google.com", summary: "post summary" };
-
-Post.findOneAndRemove(post, function() {
-  Post.find(function(err, posts) {
-    var postCount = posts.count;
-    chai
-      .request("localhost:3000")
-      .post("/posts/new")
-      .send(post)
-      .then(res => {
-        Post.find(function(err, posts) {
-          postCount.should.be.equal(posts.length + 1);
-          res.should.have.status(200);
-          return done();
-        });
-      })
-      .catch(err => {
-        return done(err);
-      });
-  });
+it('Should create with valid attributes at POST /posts', async () => {
+  // Tells us how many posts there are now
+  const originalCount = await Post.countDocuments();
+  // Make a request to create another
+  const res = await agent.post('/posts/new').send(post);
+  const newCount = await Post.countDocuments();
+>
+  res.should.be.html;
+  // Check that the response is successful
+  res.should.have.status(200);;
+  // Check that the database has one more post in it
+  originalCount.should.equal(newCount - 1);
+>
+  await Post.findOneAndDelete(post);
 });
 ```
 
-Now we have a test for the `/posts/create` route that should be green. Can you make it fail? How about if our `post` object doesn't have a title, url, or summary? Those are all required fields. What do you see if you change that and run the test? Does it fail? How do you know what made it fail?
+Now we have a test for the `/posts/create` route that should be green! Can you make it fail? How about if our `post` object doesn't have a title, url, or summary? Those are all required fields. What do you see if you change that and run the test? Does it fail? How do you know what made it fail?
 
 When a controller or route test runs, it runs itself and it hits your server endpoint code locally. That means you can put `console.log` or `debugger` statements in either one to check various values.
 
