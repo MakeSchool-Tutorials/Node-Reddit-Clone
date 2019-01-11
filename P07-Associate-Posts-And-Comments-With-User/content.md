@@ -145,7 +145,7 @@ We need to make each post and each comment point back to it's author, as well as
 
 To accomplish this, there are no changes required to the views we've already created. We can go straight to updating model and controller appropriately.
 
-> [ action]
+>[action]
 > First, let's add an `author` attribute to both the `models/comment.js` and the `models/post.js` files. It's type will be a single `ObjectId`. We'll make it required because only logged in people can create posts.
 >
 ```js
