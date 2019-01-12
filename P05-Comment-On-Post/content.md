@@ -34,7 +34,7 @@ So, if we want to allow users to comment on these posts, first we can add a comm
   <form action="/posts/{{post._id}}/comments" method="post">
     <textarea class='form-control' name="content" placeholder="Comment"></textarea>
     <div class="text-right">
-      <button type="submit">Save</button>
+      <button type="submit" class="btn btn-primary">Save</button>
     </div>
   </form>
 ```
