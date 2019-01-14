@@ -17,17 +17,6 @@ With authentication, however, testing gets a little more complicated. You have t
 
 The biggest challenge is tracking the `cookie` set by the server when a user logs in. In order to handle this `cookie` we can use `chai`'s [request agent](https://github.com/chaijs/chai-http#retaining-cookies-with-each-request) functionality to track the cookie in our tests.
 
-Before we can run **any** of our `auth` test, we're going to need to add a line to `server.js` that exports our `app` variable that `mocha` needs in order to successfully run our `auth` tests.
-
-> [action]
-> Add this line to the bottom of `server.js`:
->
-```js
-module.exports = app;
-```
-
-Now our `auth` tests can be run!
-
 > [action]
 > Create the file `test/auth.js`. Within, we'll require the libraries we're going to need.
 >
