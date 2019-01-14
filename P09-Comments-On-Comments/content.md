@@ -144,7 +144,7 @@ module.exports = function (app) {
                 ]);
             })
             .then(post => {
-                res.redirect(`/posts/${post._id}`);
+                res.redirect(`/posts/${req.params.postId}`);
             })
             .catch(err => {
                 console.log(err);
@@ -153,7 +153,9 @@ module.exports = function (app) {
 };
 ```
 
-Now would be a good point to refresh your screen and make sure the `authors` on your `comments` and `posts` are still showing correctly. We also did a lot of changes here, so let's commit what we have so far:
+Now would be a good point to refresh your screen and make sure the `authors` on your `comments` and `posts` are still showing correctly. Notice also we are now redirecting users back to the post's page instead of root. Makes a lot more sense to go back to where you originated the request to reply from, doesn't it?
+
+We did a lot of changes here, so let's commit what we have so far:
 
 ## Now Commit
 
