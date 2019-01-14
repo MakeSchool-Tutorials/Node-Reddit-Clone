@@ -137,6 +137,8 @@ git commit -m 'Users must be logged in to submit a post'
 git push
 ```
 
+ Through the code above, you have now successfully **restricted functionality based on authentication status**. Right on!
+
 # Associating the `author` of Comments and Posts
 
 So now we want people to take responsibility for their silly posts on Reddit.js.

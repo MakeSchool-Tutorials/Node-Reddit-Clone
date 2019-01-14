@@ -204,7 +204,9 @@ git commit -m 'Users can now vote on posts'
 git push
 ```
 
-**CONGRATS!!** You've successfully built a clone of Reddit! If you're looking for more, check out the challenges below.
+If you made it this far, that means that you were able to successfully **implement a large scale application using Express, Handlebars, and MongoDB/Mongoose.**
+
+**CONGRATS!!** You've built a clone of Reddit! If you're looking for more, check out the challenges below.
 
 # Challenges
 

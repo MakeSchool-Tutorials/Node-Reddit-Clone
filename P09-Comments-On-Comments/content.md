@@ -163,6 +163,8 @@ git commit -m 'refactored populate code'
 git push
 ```
 
+You have now successfully **investigated how to use the `populate` method in Mongoose for advanced associations**. Congrats!
+
 ## Credit
 All credit to Dacio Romero (a Make School student!) for creating this elegant solution! He even wrote a [plugin](https://github.com/DacioRomero/mongoose-populate) to do exactly what we wrote above for our `util`!
 

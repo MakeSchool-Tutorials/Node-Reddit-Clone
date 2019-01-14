@@ -391,9 +391,9 @@ git push
 
 Phew!
 
-If we did everything right, now we should be able to sign up, log out, and login securely. Nice! In the next chapter we'll associate our user record with our posts and comments.
+If we did everything right, now we should be able to sign up, log out, and login securely. This means that you have successfully **implemented an authentication flow through JWTs that allows users to sign up, log in, and log out.** Nice!
 
-WOOOHOOO!
+In the next chapter we'll associate our user record with our posts and comments.
 
 # Stretch: More Authentication Patterns
 
