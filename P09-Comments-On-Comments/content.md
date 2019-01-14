@@ -344,5 +344,13 @@ Now that we have a `css` folder, what other styles would you add? Add some more 
 ## Credit
 Credit again to Dacio Romero, who's `/controllers/replies/post` method was adapted to this tutorial, as well as his `partials` template!
 
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Implemented nested comments'
+git push
+```
+
 >[challenge]
 > Notice right now you *can* reply to a comment if you are *not* logged in. Update your code to figure out how to only allow *logged in* users to reply to comments
