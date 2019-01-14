@@ -14,6 +14,15 @@ In this tutorial you will develop a clone of Reddit with posts, subreddits, and 
 
 This tutorial should take much longer than the previous tutorials to complete and it will require that you read instructions very carefully and follow them step by step. You might encounter errors that you will need to troubleshoot and google to solve. If you would like to provide feedback on this tutorial, please leave GitHub issues on the [GitHub repo](https://github.com/MakeSchool-Tutorials/Node-Reddit-Clone).
 
+# Learning Outcomes
+
+By the end of this tutorial, you should be able to...
+
+1. Implement a large scale application using Express, Handlebars, and MongoDB/Mongoose
+1. Implement an authentication flow through [JWTs](https://jwt.io/) that allows users to sign up, log in, and log out, and restricts functionality based on authentication status
+1. Investigate how to use the [populate](https://mongoosejs.com/docs/populate.html) method in Mongoose for advanced associations
+1. Implement more intricate tests for CRUD apps as well as for authentication flows.
+
 # Tutorial structure
 
 This tutorial will walk you through a pattern of "user-centered" or outside-in development with route tests, meaning you will first develop a simple template for a route, then it's actual backend logic. By following this pattern, software is built step-wise and organically without leaps or guesses. This avoids large architectural bugs which are the biggest drain on the speed of a development team.
