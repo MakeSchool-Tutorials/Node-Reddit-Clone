@@ -144,7 +144,7 @@ module.exports = function (app) {
                 ]);
             })
             .then(post => {
-                res.redirect("/posts/" + post._id);
+                res.redirect(`/posts/${post._id}`);
             })
             .catch(err => {
                 console.log(err);

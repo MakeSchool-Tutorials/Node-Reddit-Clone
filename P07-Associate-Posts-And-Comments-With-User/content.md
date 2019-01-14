@@ -189,7 +189,7 @@ module.exports = function (app) {
                     user.posts.unshift(post);
                     user.save();
                     // REDIRECT TO THE NEW POST
-                    res.redirect("/posts/" + post._id);
+                    res.redirect(`/posts/${post._id}`);
                 })
                 .catch(err => {
                     console.log(err.message);
