@@ -13,137 +13,187 @@ So last lesson we were thinking through how to put comments inside other comment
 1. Sign up and Login
 1. Associate posts and comments with their author
 1. **Make comments on comments**
-    1. Make comments embedded documents instead of reference.
-    1. Make comments on posts work.
+    1. Optimize our how we populate.
     1. Make comments embedded inside comments.
     1. Test that comments on comments are working.
 1. Vote a post up or down
 
-# Embedding Comments in Posts
+# Optimize our how we populate
 
-In your conversations about how to put comments on comments, did you arrive at the following solution? **You can make all comments embedded into posts, and all comments on comments embedded _into those comments_.**
+We know we're going to be embedding comments into comments. This means we're going to have to nest `populate` calls for comments for as deep as a comment chain can go! Our current implementation can't scale for that, so before we embark on embedding comments, we need to make sure we can handle them by optimizing how we use `populate`.
 
+## Populate util
+
+We're going to be using our optimization in a lot of places, so we should make it a `util` so that it can be easily accessible through multiple places
+
+> [info]
+> Any time you have the same functionality used in multiple areas of a project, it's best to make a `util` folder where you can store all your functions for repeated use.
+
+<!-- -->
+
+> [action]
+> Create a `util` folder, and create an `autopopulate.js` file in it
+>
+> In `autopopulate.js`, place the following code:
+>
 ```js
-{
-  _id: "ji2roi3ji23j2j3",
-  user: "fu0fa90faa99a0a",
-  body: "Awesome site to share",
-  url: "https://www.google.com",
-  comments: [
-    {
-      _id: "afk3jk4k23j4h232",
-      user: "lk11l2j31l24j1kl",
-      content: "great post"
-      comments: [
-        {
-          _id: "afk3jk4k23j4h232",
-          user: "lkj4l1j41kl1343",
-          content: "great comment",
-          comments: []
-        }
-      ]
+module.exports = field => {
+    return function(next) {
+        this.populate(field);
+        next();
     }
-  ]
 }
 ```
 
-The reasons for using embedded documents is because the reference document strategy would not work to create a tree of comments –– you cannot use the `.populate()` method to populate more than one or two layers down the hierarchy. We want all the comments of comments. As long as we track each embedded comment with its own unique `_id`, we'll be easily able to edit and vote on comments. Perhaps we'll even be able to sort them by number of votes –– we'll see.
-
-The first thing we have to do is swap comments from being reference documents to being an embedded document.
-
-# Switch Comments From Reference to Embedded
-
-We always think about what the user will see first, and change that. In this case, what the user sees won't change at all! Our first step is to change our controller logic, and then propagate the change to our models.
-
-The [mongoose docs](http://mongoosejs.com/docs/2.7.x/docs/embedded-documents.html) on the topic describe that with embedded documents, we are really just updating the parent document, then saving that.
+Great! Because this function recursively calls itself, we can now populate fields every time we load a model! Let's make some changes so that our `posts` and `comments` take advantage of this functionality.
 
 >[action]
-> Let's update our `comments` controller's `create` route to look like this:
+> Update `/models/post.js` and `/models/comment.js` to use your new `util`:
+>
+> `/models/post.js`
 >
 ```js
-// CREATE
-app.post("/posts/:postId/comments", function(req, res) {
-  // FIND THE PARENT POST
-  Post.findById(req.params.postId).exec(function(err, post) {
-    // UNSHIFT A NEW COMMENT
-    post.comments.unshift(req.body);
-    // SAVE THE PARENT
-    post.save();
+// models/post.js
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+const Populate = require("../utils/autopopulate");
 >
-    // REDIRECT BACK TO THE PARENT /POST/SHOW PAGE TO SEE OUR NEW COMMENT
-    return res.redirect(`/posts/` + post._id);
-  });
+const PostSchema = new Schema({
+...
 });
+// Always populate the author field
+PostSchema
+    .pre('findOne', Populate('author'))
+    .pre('find', Populate('author'))
+>
+module.exports = mongoose.model("Post", PostSchema);
 ```
-
-Now, we need the model to expect this embedded doc.
-
-`Mongoose` allows us to represent embedded documents by embedding the schema object into the parent object's schema. For example, see how the `Comments` schema is embedded into the `BlogPost` schema below:
-
-```js
-var Comments = new Schema({
-  title: String,
-  body: String,
-  date: Date
-});
-
-var BlogPost = new Schema({
-  author: ObjectId,
-  title: String,
-  body: String,
-  date: Date,
-  comments: [Comments],
-  meta: {
-    votes: Number,
-    favs: Number
-  }
-});
-
-mongoose.model("BlogPost", BlogPost);
-```
-
-For our purposes, we need to get our `Comments Schema` into our `Post` model. We can either require the `Comment` model in our `post.js` field, or we can simply move the code right into `models/post.js`. The following is an example of the former:
-
->[action]
-> Update your `Post` model to the following:
+>
+> `/models/comment.js`
 >
 ```js
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Comment = require("../models/comment");
+const Populate = require("../utils/autopopulate");
 >
-var PostSchema = new Schema({
-  title: { type: String, required: true },
-  url: { type: String, required: true },
-  summary: { type: String, required: true },
-  comments: [Comment.schema]
-  author : { type: Schema.Types.ObjectId, ref: "User", required: true }
+const CommentSchema = new Schema({
+...
 });
 >
-module.exports = mongoose.model("Post", PostSchema);
+// Always populate the author field
+CommentSchema
+    .pre('findOne', Populate('author'))
+    .pre('find', Populate('author'))
+>
+module.exports = mongoose.model("Comment", CommentSchema);
 ```
 
-The model is now set up to be embedded. Test the site and make sure you can create comments. Do you still need to use the method `.populate()` to see the comments of a post? Better remove that!
+Finally, let's update our controllers to simplify their logic to just use the [lean](https://mongoosejs.com/docs/api.html#query_Query-lean) method.
+
+> [action]
+> Simplify your `/posts/show/` and `/subreddit/show/` methods in `/controllers/post.js`
+>
+```js
+// SHOW
+app.get("/posts/:id", function (req, res) {
+    var currentUser = req.user;
+    Post.findById(req.params.id).populate('comments').lean()
+        .then(post => {
+            res.render("posts-show", { post, currentUser });  
+        })
+        .catch(err => {
+            console.log(err.message);
+        });
+});
+>
+// SUBREDDIT
+app.get("/n/:subreddit", function (req, res) {
+    var currentUser = req.user;
+    Post.find({ subreddit: req.params.subreddit }).lean()
+        .then(posts => {
+            res.render("posts-index", { posts, currentUser });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+```
+
+Notice it was only a one line change for each, but it's a lot simpler now! One more refactor to go:
+
+> [action]
+> Update `/comments/create` in `/controllers/comments` to the following:
+>
+```js
+module.exports = function (app) {
+    // CREATE Comment
+    app.post("/posts/:postId/comments", function (req, res) {
+        const comment = new Comment(req.body);
+        comment.author = req.user._id;
+        comment
+            .save()
+            .then(comment => {
+                return Promise.all([
+                    Post.findById(req.params.postId)
+                ]);
+            })
+            .then(([post, user]) => {
+                post.comments.unshift(comment);
+                return Promise.all([
+                    post.save()
+                ]);
+            })
+            .then(post => {
+                res.redirect("/posts/" + post._id);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    });
+};
+```
+
+Now would be a good point to refresh your screen and make sure the `authors` on your `comments` and `posts` are still showing correctly. We also did a lot of changes here, so let's commit what we have so far:
+
+## Now Commit
+
+```bash
+git add .
+git commit -m 'refactored populate code'
+git push
+```
+
+## Credit
+All credit to Dacio Romero (a Make School student!) for creating this elegant solution! He even wrote a [plugin](https://github.com/DacioRomero/mongoose-populate) to do exactly what we wrote above for our `util`!
 
 # Embedding Comments Into Comments
 
-Now we can make it so a user can comment on a comment to create a nice hierarchical tree of nested comments.
+Now that we have `autopopulate`, we can make it so a user can comment on a comment to create a nice hierarchical tree of nested comments.
 
 Again, utilize the user experience as a starting point. A user who wants to make a comment on a comment can click a "reply" link that opens up a form displaying the specific comment and a textarea, as well as a Reply button.
 
+>[action]
+> Add this snippet to `/views/posts-show` within the `each` block for `comments`:
+>
 ```html
-  ...
-  <a href="/posts/{{post._id}}/comments/{{comment._id}}/replies/new">Reply</a>
+{{#each post.comments}}
+    <p>{{this.content}}</p>
+    <p class="text-right">{{this.author.username}}</p>
+    <a href="/posts/{{../post._id}}/comments/{{this._id}}/replies/new">Reply</a>
+{{/each}}
   ...
 ```
 
 Let's make a new `replies.js` file in our `controllers` folder. Within, we'll need access to both the `Post` and `Comment` models. At the end, we'll have two freshly implemented routes: `NEW` and `CREATE`.
 
+>[action]
+> create `/controllers/replies` and include the following code:
+>
 ```js
 var Post = require("../models/post");
 var Comment = require("../models/comment");
 var User = require("../models/user");
-
+>
 module.exports = app => {
   // NEW REPLY
   app.get("/posts/:postId/comments/:commentId/replies/new", (req, res) => {
@@ -160,16 +210,27 @@ module.exports = app => {
         console.log(err.message);
       });
   });
-
+>
   // CREATE REPLY
   app.post("/posts/:postId/comments/:commentId/replies", (req, res) => {
     console.log(req.body);
   });
 };
 ```
+> Remember to `require` your new controller in `server.js`
+>
+```js
+require('./controllers/posts')(app);
+require('./controllers/comments.js')(app);
+require('./controllers/auth.js')(app);
+require('./controllers/replies.js')(app);
+```
 
 Next, create your `replies-new` template and have the content sit in the middle 6 columns of the 12 column grid:
 
+>[action]
+> Create `/views/replies-new` in your `/views` folder and include the following code:
+>
 ```html
 <div class="row">
   <div class="col-sm-6 col-sm-offset-3">
@@ -177,95 +238,111 @@ Next, create your `replies-new` template and have the content sit in the middle 
       <div class="form-group">
         <textarea name="content" class="form-control" id="reply-content" placeholder="Reply"></textarea>
       </div>
-
+>
       <div class='text-right'>
-        <button type="submit" class="btn btn-primary">Reply<button>
+        <button type="submit" class="btn btn-primary">Reply</button>
       </div>
     </form>
   </div>
 </div>
 ```
 
-Our template and form is there, but what happens when we submit it? We already made the create route and left a `console.log(req.body)` --- if you submit that form, you should see the console log the content of the form submission. Do you see it?
+Refresh the page and click the `Reply` button on a comment. We can see that our template and form is there, but what happens when we submit it? We made the `create` route and left a `console.log(req.body)`, so if you submit that form, you should see the console log the content of the form submission. Do you see it?
 
 The next step is to write our `/replies/create` route logic.
 
+>[action]
+> Update the `/create` method in `/controllers/replies` to the following:
+>
 ```js
 // CREATE REPLY
 app.post("/posts/:postId/comments/:commentId/replies", (req, res) => {
-  // LOOKUP THE PARENT POST
-  Post.findById(req.params.postId)
-    .then(post => {
-      // FIND THE CHILD COMMENT
-      var comment = post.comments.id(req.params.commentId);
-      // ADD THE REPLY
-      comment.comments.unshift(req.body);
-      // SAVE THE CHANGE TO THE PARENT DOCUMENT
-      return post.save();
-    })
-    .then(post => {
-      // REDIRECT TO THE PARENT /POST/SHOW ROUTE
-      res.redirect("/posts/" + post._id);
-    })
-    .catch(err => {
-      console.log(err.message);
-    });
+    // TURN REPLY INTO A COMMENT OBJECT
+    const reply = new Comment(req.body);
+    reply.author = req.user._id
+    // LOOKUP THE PARENT POST
+    Post.findById(req.params.postId)
+        .then(post => {
+            // FIND THE CHILD COMMENT
+            Promise.all([
+                reply.save(),
+                Comment.findById(req.params.commentId),
+            ])
+                .then(([reply, comment]) => {
+                    // ADD THE REPLY
+                    comment.comments.unshift(reply._id);
+>
+                    return Promise.all([
+                        comment.save(),
+                    ]);
+                })
+                .then(() => {
+                    res.redirect(`/posts/${req.params.postId}`);
+                })
+                .catch(console.error);
+            // SAVE THE CHANGE TO THE PARENT DOCUMENT
+            return post.save();
+        })
 });
 ```
-
-Finally, we need to update our model so that comments have [embedded instances](https://docs.mongodb.com/manual/core/data-model-design/#embedded-data-models) of itself.
-
-Below is one way to accomplish the task!
-
-Others have accomplished the task using `[this]`.
-
-What does that mean? Which do you prefer? Take some notes on your theories.
-
-Whatever implementation plan you decide upon, the code below is a foolproof way to embed the related comment data inside the original `CommentSchema`. Keep this strategy handy in your notes; it'll resurface time and time again in a multitude of projects during your career!
-
-```js
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-
-const CommentSchema = new Schema({
-  content: { type: String, required: true },
-  comments: [{type: Schema.Types.ObjectId, ref: "Comment"}]
-});
-
-module.exports = mongoose.model("Comment", CommentSchema);
-```
-
-How strange! And yet, how strange is Reddit itself?
 
 When you submit the reply form, what occurs? Can you confirm (in the database) that a nested embedded comment document is created?
 
 Finally, let's set up our `post-show` template to show these sub comments as well once they are created. If we just try to manually write in our comments and their comments, we won't be able to represent the whole tree. We'll need to use a **Partial Template** to make a recursive representation of all the comments and their comments.
 
+> [action]
+> In `/views/posts-show`, replace your `{{#each post.comments}}` code block with the following:
+>
 ```html
-<div class="row">
-  {{#each post.comments}}
-    {{> partials/comment}}
-  {{/each}}
-</div>
+{{#each post.comments}}
+  {{> comment comment=this postId=../post._id}}
+{{/each}}
 ```
 
-Let's create a new folder in the `views` folder called `partials` and create a file in there called `comment.handlebars`. Inside that template we'll call itself again, so it loops until every comment is displayed.
+We've got our view set up to use our `partial` comments view, so now let's create that `partial`.
 
+>[action]
+> Create a new folder in `views` called `partials`, then create a file in there called `comment.handlebars`. Inside that file, place the following code:
+>
 ```html
 <div class="col-xs-12 comment-indent">
-  <p>{{this.content}}</p>
-  {{#each this.comments}}
-    {{> comment}}
-  {{/each }}
+    <p>{{comment.content}}</p>
+    <p class="text-right">{{comment.author.username}}</p>
+    <a href="/posts/{{postId}}/comments/{{comment._id}}/replies/new">Reply</a>
+    {{#each comment.comments}}
+        {{> comment comment=this postId=../postId}}
+    {{/each}}
 </div>
 ```
 
-We can give each comment a bit of an intent by creating the class `.comment-indent`.
+The code inside this `partial` template calls itself so it loops until every comment is displayed.
 
+Finally, let's give each comment a bit of an indent by creating a style for the class `.comment-indent`. Let's put this in a general stylesheet in case we want to add more styles later.
+
+>[action]
+> Create a `public` folder and create a `css` folder within it. Within the `css` folder, create an `all.css` file and place the following code in it:
+>
 ```css
 .comment-indent {
-  margin-left: 10px;
+  margin-left: 12px;
 }
 ```
+>
+> Remember we need to now link the style sheet in `/views/layouts/main.handlebars` so that we can view it:
+>
+```html
+<head>
+    ...
+    <link rel="stylesheet" href="/css/all.css">
+</head>
+```
 
-What other styles would you add?
+Refresh and try out your new nested comments!!
+
+Now that we have a `css` folder, what other styles would you add? Add some more styling to spruce up your Reddit!
+
+## Credit
+Credit again to Dacio Romero, who's `/controllers/replies/post` method was adapted to this tutorial, as well as his `partials` template!
+
+>[challenge]
+> Notice right now you *can* reply to a comment if you are *not* logged in. Update your code to figure out how to only allow *logged in* users to reply to comments

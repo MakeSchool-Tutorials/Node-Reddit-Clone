@@ -98,7 +98,7 @@ app.use(express.static('public'));
 </body>
 ```
 >
-> Finally, copy the following code into our newly created `public/js/posts.js`:
+> Finally, create a `js` folder in your `public` folder. Then create a `posts.js` file within the `js` folder. Now copy the following code into our newly created `public/js/posts.js`:
 >
 ```js
 $(document).ready(function() {
