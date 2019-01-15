@@ -49,6 +49,11 @@ describe("site", function() {
 
 This test tests that the response's status should be equal to 200 - which if you recall your HTTP status codes, means the response is successful.
 
+>[info]
+> Notice we did **not** use `ES6` syntax for our anonymous functions in our tests. That is because using arrow functions is [discouraged in Mocha](https://mochajs.org/#arrow-functions), as they make it so that `this` cannot access the Mocha context.
+>
+> What is happening to `this` to cause the issue? Hint: it relates to scope.
+
 Before we can run **any** of our tests, we're going to need to add a line to `server.js` that exports our `app` variable that `mocha` needs in order to successfully run our tests.
 
 > [action]
