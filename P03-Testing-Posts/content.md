@@ -199,3 +199,5 @@ git add .
 git commit -m 'Post tests implemented'
 git push
 ```
+
+Great test writing! With these tests written you've successfully **implemented more intricate tests for your CRUD app!** Now let's add some more complexity to this app. Onward!

@@ -235,6 +235,8 @@ git commit -m 'Implemented remaining authentication tests'
 git push
 ```
 
+You have successfully **implemented tests for authentication flows!** If you feel like your tests aren't strong enough, and want to make your tests more robust (you know you want to), check out the challenges below:
+
 > [challenge]
 >
 > 1. Can you write another test to test that it is impossible to create a post if a user is not logged in?
