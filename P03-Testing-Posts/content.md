@@ -36,7 +36,7 @@ describe("site", function() {
     chai
       .request(app)
       .get("/")
-      .end((err, res) function() {
+      .end(function(err, res) {
         if (err) {
           return done(err);
         }
