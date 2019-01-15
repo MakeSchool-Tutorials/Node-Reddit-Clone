@@ -3,11 +3,11 @@ title: "Testing Authentication"
 slug: testing-authentication
 ---
 
-So we can do authentication, but what if the next time we turn around, this feature breaks? How would we catch it? The answer is more automated tests.
+So we can do authentication, but what if the next time we turn around, this feature breaks? How would we catch it? The answer is more automated tests!
 
 So it is really fun to test things right!?
 
-Maybe not so fun, but writing tests is a critical skill for a young engineer. At almost all companies all code must have tests that go along with it. And at many companies, young engineers are tasked with writing tests and crushing bugs for their first few weeks, so knowing how to test well will make you a very hirable and quick-to-ramp employee.
+Maybe not so fun, but writing tests is a critical skill for a young engineer. At almost all companies, all code must have tests that go along with it. And at many companies, young engineers are tasked with writing tests and crushing bugs for their first few weeks, so knowing how to test well will make you a very hirable and quick-to-ramp employee.
 
 # Testing Authentication
 
@@ -21,15 +21,16 @@ The biggest challenge is tracking the `cookie` set by the server when a user log
 > Create the file `test/auth.js`. Within, we'll require the libraries we're going to need.
 >
 ```js
-var chai = require("chai");
-var chaiHttp = require("chai-http");
-var server = require("../server");
-var should = chai.should();
+const chai = require("chai");
+const chaiHttp = require("chai-http");
+const server = require("../server");
+const should = chai.should();
 chai.use(chaiHttp);
 >
-var agent = chai.request.agent(server);
+// Agent that will keep track of our cookies
+const agent = chai.request.agent(server);
 >
-var User = require("../models/user");
+const User = require("../models/user");
 >
 describe("User", function() {
   // TESTS WILL GO HERE.
@@ -50,11 +51,7 @@ it("should not be able to login if they have not registered", done => {
 });
 ```
 
-Can you make it not pass, and then pass?
-
-# Testing Sign Up, Logout, and Login
-
-What should we test next? Sign up! Read the following code very carefully, then add it to your project. Can you make the test red (not pass) and then green (pass)?
+Let's add a slightly more complex one: signing up a user!
 
 > [action]
 > Add this `signup` test to `test/auth.js`:
@@ -76,23 +73,124 @@ it("should be able to signup", done => {
 });
 ```
 
-Next, write a test that verifies that your logout implementation works properly:
+It's important to note that the server started by the `agent` will not automatically close following the completion of your tests. It's important that we close down the agent after the tests to ensure the program exits appropriately.
 
-> [action]
-> Add this `logout` test to `test/auth.js`:
+>[action]
+> Add an `after` hook to your `auth` tests:
 >
 ```js
-// logout
-it("should be able to logout", done => {
-  agent.get("/logout").end(function(err, res) {
-    res.should.have.status(200);
-    agent.should.not.have.cookie("nToken");
-    done();
+after(function () {
+  agent.close()
+});
+```
+
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Implemented initial authentication tests'
+git push
+```
+
+Before we go any further, try running your tests. Remember you need to kill `nodemon` first and then run `npm run test`.
+
+Your `auth` tests should work fine, but notice that your `posts` test around creating a new post doesn't work anymore! This is because the way the test is currently written, you're not logged in and trying to post! Let's fix this before moving on.
+
+# Updating Posts Tests
+
+Let's revisit our `/test/posts` file and see what needs to be done in order to get it up and running again.
+
+First, we want to make sure we're using the `agent` that we used in our last `auth` tests, otherwise we'll have no way to pass cookies (like the kind that pass login information)
+
+>[action]
+> Add the following line to the top of the file as the last `const`:
+>
+```js
+const agent = chai.request.agent(app);
+```
+
+Now we need to make sure we have a user.
+
+>[action]
+> Add the following `user` below the `newPost const`:
+>
+```js
+const newPost = {
+...
+}
+>
+const user = {
+    username: 'poststest',
+    password: 'testposts'
+};
+```
+
+Next we need to add a `before` hook. Much like the `after` hook cleans up our tests, `before` sets up anything we need in order for the tests to run, before the tests actually run.
+
+> [action]
+> Underneath your new `user const`, add the following `before` hook that signs up a user:
+>
+```js
+before(function (done) {
+  agent
+    .post('/sign-up')
+    .set("content-type", "application/x-www-form-urlencoded")
+    .send(user)
+    .then(function (res) {
+      done();
+    })
+    .catch(function (err) {
+      done(err);
+    });
+});
+```
+
+Almost finished, just have to clean up now. Much like we deleted the test post in our `after` hook, we have to also delete the test user now too, in addition to closing the `agent`.
+
+> [action]
+> Replace your `after` hook with the following code block:
+>
+```js
+after(function (done) {
+  Post.findOneAndDelete(newPost)
+  .then(function (res) {
+      agent.close()
+>
+      User.findOneAndDelete({
+          username: user.username
+      })
+        .then(function (res) {
+            done()
+        })
+        .catch(function (err) {
+            done(err);
+        });
+  })
+  .catch(function (err) {
+      done(err);
   });
 });
 ```
 
-Finally, we write a test to verify that the login functionality works as expected.
+Try running your tests again. They should all pass now that the agent has the JWT cookie!
+
+It's important to remember that when you add new functionality, it's helpful to go back and make sure your previous functionality (and tests) work as expected.
+
+# Now Commit
+
+```bash
+git add .
+git commit -m 'Fixed posts test'
+git push
+```
+
+Let's finish up our other tests back in `test/auth`!
+
+# Testing Login and Logout
+
+What should we test next? Logging in!
+
+Next, write a test that verifies that your login implementation works properly:
 
 > [action]
 > Add this `login` test to `test/auth.js`:
@@ -111,38 +209,34 @@ it("should be able to login", done => {
 });
 ```
 
-# Authorization in Other Tests
+Can you make the test red (not pass) and then green (pass)?
 
-Now that we have authentication we're going to want to make it so some routes only work if a user is authenticated. Maybe you can only create posts if you are logged in. This means we'll have to update our tests to login before we try to create a post.
+Finally, we write a test to verify that the logout functionality works as expected.
 
-In order for the test agent to be logged in, you have to use a `before` action that mocha gives you. The `before` action runs before all the tests run.
-
+> [action]
+> Add this `logout` test to `test/auth.js`:
+>
 ```js
-// test/posts.js
-
-before(done => {
-  agent
-    .post("/login")
-    .send({ username: "testone", password: "password" })
-    .end(function(err, res) {
-      done();
-    });
+// logout
+it("should be able to logout", done => {
+  agent.get("/logout").end(function(err, res) {
+    res.should.have.status(200);
+    agent.should.not.have.cookie("nToken");
+    done();
+  });
 });
 ```
-
-Now the agent has the JWT cookie when it makes other requests like to view the `/posts/new` route or create a post.
-
-This is good we have this now, because when we made it impossible to create posts when a user was not logged in broke the `/posts/create` route test!
 
 # Now Commit
 
 ```bash
 git add .
-git commit -m 'Implemented authentication tests'
+git commit -m 'Implemented remaining authentication tests'
 git push
 ```
 
-# Stretch Challenges
-
-1. Can you use this code or something like it to fix the `/posts/create` test?
-1. Can you write another test to test that it is impossible to create a post if a user is not logged in?
+> [challenge]
+>
+> 1. Can you write another test to test that it is impossible to create a post if a user is not logged in?
+>
+> 1. Can you make all of your `auth` tests not pass, and then pass? What about your newly updated `post` test?
