@@ -396,9 +396,11 @@ If we did everything right, now we should be able to sign up, log out, and login
 In the next chapter we'll associate our user record with our posts and comments.
 
 # Stretch: More Authentication Patterns
-
-There is a lot more to make a full fledged authentication system. See which ones you want to try:
-
+>[challenge]
+> There is a lot more to make a full fledged authentication system. See which ones you want to try:
+>
 1. Add a Remember Me checkbox. What is the difference from when it is checked or not?
+>
 1. Require a password confirmation field.
+>
 1. Plan out how you would do a "forget password" process.

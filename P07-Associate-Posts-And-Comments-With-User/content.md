@@ -354,7 +354,10 @@ git push
 ```
 
 # Stretch Challenges
-
+> [challenge]
+>
 1. Can you make an author's username a link that displays that users's profile at `/users/:username`?
+>
 1. Can you do the same for comments?
+>
 1. Can you make a `/profile` route that loads the current user and displays their posts and comments?

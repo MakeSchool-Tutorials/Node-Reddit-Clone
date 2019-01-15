@@ -356,5 +356,7 @@ git commit -m 'Implemented nested comments'
 git push
 ```
 
+# Stretch Challenge
+
 >[challenge]
 > Notice right now you *can* reply to a comment if you are *not* logged in. Update your code to figure out how to only allow *logged in* users to reply to comments
