@@ -28,15 +28,15 @@ const should = chai.should();
 >
 chai.use(chaiHttp);
 >
-describe("site", () => {
+describe("site", function() {
   // Describe what you are testing
-  it("Should have home page", done => {
+  it("Should have home page", function(done) {
     // Describe what should happen
     // In this case we test that the home page loads
     chai
       .request(app)
       .get("/")
-      .end((err, res) => {
+      .end((err, res) function() {
         if (err) {
           return done(err);
         }
@@ -102,7 +102,7 @@ const server = require('../server');
 chai.should();
 chai.use(chaiHttp);
 >
-describe('Posts', () => {
+describe('Posts', function() {
   const agent = chai.request.agent(server);
   // Post that we'll use for testing purposes
   const newPost = {
