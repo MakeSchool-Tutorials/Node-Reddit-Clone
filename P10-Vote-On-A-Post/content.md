@@ -196,6 +196,14 @@ app.put("/posts/:id/vote-down", function(req, res) {
 
 Create a new post and see if you can vote up or down on your new post. Check the console logs to make sure the votes are being tracked appropriately.
 
+If you made it this far, that means that you were able to successfully **implement a large scale application using Express, Handlebars, and MongoDB/Mongoose.**
+
+**CONGRATS!!** You've built a clone of Reddit!
+
+# Feedback and Review
+
+Please take a moment to rate your understanding of learning outcomes from this tutorial, and how we can improve it via our [tutorial feedback form](https://goo.gl/forms/3IC9rSVBUx63pdC33)
+
 # Now Commit
 
 ```bash
@@ -204,12 +212,11 @@ $ git commit -m 'Users can now vote on posts'
 $ git push
 ```
 
-If you made it this far, that means that you were able to successfully **implement a large scale application using Express, Handlebars, and MongoDB/Mongoose.**
-
-**CONGRATS!!** You've built a clone of Reddit! If you're looking for more, check out the challenges below.
-
 # Challenges
 
+If you're looking for more, check out the
+>[challenge]
+>
 1. We only allow voting on the home and subreddit screens currently. Allow it on when viewing a single post.
 1. Turn the Vote Up/Vote Down buttons into arrows using CSS and/or JS
 1. Have the vote buttons color change after they've been clicked, and ensure the change is retained during the session (i.e. if you Vote Up, the button should be colored red and should stay that way until the vote changes).
