@@ -129,7 +129,7 @@ How does that look? Are you getting just posts with that subreddit?
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Users can see Subreddits'
-git push
+$ git add .
+$ git commit -m 'Users can see Subreddits'
+$ git push
 ```

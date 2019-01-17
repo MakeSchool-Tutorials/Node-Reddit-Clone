@@ -87,9 +87,9 @@ after(function () {
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Implemented initial authentication tests'
-git push
+$ git add .
+$ git commit -m 'Implemented initial authentication tests'
+$ git push
 ```
 
 Before we go any further, try running your tests. Remember you need to kill `nodemon` first and then run `npm run test`.
@@ -179,9 +179,9 @@ It's important to remember that when you add new functionality, it's helpful to 
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Fixed posts test'
-git push
+$ git add .
+$ git commit -m 'Fixed posts test'
+$ git push
 ```
 
 Let's finish up our other tests back in `test/auth`!
@@ -230,9 +230,9 @@ it("should be able to logout", function(done) {
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Implemented remaining authentication tests'
-git push
+$ git add .
+$ git commit -m 'Implemented remaining authentication tests'
+$ git push
 ```
 
 You have successfully **implemented tests for authentication flows!** If you feel like your tests aren't strong enough, and want to make your tests more robust (you know you want to), check out the challenges below:

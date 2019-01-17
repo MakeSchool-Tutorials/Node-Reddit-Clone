@@ -132,9 +132,9 @@ Can you rewrite the above code into its own middleware called `CheckAuth`?
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Users must be logged in to submit a post'
-git push
+$ git add .
+$ git commit -m 'Users must be logged in to submit a post'
+$ git push
 ```
 
  Through the code above, you have now successfully **restricted functionality based on authentication status**. Right on!
@@ -297,9 +297,9 @@ app.get("/n/:subreddit", function (req, res) {
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Authors for posts are visible'
-git push
+$ git add .
+$ git commit -m 'Authors for posts are visible'
+$ git push
 ```
 
 # Now for Comments
@@ -348,9 +348,9 @@ app.get("/posts/:id", function (req, res) {
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Authors for comments are visible'
-git push
+$ git add .
+$ git commit -m 'Authors for comments are visible'
+$ git push
 ```
 
 # Stretch Challenges

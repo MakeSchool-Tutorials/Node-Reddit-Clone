@@ -267,9 +267,9 @@ Use either the `mongo` shell or [Robo 3T](https://robomongo.org/download) to con
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Users can submit and save posts'
-git push
+$ git add .
+$ git commit -m 'Users can submit and save posts'
+$ git push
 ```
 
 

@@ -160,9 +160,9 @@ We did a lot of changes here, so let's commit what we have so far:
 ## Now Commit
 
 ```bash
-git add .
-git commit -m 'refactored populate code'
-git push
+$ git add .
+$ git commit -m 'refactored populate code'
+$ git push
 ```
 
 You have now successfully **investigated how to use the `populate` method in Mongoose for advanced associations**. Congrats!
@@ -351,9 +351,9 @@ Credit again to Dacio Romero, who's `/controllers/replies/post` method was adapt
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Implemented nested comments'
-git push
+$ git add .
+$ git commit -m 'Implemented nested comments'
+$ git push
 ```
 
 # Stretch Challenge

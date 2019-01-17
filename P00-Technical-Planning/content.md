@@ -112,16 +112,16 @@ Ok --- we've got user narratives, wireframes, and a plan for the first few featu
 1. Now that you have a basic initialized project, let's commit to GitHub.
 
 ```bash
-git init
-git add .
-git commit -m 'hello world project init'
+$ git init
+$ git add .
+$ git commit -m 'hello world project init'
 ```
 
 Now go to GitHub and create a public repository called `Node-Reddit-Clone`, and now associate it as a remote for your local git project and then push to it.
 
 ```bash
-git remote add origin GITHUB-REPO-URL
-git push origin master -u
+$ git remote add origin GITHUB-REPO-URL
+$ git push origin master -u
 ```
 
 Onwards!

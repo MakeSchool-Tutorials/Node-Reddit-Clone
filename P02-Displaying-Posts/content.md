@@ -115,9 +115,9 @@ Now that we have `{{posts}}`, we can use handlebars' [built in `each` operator](
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Users can view a list of posts'
-git push
+$ git add .
+$ git commit -m 'Users can view a list of posts'
+$ git push
 ```
 
 # Viewing One Post
@@ -178,7 +178,7 @@ Now can you see your post?
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Users can see individual posts'
-git push
+$ git add .
+$ git commit -m 'Users can see individual posts'
+$ git push
 ```

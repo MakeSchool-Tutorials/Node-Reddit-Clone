@@ -199,9 +199,9 @@ Create a new post and see if you can vote up or down on your new post. Check the
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Users can now vote on posts'
-git push
+$ git add .
+$ git commit -m 'Users can now vote on posts'
+$ git push
 ```
 
 If you made it this far, that means that you were able to successfully **implement a large scale application using Express, Handlebars, and MongoDB/Mongoose.**

@@ -280,9 +280,9 @@ Now lets see if the cookie is set by examining the cookies in the client.
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Users can sign up'
-git push
+$ git add .
+$ git commit -m 'Users can sign up'
+$ git push
 ```
 
 
@@ -324,9 +324,9 @@ After you click the "Logout" link is the cookie still present in the server in `
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Users can log out'
-git push
+$ git add .
+$ git commit -m 'Users can log out'
+$ git push
 ```
 
 
@@ -384,9 +384,9 @@ app.post("/login", (req, res) => {
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Users can log in'
-git push
+$ git add .
+$ git commit -m 'Users can log in'
+$ git push
 ```
 
 Phew!

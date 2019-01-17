@@ -195,9 +195,9 @@ When a controller or route test runs, it runs itself and it hits your server end
 # Now Commit
 
 ```bash
-git add .
-git commit -m 'Post tests implemented'
-git push
+$ git add .
+$ git commit -m 'Post tests implemented'
+$ git push
 ```
 
 Great test writing! With these tests written you've successfully **implemented more intricate tests for your CRUD app!** Now let's add some more complexity to this app. Onward!
