@@ -27,11 +27,15 @@ Alright next step! Its time to allow people to take responsibility for the silly
 
 Always think first about what the user's experience should be, and then develop for that. We'll follow the convention of a "sign up / login" links living in the navbar of our project.
 
+>[action]
+> Update `/views/partials/navbar.handlebars` to include `logout`, `login` and `sign-up` links:
+>
 ```html
 <nav class="navbar navbar-default">
   <div class="container">
     ...
     <ul class="nav navbar-nav navbar-right">
+      <li><a href="/logout">Logout</a></li>
       <li><a href="/login">Login</a></li>
       <li><a href="/sign-up">Sign Up</a></li>
     </ul>
@@ -39,8 +43,13 @@ Always think first about what the user's experience should be, and then develop 
 </div>
 ```
 
-Now that we have the links, let's make the `/sign-up` route work. We can make a new controller file called `auth.js` to put all our authentication routes.
+![AUTH LINKS](assets/auth-home.png)
 
+Now that we have the links, let's make the `/sign-up` route work.
+
+>[action]
+> Make a new controller file called `/controllers/auth.js` to put all our authentication routes.
+>
 ```js
 module.exports = (app) => {
   // SIGN UP FORM
@@ -49,9 +58,9 @@ module.exports = (app) => {
   });
 }
 ```
-
-Remember to add this new controller as a `require` within `sever.js`:
-
+>
+> Remember to add this new controller as a `require` within `sever.js`:
+>
 ```js
 require('./controllers/auth.js')(app);
 ```
@@ -60,25 +69,26 @@ Now we can create our sign up form with `username` and `password` fields.
 
 # Make the POST Route to `/sign-up`
 
-Use the template code you used to create a post but alter it to fit a username/password form. This should be a new files in your `views` folder called `sign-up` Don't forget:
-
-1. Set the password input field type to `password`
-1. Set the action of the form to `/sign-up`
-1. Put the form in the middle third of the grid.
-
-Define a `User` model. Add a new file called `user.js` in your `models` folder.
-
+>[action]
+> Use the template code you used to create a post but alter it to fit a username/password form. This should be a new files in your `views` folder called `sign-up` Don't forget:
+>
+> 1. Set the password input field type to `password`
+> 1. Set the action of the form to `/sign-up`
+> 1. Put the form in the middle third of the grid.
+>
+> Define a `User` model. Add a new file called `user.js` in your `models` folder.
+>
 ```js
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-
+>
 const UserSchema = new Schema({
   createdAt: { type: Date },
   updatedAt: { type: Date },
   password: { type: String, select: false },
   username: { type: String, required: true }
 });
-
+>
 // Define the callback with a regular function to avoid problems with this
 UserSchema.pre("save", function(next) {
   // SET createdAt AND updatedAt
@@ -89,22 +99,22 @@ UserSchema.pre("save", function(next) {
   }
   next();
 });
-
+>
 module.exports = mongoose.model("User", UserSchema);
 ```
-
-Next define a route `/sign-up`.
-
+>
+> Next define a route `/sign-up` in `/controllers/auth.js`.
+>
 ```js
 const User = require("../models/user");
-
+>
 module.exports = app => {
   ...
   // SIGN UP POST
   app.post("/sign-up", (req, res) => {
     // Create User
     const user = new User(req.body);
-
+>
     user
       .save()
       .then(user => {
@@ -116,6 +126,10 @@ module.exports = app => {
   });
 };
 ```
+
+Your form should look similar to this:
+
+![SIGNUP FORM](assets/sign-up-form.png)
 
 Now we have a user model, but if we save our password it will be saved in our database as plaintext and not be secure.
 
@@ -201,6 +215,9 @@ Besides just creating a user document when the user signs up, we also want to lo
 
 In our case, being logged in will mean that there is an authentic **JWT token - a JSON Web Token - set as a cookie**. This token is another piece of neat encryption that _uniquely identifies a specific user_. We'll use a library called `jsonwebtoken` to generate this token, and then we'll use `cookie-parser` to set this token as a cookie.
 
+>[action]
+> Install `cookie-parser` and `jsonWebToken`:
+>
 ```bash
 npm install cookie-parser jsonwebtoken -s
 ```
@@ -290,19 +307,6 @@ $ git push
 
 Now that we have signed up, let's log out. Since "being logged in" just means that the cookie is set, we can create a new `/logout` route that just removes this cookie.
 
-> [action]
-> Update your `navbar` to include a Logout item:
->
-```html
-<ul class="nav navbar-nav navbar-right">
-  <li><a href="/logout">Logout</a></li>
-  <li><a href="/login">Login</a></li>
-  <li><a href="/sign-up">Sign Up</a></li>
-</ul>
-```
-
-<!-- -->
-
 > [info]
 > It might be more accurate to use the DELETE method, because we are sort of deleting something, but we will just use the get method to simplify our requests at this point.
 
@@ -345,7 +349,12 @@ Now that we've signed up, logged out, now let's login. We can use the same patte
 ```
 >
 > Use the `sign-up` template code to make a new `login` view. It should be a very similar form to what you used for `sign-up`. Be sure to change the `action` field on the form!
->
+
+The form should look like the following:
+![LOGIN FORM](assets/login-form.png)
+
+
+>[action]
 > Now let's make the logic for the POST route to `/login` work.
 >
 ```js
