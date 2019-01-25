@@ -39,6 +39,8 @@ So, if we want to allow users to comment on these posts, first we can add a comm
   </form>
 ```
 
+![COMMENT FORM](assets/comment-form.png)
+
 If you submit the form, it fails because there is no POST route to `/posts/{{post._id}}/comments` yet. Let's fix that!
 
 # Make Create Comment Route
@@ -179,7 +181,7 @@ Finally, create some new comments and confirm that their `_id`'s are being added
 
 # Displaying Comments
 
-Now that we have the comments associate we can see them in the parent `post` object.
+Now that we have the comments associated, we can see them in the parent `post` object.
 > [action]
 > Let's add them to the `posts-show` template below the new comment form.
 >
@@ -217,6 +219,10 @@ In order to view just the content of the comment, you have to access the `conten
   <p>{{this.content}}</p>
 {{/each}}
 ```
+
+Make a comment, and it should look similar to this:
+
+![COMMENT DONE](assets/comment-done.png)
 
 # Now Commit
 

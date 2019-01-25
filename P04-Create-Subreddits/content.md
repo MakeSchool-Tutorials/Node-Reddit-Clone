@@ -45,7 +45,9 @@ If we were using a SQL database we would have to make a new table called "subred
 subreddit: { type: String, required: true }
 ```
 
-<!-- -->
+After that, your form should look like this:
+
+![SUBREDDIT FORM](assets/subreddit-form.png)
 
 > [challenge]
 > Make it possible for a post to have multiple subreddits. What would be the changes you would have to make to do that?
@@ -86,6 +88,8 @@ Once again, we start with what the user sees and can do. Let's turn each post's 
 </li>
 ```
 
+![SUBREDDIT HOME](assets/subreddit-home.png)
+
 Now if you click this link what happens? No route!
 
 # Resolving the `/n/subreddit` Route
@@ -124,7 +128,11 @@ app.get("/n/:subreddit", function(req, res) {
 
 How does that look? Are you getting just posts with that subreddit?
 
-**BOOM** - Subreddits! But before we forget...
+**BOOM** - Subreddits!
+
+![SUBREDDIT PAGE](assets/subreddit-page.png)
+
+But before we forget...
 
 # Now Commit
 

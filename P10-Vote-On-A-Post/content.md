@@ -200,6 +200,8 @@ If you made it this far, that means that you were able to successfully **impleme
 
 **CONGRATS!!** You've built a clone of Reddit!
 
+![FINAL REDDIT](assets/final-reddit.png)
+
 # Feedback and Review
 
 Please take a moment to rate your understanding of learning outcomes from this tutorial, and how we can improve it via our [tutorial feedback form](https://goo.gl/forms/3IC9rSVBUx63pdC33)
@@ -214,7 +216,7 @@ $ git push
 
 # Challenges
 
-If you're looking for more, check out the
+If you're looking for more, check out the following:
 >[challenge]
 >
 1. We only allow voting on the home and subreddit screens currently. Allow it on when viewing a single post.

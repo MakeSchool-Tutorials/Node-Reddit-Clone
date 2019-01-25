@@ -175,6 +175,12 @@ Time to template. As a bare minimum we'll use some bootstrap classes to make thi
 
 Now can you see your post?
 
+![POST ON HOME](assets/post-home.png)
+
+What about clicking into your post?
+
+![POST SUMMARY](assets/post-summary.png)
+
 # Now Commit
 
 ```bash

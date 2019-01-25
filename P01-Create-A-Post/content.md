@@ -65,6 +65,13 @@ Next, we have to create the form. Let's follow RESTful routing and make the url 
 </div>
 ```
 
+Your nav bar should look like the following:
+
+![NEW POST BUTTON](assets/new-post-button.png)
+
+And the form:
+![NEW POST FORM](assets/new-post-form.png)
+
 # Submit the Form
 
 So what happens when you submit this form?

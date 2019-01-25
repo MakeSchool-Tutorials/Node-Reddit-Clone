@@ -109,7 +109,14 @@ Ok --- we've got user narratives, wireframes, and a plan for the first few featu
 ```
 
 1. Now add the [navbar component](https://getbootstrap.com/docs/4.1/components/navbar/) to your layout template.
-1. Now that you have a basic initialized project, let's commit to GitHub.
+
+When you're done, you should have something like this to start off with:
+
+![FINISHED CHAPTER 1](assets/ch1-done.png)
+
+Not very great looking, but it's a fantastic start!
+
+Now that you have a basic initialized project, let's commit to GitHub.
 
 ```bash
 $ git init

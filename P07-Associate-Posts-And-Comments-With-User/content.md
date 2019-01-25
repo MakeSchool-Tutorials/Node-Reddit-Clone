@@ -125,6 +125,15 @@ app.post("/posts/new", (req, res) => {
 });
 ```
 
+Logged in Vs logged out users should now have different views:
+
+**Logged Out**
+![LOGGED OUT](assets/logged-out.png)
+
+**Logged In**
+![LOGGED IN](assets/logged-in.png)
+
+
 We could do this more elegantly and more DRY if we made another example of [custom middleware called](https://expressjs.com/en/guide/writing-middleware.html) `CheckAuth` and used it on those routes that we require to be logged in.
 
 Can you rewrite the above code into its own middleware called `CheckAuth`?
@@ -245,6 +254,8 @@ Now you should be seeing a `User` object! We're almost there, just update your `
 <div><small>{{this.author.username}}</small></div>
 ```
 
+![AUTHOR HOME](assets/author-home.png)
+
 Now we have authors properly displayed on the home page! We still need to get authors to display when looking at a single post, and when looking at a specific subreddit.
 
 Let's work on the single post first, this should be very similar to what we just did for the home page.
@@ -344,6 +355,9 @@ app.get("/posts/:id", function (req, res) {
        });
 });
 ```
+> Authors should now be displayed for both Posts and Comments. Try posting as one user, and commenting as another to see it in action:
+>
+> ![COMMENT AUTHOR](assets/author-comment.png)
 
 # Now Commit
 
