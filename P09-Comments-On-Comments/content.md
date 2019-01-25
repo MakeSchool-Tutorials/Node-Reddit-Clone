@@ -328,7 +328,7 @@ Finally, let's give each comment a bit of an indent by creating a style for the 
 >
 ```css
 .comment-indent {
-  margin-left: 12px;
+  margin-left: 20px;
 }
 ```
 >
@@ -342,6 +342,8 @@ Finally, let's give each comment a bit of an indent by creating a style for the 
 ```
 
 Refresh and try out your new nested comments!!
+
+![NESTED COMMENTS](assets/nested-comments.png)
 
 Now that we have a `css` folder, what other styles would you add? Add some more styling to spruce up your Reddit!
 
