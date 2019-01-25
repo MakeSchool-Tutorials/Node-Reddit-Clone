@@ -66,7 +66,7 @@ module.exports = app;
 Now let's run the test.
 
 > [action]
->First update your `package.js` file to have a test command:
+>First update your `package.json` file to have a test command:
 >
 ```json
 "scripts": {
