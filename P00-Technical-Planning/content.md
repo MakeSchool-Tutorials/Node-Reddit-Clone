@@ -72,7 +72,7 @@ In what order should we fulfill these tasks? What do you think? Write it down st
 > 1. Create a post on a subreddit
 > 1. Show all subreddits
 > 1. Sign up and Login
-> 1. Associate posts, comments with their author
+> 1. Associate posts, comments, and votes with their author
 > 1. Make comments on comments
 > 1. Vote a post up or down
 
