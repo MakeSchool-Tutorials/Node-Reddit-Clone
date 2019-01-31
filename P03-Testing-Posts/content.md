@@ -113,7 +113,7 @@ describe('Posts', function() {
   const newPost = {
       title: 'post title',
       url: 'https://www.google.com',
-      summary: 'post summary',
+      summary: 'post summary'
   };
   it("should create with valid attributes at POST /posts/new", function (done) {
     // TODO: test code goes here!
@@ -127,7 +127,7 @@ Let's think about what we want our test to...well, test. It can be helpful to th
 // How many posts are there now?
 // Make a request to create another
 // Check that the database has one more post in it
-// Check that the response is a successful
+// Check that the response is successful
 ```
 
 Now let's take this pseudocode and make something of it! For these tests we're going to take advantage of a lot of `mongoose`'s built in functions, such as [estimatedDocumentCount](https://mongoosejs.com/docs/api.html#model_Model.estimatedDocumentCount).
