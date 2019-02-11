@@ -48,7 +48,7 @@ module.exports = field => {
 Great! Because this function recursively calls itself, we can now populate fields every time we load a model! Let's make some changes so that our `posts` and `comments` take advantage of this functionality.
 
 >[action]
-> Update `/models/post.js` and `/models/comment.js` to use your new `util`:
+> Update `/models/post.js` and `/models/comment.js` to use your new `util`. We also need to update the schema in `/models/comment.js` to include a new `comments` property so that comments can support comments of their own:
 >
 > `/models/post.js`
 >
@@ -77,7 +77,9 @@ const Schema = mongoose.Schema;
 const Populate = require("../utils/autopopulate");
 >
 const CommentSchema = new Schema({
-...
+  content: { type: String, required: true },
+  author : { type: Schema.Types.ObjectId, ref: "User", required: true },
+[bold]  comments: [{type: Schema.Types.ObjectId, ref: "Comment"}] [/bold]
 });
 >
 // Always populate the author field
