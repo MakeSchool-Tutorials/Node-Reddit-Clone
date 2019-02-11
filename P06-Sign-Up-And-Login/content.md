@@ -219,7 +219,7 @@ In our case, being logged in will mean that there is an authentic **JWT token - 
 > Install `cookie-parser` and `jsonWebToken`:
 >
 ```bash
-npm install cookie-parser jsonwebtoken -s
+npm install jsonwebtoken -s
 ```
 
 # Use Middleware to handle tokens
