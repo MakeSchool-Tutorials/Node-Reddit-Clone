@@ -32,7 +32,7 @@ Always think first about what the user's experience should be, and then develop 
 >
 ```html
 <nav class="navbar navbar-default">
-  <div class="container">
+  <div class="container-fluid">
     ...
     <ul class="nav navbar-nav navbar-right">
       <li><a href="/logout">Logout</a></li>
