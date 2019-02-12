@@ -256,12 +256,6 @@ app.post("/sign-up", (req, res) => {
 Next we need to set the JWT as a cookie so that it will be included in all future requests from the current user's client.
 
 > [action]
-> First we install `cookieParser` in the project:
->
-```bash
-$ npm install --save cookie-parser
-```
->
 > Next we include `cookieParser` and `jsonWebToken` in the project by requiring them in the `server.js` file so that their methods can be used anywhere in the app.
 >
 ```js
