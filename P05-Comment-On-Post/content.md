@@ -220,6 +220,8 @@ In order to view just the content of the comment, you have to access the `conten
 {{/each}}
 ```
 
+# Product So Far
+
 Make a comment, and it should look similar to this:
 
 ![COMMENT DONE](assets/comment-done.png)

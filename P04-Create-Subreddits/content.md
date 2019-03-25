@@ -49,9 +49,6 @@ After that, your form should look like this:
 
 ![SUBREDDIT FORM](assets/subreddit-form.png)
 
-> [challenge]
-> Make it possible for a post to have multiple subreddits. What would be the changes you would have to make to do that?
-
 Now when you make a new post, you should be able to type in a subreddit string and save the post.
 
 The post should save with its new subreddit string, but we won't be able to see it just yet.
@@ -126,6 +123,8 @@ app.get("/n/:subreddit", function(req, res) {
 });
 ```
 
+# Product So Far
+
 How does that look? Are you getting just posts with that subreddit?
 
 **BOOM** - Subreddits!
@@ -141,3 +140,9 @@ $ git add .
 $ git commit -m 'Users can see Subreddits'
 $ git push
 ```
+
+# Stretch Challenge
+
+> [challenge]
+>
+> Make it possible for a post to have multiple subreddits. What would be the changes you would have to make to do that?

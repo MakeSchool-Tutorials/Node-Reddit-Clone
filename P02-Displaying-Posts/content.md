@@ -173,6 +173,8 @@ Time to template. As a bare minimum we'll use some bootstrap classes to make thi
 </div>
 ```
 
+# Product So Far
+
 Now can you see your post?
 
 ![POST ON HOME](assets/post-home.png)

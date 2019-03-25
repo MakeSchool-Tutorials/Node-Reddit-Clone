@@ -194,6 +194,8 @@ app.put("/posts/:id/vote-down", function(req, res) {
 });
 ```
 
+# Product So Far
+
 Create a new post and see if you can vote up or down on your new post. Check the console logs to make sure the votes are being tracked appropriately.
 
 If you made it this far, that means that you were able to successfully **implement a large scale application using Express, Handlebars, and MongoDB/Mongoose.**
@@ -202,7 +204,11 @@ If you made it this far, that means that you were able to successfully **impleme
 
 ![FINAL REDDIT](assets/final-reddit.png)
 
-# Feedback and Review
+As you go through this BEW course, think about how you can tie the concepts you learned here – particularly auth and testing – and see how you can apply them in the course.
+
+# Feedback and Review - 2 minutes
+
+**We promise this won't take longer than 2 minutes!**
 
 Please take a moment to rate your understanding of learning outcomes from this tutorial, and how we can improve it via our [tutorial feedback form](https://goo.gl/forms/3IC9rSVBUx63pdC33)
 
@@ -214,7 +220,7 @@ $ git commit -m 'Users can now vote on posts'
 $ git push
 ```
 
-# Challenges
+# Stretch Challenges
 
 If you're looking for more, check out the following:
 >[challenge]

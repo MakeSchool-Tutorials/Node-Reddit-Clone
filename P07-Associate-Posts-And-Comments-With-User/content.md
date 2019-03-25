@@ -100,9 +100,6 @@ Now, hide the "New Post" button for those who are NOT logged in.
 
 Remember, you'll have to add `currentUser` to all of the routes that call `res.render()` so the main templates work. This may seem like some duplication of code, and it is.
 
->[challenge]
-> Can you brainstorm a 100% DRY solution with a friend, without code duplication?
-
 # Requiring the User to Be Logged In to Post
 
 Right now, if you aren't logged in, you could still just navigate to `/posts/new` and create a post. Let's be a bit more secure and prevent someone from creating a post unless they are logged in.
@@ -124,6 +121,8 @@ app.post("/posts/new", (req, res) => {
   }
 });
 ```
+
+# Product So Far
 
 Logged in Vs logged out users should now have different views:
 
@@ -207,6 +206,8 @@ module.exports = function (app) {
             return res.status(401); // UNAUTHORIZED
         }
     });
+...
+}
 ```
 
 Test that both the `author` and the `posts` are being saved by looking in your database or logging to the console.
@@ -246,6 +247,8 @@ If you refresh right now, you'll just see an `ObjectId` for the `author`. We nee
     })
 ```
 
+# Product So Far
+
 Now you should be seeing a `User` object! We're almost there, just update your `posts-index` to pull from the `username` field within `author`
 > [action]
 > Update the `author` div in `posts-index`:
@@ -255,6 +258,8 @@ Now you should be seeing a `User` object! We're almost there, just update your `
 ```
 
 ![AUTHOR HOME](assets/author-home.png)
+
+# Authors - Single Post
 
 Now we have authors properly displayed on the home page! We still need to get authors to display when looking at a single post, and when looking at a specific subreddit.
 
@@ -355,9 +360,12 @@ app.get("/posts/:id", function (req, res) {
        });
 });
 ```
-> Authors should now be displayed for both Posts and Comments. Try posting as one user, and commenting as another to see it in action:
->
-> ![COMMENT AUTHOR](assets/author-comment.png)
+
+# Product So Far
+
+Authors should now be displayed for both Posts and Comments. Try posting as one user, and commenting as another to see it in action:
+
+![COMMENT AUTHOR](assets/author-comment.png)
 
 # Now Commit
 
@@ -370,8 +378,6 @@ $ git push
 # Stretch Challenges
 > [challenge]
 >
-1. Can you make an author's username a link that displays that users's profile at `/users/:username`?
->
-1. Can you do the same for comments?
->
-1. Can you make a `/profile` route that loads the current user and displays their posts and comments?
+> 1. Can you make an author's username a link that displays that users's profile at `/users/:username`?
+> 1. Can you do the same for comments?
+> 1. Can you make a `/profile` route that loads the current user and displays their posts and comments?

@@ -14,6 +14,10 @@ In this tutorial you will develop a clone of Reddit with posts, subreddits, and 
 
 This tutorial should take much longer than the previous tutorials to complete and it will require that you read instructions very carefully and follow them step by step. You might encounter errors that you will need to troubleshoot and google to solve. If you would like to provide feedback on this tutorial, please leave GitHub issues on the [GitHub repo](https://github.com/MakeSchool-Tutorials/Node-Reddit-Clone).
 
+# Why is this important?
+
+When you're building large scale applications, it's good to have some practice with the tools that enable you to spin things up quickly. Trying to do everything using vanilla code, while commendable, can be incredibly time consuming. Knowing which frameworks and tools to use to get everything up and running will make your life significantly easier when you're doing this in the industry. We'll also cover how to do an auth flow using [JWTs](https://jwt.io/), an incredibly popular tool to use for auth that you'll be able to transfer over to any time you want to put an auth flow in your app!
+
 # Learning Outcomes
 
 By the end of this tutorial, you should be able to...
@@ -109,6 +113,8 @@ Ok --- we've got user narratives, wireframes, and a plan for the first few featu
 ```
 
 1. Now add the [navbar component](https://getbootstrap.com/docs/4.1/components/navbar/) to your layout template.
+
+# Product So Far
 
 When you're done, you should have something like this to start off with:
 

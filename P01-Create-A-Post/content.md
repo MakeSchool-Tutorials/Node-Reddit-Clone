@@ -280,7 +280,7 @@ $ git push
 ```
 
 
-# STRETCH: Adding Created At and Updated At Attributes
+# STRETCH CHALLENGE: Adding Created At and Updated At Attributes
 > [challenge]
 > Create a new model, and figure out how you can display these new attributes in your app:
 >

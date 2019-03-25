@@ -127,6 +127,8 @@ module.exports = app => {
 };
 ```
 
+# Product So Far
+
 Your form should look similar to this:
 
 ![SIGNUP FORM](assets/sign-up-form.png)
@@ -281,6 +283,7 @@ Next we'll set the cookie. (We'll want our JWT cookie variable's name to bit uni
       res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
       res.redirect('/');
 ...
+})
 ```
 
 Now lets see if the cookie is set by examining the cookies in the client.
@@ -344,6 +347,8 @@ Now that we've signed up, logged out, now let's login. We can use the same patte
 >
 > Use the `sign-up` template code to make a new `login` view. It should be a very similar form to what you used for `sign-up`. Be sure to change the `action` field on the form!
 
+# Product So Far
+
 The form should look like the following:
 ![LOGIN FORM](assets/login-form.png)
 
@@ -398,7 +403,8 @@ If we did everything right, now we should be able to sign up, log out, and login
 
 In the next chapter we'll associate our user record with our posts and comments.
 
-# Stretch: More Authentication Patterns
+# Stretch Challenges: More Authentication Patterns
+
 >[challenge]
 > There is a lot more to make a full fledged authentication system. See which ones you want to try:
 >

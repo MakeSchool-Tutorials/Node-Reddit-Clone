@@ -343,6 +343,8 @@ Finally, let's give each comment a bit of an indent by creating a style for the 
 </head>
 ```
 
+# Product So Far
+
 Refresh and try out your new nested comments!!
 
 ![NESTED COMMENTS](assets/nested-comments.png)
