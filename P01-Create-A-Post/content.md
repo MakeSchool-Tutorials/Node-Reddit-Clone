@@ -130,7 +130,7 @@ Essentially, `body-parser` is a necessary middleware to communicate with your `P
 > Install `express-validator`:
 >
 ```bash
-npm install express-validator --save
+npm install express-validator@^5.3.0 --save
 ```
 >
 > Next, add the following two requirements to the top of your `server.js` file, and pass `body-parser` through the `app.use()` module:
@@ -146,6 +146,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Add after body parser initialization!
 app.use(expressValidator());
 ```
+
+<!-- -->
+
+> [info]
+>
+> Why did we install a specific version of express-validator? Unfortunately due to [breaking changes in version 6](https://github.com/express-validator/express-validator/releases/v6.0.0), the use of `app.use(expressValidator())` is not supported in later versions of express-validator. Until a proper migration from 5.x to 6.x is released, this tutorial will use this workaround.
 
 # Connecting to your database
 
