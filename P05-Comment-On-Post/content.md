@@ -201,7 +201,7 @@ Just the id's right? **When we do a reference association, we only save the id's
 ```js
 // LOOK UP THE POST
 Post.findById(req.params.id).populate('comments').then((post) => {
-  res.render('post-show.hbs', { post })
+  res.render('post-show', { post })
 }).catch((err) => {
   console.log(err.message)
 })
