@@ -3,7 +3,7 @@ title: "User Narratives, Wire Frames, and Technical Planning"
 slug: technical-planning
 ---
 
-This tutorial is part of a four part series with the [Giphy Search Tutorial](https://www.makeschool.com/online-courses/tutorials/giphy-search-app-with-node-js/your-node-environment), the [Concentration Game](https://www.makeschool.com/online-courses/tutorials/javascript-concentration-game/javascript-game-tutorial-intro), the [Rotten Potatoes Tutorial](https://www.makeschool.com/online-courses/tutorials/rotten-potatoes-movie-reviews-with-express-js/bootstrap-an-express-project). Whereas those tutorials gave you 100% of the code or starter code you needed to build them, this project will be more demanding of you to write your own code, or find the proper code snippets from your other projects and framework documentation.
+This tutorial is part of a four part series with the [Giphy Search Tutorial](https://www.makeschool.com/academy/track/standalone/gif-search-app-ynu/your-node-environment), the [Concentration Game](https://www.makeschool.com/academy/track/standalone/javascript-concentration-game/JavaScript-game-Tutorial-intro), the [Rotten Potatoes Tutorial](https://www.makeschool.com/academy/track/standalone/rotten-potatoes---movie-reviews-with-express-js/start-an-express-project). Whereas those tutorials gave you 100% of the code or starter code you needed to build them, this project will be more demanding of you to write your own code, or find the proper code snippets from your other projects and framework documentation.
 
 In this tutorial you will develop a clone of Reddit with posts, subreddits, and authentication. The tools you will use are:
 
