@@ -151,12 +151,12 @@ $ git push
 
 So now we want people to take responsibility for their silly posts on Reddit.js.
 
-We need to make each post and each comment point back to it's author, as well as ensure the posts and comments are persisted with associations to the user that creates them. We'll do this by saving the author's user id in each child post or comment, and by tracking the post and comment id's for each user. Then we can use the `.populate()` method to pull in the details whenever we need.
+We need to make each post and each comment point back to its author, as well as ensure the posts and comments are persisted with associations to the user that creates them. We'll do this by saving the author's user id in each child post or comment, and by tracking the post and comment id's for each user. Then we can use the `.populate()` method to pull in the details whenever we need.
 
 To accomplish this, there are no changes required to the views we've already created. We can go straight to updating model and controller appropriately.
 
 >[action]
-> First, let's add an `author` attribute to both the `models/comment.js` and the `models/post.js` files. It's type will be a single `ObjectId`. We'll make it required because only logged in people can create posts.
+> First, let's add an `author` attribute to both the `models/comment.js` and the `models/post.js` files. Its type will be a single `ObjectId`. We'll make it required because only logged in people can create posts.
 >
 ```js
 ...

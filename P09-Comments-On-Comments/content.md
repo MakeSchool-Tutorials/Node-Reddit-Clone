@@ -86,6 +86,8 @@ const CommentSchema = new Schema({
 CommentSchema
     .pre('findOne', Populate('author'))
     .pre('find', Populate('author'))
+    .pre('findOne', Populate('comments'))
+    .pre('find', Populate('comments'))
 >
 module.exports = mongoose.model("Comment", CommentSchema);
 ```
