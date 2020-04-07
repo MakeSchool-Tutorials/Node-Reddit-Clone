@@ -227,6 +227,14 @@ require('./data/reddit-db');
 
 In order to interact with the MongoDB database we're going to use the npm module [`mongoose`](https://www.npmjs.com/package/mongoose). Mongoose is the ODM - the Object Document Mapper. That means that it maps JavaScript objects in our application to documents in the database. Mongoose works through schemas, written in code, called Models.
 
+**IMPORTANT NOTE:** Make sure that you put all middleware requires **_BEFORE_** all routes (including routes imported from other files), or your routes may not work!
+
+> [action]
+>
+> Read the note above again! No really, re-read it so that you remember to do this throughout the tutorial. Your future self will thank you from all the time/frustration you save
+
+<!-- -->
+
 > [action]
 > Create the folder `models` and inside put the `post.js` file. Here's a sample model for our `Post` resource.
 >

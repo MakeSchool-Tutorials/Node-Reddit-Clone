@@ -50,7 +50,7 @@ mongoose.set('debug', true);
 > [action]
 > Next, let's create a `posts-index` template in our `views` folder. Don't worry about it looking fancy right now, we'll spruce it up in a bit. Just have it display `hello world` for now, or something equally simple.
 >
-> Once that's created, we want to have the root route (`/`) render the `posts-index` template. We also need to then pull the `posts` out of the database, and send them along with the response. Let's edit our `INDEX` call in our `posts.js` controller:
+> Once that's created, we want to have the root route (`/`) render the `posts-index` template. We also need to then pull the `posts` out of the database, and send them along with the response. Let's edit our `INDEX` call in our `posts.js` controller. Remember to put it AFTER you require all the middleware:
 >
 ```js
 Post.find({})
@@ -140,7 +140,7 @@ The title is a link to the show page. If we click it, what happens? Error! No ro
 We need the path `/posts/:id` to resolve to displaying a `posts-show` template.
 
 > [action]
-> open `controllers/post.js`, and add a new GET endpoint:
+> open `controllers/post.js`, and add a new GET endpoint. Make sure all middleware requirements happen ABOVE it:
 >
 ```js
 app.get("/posts/:id", function(req, res) {

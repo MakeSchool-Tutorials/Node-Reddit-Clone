@@ -231,7 +231,7 @@ Use middleware to to authenticate tokens and attach them to `req` object passed 
 First, we generate **JSON Web Tokens (JWTs)** --- consequently, we need to require the `jsonwebtoken` module we just installed at the top of the `auth.js` controller. We will use it to generate a JWT _after_ the new user document is saved.
 
 > [action]
-> Update top of `auth.js` with the require, and then edit the `SIGN UP POST` method as shown below:
+> Update TOP of `auth.js` with the require, and then edit the `SIGN UP POST` method as shown below. Remember the route goes AFTER you require all the middleware:
 >
 ```js
 const jwt = require('jsonwebtoken');
@@ -310,7 +310,7 @@ Now that we have signed up, let's log out. Since "being logged in" just means th
 <!-- -->
 
 > [action]
-> Update the `auth.js` controller to include a logout method:
+> Update the `auth.js` controller to include a logout method. Remember to put it AFTER you require all the middleware:
 >
 ```js
   // LOGOUT
@@ -336,7 +336,7 @@ $ git push
 Now that we've signed up, logged out, now let's login. We can use the same pattern as we did with the `/sign-up` routes, with one GET and one POST both with the path `/login`.
 
 > [action]
-> First let's build the GET route and template. You can copy and modify the sign up template to create login template.
+> First let's build the GET route and template. You can copy and modify the sign up template to create login template. Remember to put it AFTER you require all the middleware:
 >
 ```js
   // LOGIN FORM
@@ -354,7 +354,7 @@ The form should look like the following:
 
 
 >[action]
-> Now let's make the logic for the POST route to `/login` work.
+> Now let's make the logic for the POST route to `/login` work. Remember to put it AFTER you require all the middleware:
 >
 ```js
 // LOGIN

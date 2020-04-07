@@ -64,7 +64,7 @@ Follow the pattern you used for the `Post` resource to create a `Comment` resour
 <!-- -->
 
 > [action]
-> Export the comments controller into the `server.js`
+> Export the comments controller into `server.js`.
 >
   ```js
     require('./controllers/comments.js')(app);
@@ -73,7 +73,7 @@ Follow the pattern you used for the `Post` resource to create a `Comment` resour
 <!-- -->
 
 > [action]
-> Make the CREATE in a nested route (hint: `/posts/:postId/comments`)
+> Make the CREATE in a nested route (hint: `/posts/:postId/comments`). Remember to put it AFTER you require all the middleware:
 >
 ```js
 // CREATE Comment
@@ -133,7 +133,7 @@ First we'll do the controller logic, then the model logic.
 > [action]
 > In the controller we need find the parent `Post` from the `:postId` we have in the url parameters, then associate this parent with the comment by pushing the comment into an array in the parent's `comments` attribute that we haven't created yet.
 >
-> Also remember to add a `require` for your `Post` model, since we'll now be using it within the `comments` controller.
+> Also remember to add a `require` for your `Post` model, since we'll now be using it within the `comments` controller. Lastly, remember to put the routes AFTER you require all the middleware
 >
 ```js
 const Post = require('../models/post');

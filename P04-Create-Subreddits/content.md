@@ -96,7 +96,7 @@ Now if you click this link what happens? No route!
 Let's see if we can make this route work.
 
 > [action]
-> As a sanity check on our route setting, let's have the terminal output the subreddit name in the url when you navigate to it. Add the following code to your `posts` controller:
+> As a sanity check on our route setting, let's have the terminal output the subreddit name in the url when you navigate to it. Add the following code to your `posts` controller. Remember to put it AFTER you require all the middleware:
 >
 ```js
 // SUBREDDIT
