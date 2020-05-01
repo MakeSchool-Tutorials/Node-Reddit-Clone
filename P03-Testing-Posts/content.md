@@ -140,8 +140,7 @@ it('Should create with valid attributes at POST /posts/new', function(done) {
   // Checks how many posts there are now
   Post.estimatedDocumentCount()
     .then(function (initialDocCount) {
-        chai
-            .request(app)
+        agent
             .post("/posts/new")
             // This line fakes a form post,
             // since we're not actually filling out a form
