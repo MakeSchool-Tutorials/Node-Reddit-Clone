@@ -53,7 +53,7 @@ mongoose.set('debug', true);
 > Once that's created, we want to have the root route (`/`) render the `posts-index` template. We also need to then pull the `posts` out of the database, and send them along with the response. Let's edit our `INDEX` call in our `posts.js` controller. Remember to put it AFTER you require all the middleware:
 >
 ```js
-Post.find({})
+Post.find({}).lean()
   .then(posts => {
     res.render("posts-index", { posts });
   })
