@@ -56,7 +56,7 @@ Great! Because this function recursively calls itself, we can now populate field
 // models/post.js
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Populate = require("../utils/autopopulate");
+const Populate = require("../util/autopopulate");
 >
 const PostSchema = new Schema({
 ...
@@ -74,7 +74,7 @@ module.exports = mongoose.model("Post", PostSchema);
 ```js
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Populate = require("../utils/autopopulate");
+const Populate = require("../util/autopopulate");
 >
 const CommentSchema = new Schema({
   content: { type: String, required: true },
