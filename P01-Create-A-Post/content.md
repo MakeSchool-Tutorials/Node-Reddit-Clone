@@ -55,7 +55,7 @@ Next, we have to create the form. Let's follow RESTful routing and make the url 
       </div>
       <div class="form-group">
         <label for="post-summary">Summary</label>
-        <textarea name="summary" class="form-control" id="post-summary" placeholder="Title"></textarea>
+        <textarea name="summary" class="form-control" id="post-summary" placeholder="Summary"></textarea>
       </div>
       <div class='text-right'>
         <button type="submit" class="btn btn-primary">Create Post</button>
