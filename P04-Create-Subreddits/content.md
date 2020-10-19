@@ -115,7 +115,7 @@ We can also reuse our `posts-index` template for displaying our posts in the sub
 ```js
   // SUBREDDIT
 app.get("/n/:subreddit", function(req, res) {
-  Post.find({ subreddit: req.params.subreddit })
+  Post.find({ subreddit: req.params.subreddit }).lean()
     .then(posts => {
       res.render("posts-index", { posts });
     })
