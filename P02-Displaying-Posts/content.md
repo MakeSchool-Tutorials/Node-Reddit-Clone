@@ -33,8 +33,16 @@ Finally, for testing, we can add an error handler for connection errors.
 ```js
 mongoose.Promise = global.Promise;
 mongoose.connect(
-  "mongodb://localhost/reddit-db",
-  { useNewUrlParser: true }
+  url,
+  {
+    useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false,
+  },
+  function(err, db) {
+    assert.equal(null, err);
+    console.log("Connected successfully to database");
+
+    // db.close(); turn on for testing
+  }
 );
 mongoose.connection.on("error", console.error.bind(console, "MongoDB connection Error:"));
 ```
@@ -53,13 +61,15 @@ mongoose.set('debug', true);
 > Once that's created, we want to have the root route (`/`) render the `posts-index` template. We also need to then pull the `posts` out of the database, and send them along with the response. Let's edit our `INDEX` call in our `posts.js` controller. Remember to put it AFTER you require all the middleware:
 >
 ```js
-Post.find({}).lean()
-  .then(posts => {
-    res.render("posts-index", { posts });
-  })
-  .catch(err => {
-    console.log(err.message);
-  });
+app.get('/', (req, res) => {
+  Post.find({}).lean()
+    .then(posts => {
+      res.render('posts-index', { posts });
+    })
+    .catch(err => {
+      console.log(err.message);
+    })
+})
 ```
 
 Try running this and see if your `posts-index` is being displayed. If so, replace your `hello world` with the variable `{{posts}}`. What do you see?
@@ -145,7 +155,7 @@ We need the path `/posts/:id` to resolve to displaying a `posts-show` template.
 ```js
 app.get("/posts/:id", function(req, res) {
   // LOOK UP THE POST
-  Post.findById(req.params.id)
+  Post.findById(req.params.id).lean()
     .then(post => {
       res.render("posts-show", { post });
     })
