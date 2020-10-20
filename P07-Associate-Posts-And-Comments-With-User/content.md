@@ -179,7 +179,9 @@ and we can look up the current user and add the new post to their `posts`.
 > Update the `CREATE` method of your `posts` controller to the following. Remember to include the `User` model as a new requirement:
 >
 ```js
+const Post = require('../models/posts');
 const User = require('../models/user');
+
 module.exports = function (app) {
 ...
 // CREATE
@@ -237,7 +239,7 @@ If you refresh right now, you'll just see an `ObjectId` for the `author`. We nee
         var currentUser = req.user;
         // res.render('home', {});
         console.log(req.cookies);
-        Post.find().populate('author')
+        Post.find({}).lean().populate('author')
         .then(posts => {
             res.render('posts-index', { posts, currentUser });
             // res.render('home', {});
@@ -279,7 +281,7 @@ app.get("/posts/:id", function (req, res) {
         var currentUser = req.user;
         // LOOK UP THE POST
 >
-        Post.findById(req.params.id).populate('comments').populate('author')
+        Post.findById(req.params.id).lean().populate('comments').populate('author')
             .then(post => {
                 res.render("posts-show", { post, currentUser });  
             })
@@ -300,7 +302,7 @@ Finally, let's get `author` showing for posts on a subreddit.
 // SUBREDDIT
 app.get("/n/:subreddit", function (req, res) {
     var currentUser = req.user;
-    Post.find({ subreddit: req.params.subreddit }).populate('author')
+    Post.find({ subreddit: req.params.subreddit }).lean().populate('author')
         .then(posts => {
             res.render("posts-index", { posts, currentUser });
         })
@@ -351,7 +353,7 @@ app.get("/posts/:id", function (req, res) {
    var currentUser = req.user;
    // LOOK UP THE POST
 >
-   Post.findById(req.params.id).populate({path:'comments', populate: {path: 'author'}}).populate('author')
+   Post.findById(req.params.id).lean().populate({path:'comments', populate: {path: 'author'}}).populate('author')
        .then(post => {
            res.render("posts-show", { post, currentUser });  
        })
