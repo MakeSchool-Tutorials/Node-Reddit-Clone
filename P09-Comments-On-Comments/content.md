@@ -243,7 +243,7 @@ Next, create your `replies-new` template and have the content sit in the middle 
 ```html
 <div class="row">
   <div class="col-sm-6 col-sm-offset-3">
-    <form action="/posts/{{post._id}}/comments/{{comment._id}}/replies">
+    <form action="/posts/{{post._id}}/comments/{{comment._id}}/replies" method="post">
       <div class="form-group">
         <textarea name="content" class="form-control" id="reply-content" placeholder="Reply"></textarea>
       </div>
