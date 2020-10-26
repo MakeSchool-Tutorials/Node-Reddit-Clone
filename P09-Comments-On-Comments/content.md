@@ -206,10 +206,10 @@ module.exports = app => {
   // NEW REPLY
   app.get("/posts/:postId/comments/:commentId/replies/new", (req, res) => {
     let post;
-    Post.findById(req.params.postId)
+    Post.findById(req.params.postId).lean()
       .then(p => {
         post = p;
-        return Comment.findById(req.params.commentId);
+        return Comment.findById(req.params.commentId).lean();
       })
       .then(comment => {
         res.render("replies-new", { post, comment });
