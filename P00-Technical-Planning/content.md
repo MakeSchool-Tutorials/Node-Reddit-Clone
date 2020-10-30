@@ -127,7 +127,7 @@ Now that you have a basic initialized project, let's commit to GitHub.
 ```bash
 $ git init
 $ git add .
-$ git commit -m 'nod reddit clone project init'
+$ git commit -m 'node reddit clone project init'
 ```
 
 Now go to GitHub and create a public repository called `Node-Reddit-Clone`, and now associate it as a remote for your local git project and then push to it.
