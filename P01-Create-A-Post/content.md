@@ -182,7 +182,7 @@ $ which mongod
  We're also going to make sure that our Mongo database is running:
 >
 ```bash
-brew services restart mongodb
+brew services restart mongodb-community
 ```
 
 Great! Next, we're going to use the `reddit-db.js` file we made earlier to connect to the database.
