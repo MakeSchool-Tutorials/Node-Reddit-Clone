@@ -36,7 +36,7 @@ Next, we have to create the form. Let's follow RESTful routing and make the url 
 > [action]
 > Create this `/posts/new` route and have it render a newly created template named `posts-new.handlebars`.
 >
-> Now, use the [bootstrap form classes](https://getbootstrap.com/docs/3.3/css/#forms) to add a form for an object with a `title`, `url`, and `summary` attributes. Your form should have an action that points to a `create` route => `/posts`.
+> Now, use the [bootstrap form classes](https://getbootstrap.com/docs/5.0/forms/overview/#overview) to add a form for an object with a `title`, `url`, and `summary` attributes. Your form should have an action that points to a `create` route => `/posts`.
 >
 > **Remember** to put this form in the center 4 columns of a grid.
 >
