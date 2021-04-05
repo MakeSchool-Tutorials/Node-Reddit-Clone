@@ -196,7 +196,6 @@ const mongoose = require("mongoose");
 assert = require("assert");
 >
 const url = "mongodb://localhost/reddit-db";
-mongoose.Promise = global.Promise;
 mongoose.connect(
   url,
   { useNewUrlParser: true },
