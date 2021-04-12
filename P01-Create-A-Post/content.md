@@ -119,27 +119,15 @@ Is `req.body` defined? No?
 
 That's because you need to parse the json coming in through the `req.body`.
 
-The [body parser](https://www.npmjs.com/package/body-parser) module is one way to do this. We will also outline an alternative method with the express package. If you choose this route you will not need to install body parser.
-
-> [action]
-> Install the npm module in order to begin the process:
-
-```bash
-npm install body-parser
-```
-
-> Note: as of npm 5.0.0 installed modules are added as a dependency by default. The `--save` option is no longer needed.
-> [Stack Overflow Answer](https://stackoverflow.com/questions/19578796/what-is-the-save-option-for-npm-install)
-
 It's time to get `req.body` to reflect and contain the submitted form inputs from your front-end.
 
 # Req.body for Middleware
 
-Research what [body parser](https://www.npmjs.com/package/body-parser) is on the [npm website](https://npmjs.com).
+Research what [express json](https://expressjs.com/en/api.html) does in the documentation.
 
-While you're at it, also research the role of [express validator](https://www.npmjs.com/package/express-validator). What role does it play alongside the `body-parser` middleware?
+While you're at it, also research the role of [express validator](https://www.npmjs.com/package/express-validator). What role does it play alongside the `express.json()` middleware?
 
-Essentially, `body-parser` is a necessary middleware to communicate with your `POST` requests.
+Essentially, `express.json()` is a necessary middleware to communicate with your `POST` requests.
 
 `express-validator` is a wrapper around [validator.js](https://github.com/chriso/validator.js) that validates and sanitizes string inputs.
 
@@ -155,24 +143,13 @@ Essentially, `body-parser` is a necessary middleware to communicate with your `P
 npm install express-validator
 ```
 
-<!-- -->
-
-> [action]
-> Next, add the following two requirements to the top of your `server.js` file, and pass `body-parser` through the `app.use()` module:
-
-```js
-const bodyParser = require('body-parser');
->
-// Use Body Parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-```
+> Note: as of npm 5.0.0 installed modules are added as a dependency by default. The `--save` option is no longer needed.
+> [Stack Overflow Answer](https://stackoverflow.com/questions/19578796/what-is-the-save-option-for-npm-install)
 
 <!-- -->
 
 > [action]
-> OR, if you chose not to install body parser, you can use the built-in json method available on express 4.16.0 onward.
-> [Express Documentation](https://expressjs.com/en/api.html)
+> Next, add the following to your `server.js` file":
 
 ```js
 app.use(express.json());
