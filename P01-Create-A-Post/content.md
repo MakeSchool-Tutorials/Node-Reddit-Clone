@@ -227,9 +227,7 @@ const url = 'mongodb://localhost/reddit-db';
 mongoose.connect(
   url,
   {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
+    useNewUrlParser: true
   },
   function(err, db) {
     assert.equal(null, err);
