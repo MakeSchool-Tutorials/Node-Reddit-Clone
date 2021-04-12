@@ -19,11 +19,12 @@ $ npm install mocha chai chai-http --save-dev
 Now create a folder called `test` in the root of your project.
 >
 > Add a file to your new `test` folder called `index.js` and let's require our testing libraries and then create our first `hello world` style test.
+> We can use `assert`, `expect`, or `should`. Check out this [Stack Overflow article](https://stackoverflow.com/questions/21396524/what-is-the-difference-between-assert-expect-and-should-in-chai) to get a better understanding of the differences. In this tutorial we will use `should`.
 >
 ```js
-const app = require("./../server");
-const chai = require("chai");
-const chaiHttp = require("chai-http");
+const app = require('./../server');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
 const should = chai.should();
 >
 chai.use(chaiHttp);
