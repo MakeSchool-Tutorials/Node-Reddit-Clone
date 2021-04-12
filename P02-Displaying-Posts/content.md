@@ -23,7 +23,7 @@ Alright next step! Now that we can create posts, let's display them.
 
 Next, you'll need to handle promises from the Mongoose perspective.
 
-I'm going to encourage the use of `promises` to handle asynchronous transactions. Mongoose doesn't supply it's own Promise library; instead Mongoose asks you to set a Promise library of your choosing. The tutorial will use the default **JavaScript Promise**.
+I'm going to encourage the use of `promises` to handle asynchronous transactions. As of Mongoose 5.0 native promises are used by default. [Read more](https://stackoverflow.com/questions/51862570/mongoose-why-we-make-mongoose-promise-global-promise-when-setting-a-mongoo)
 
 Finally, for testing, we can add an error handler for connection errors.
 
@@ -31,7 +31,6 @@ Finally, for testing, we can add an error handler for connection errors.
 > Open `/data/reddit-db.js` and make the following changes to support connection error handling and promises:
 >
 ```js
-mongoose.Promise = global.Promise;
 mongoose.connect(
   url,
   {
@@ -153,11 +152,11 @@ We need the path `/posts/:id` to resolve to displaying a `posts-show` template.
 > open `controllers/post.js`, and add a new GET endpoint. Make sure all middleware requirements happen ABOVE it:
 >
 ```js
-app.get("/posts/:id", function(req, res) {
+app.get('/posts/:id', function(req, res) {
   // LOOK UP THE POST
   Post.findById(req.params.id).lean()
     .then(post => {
-      res.render("posts-show", { post });
+      res.render('posts-show', { post });
     })
     .catch(err => {
       console.log(err.message);
