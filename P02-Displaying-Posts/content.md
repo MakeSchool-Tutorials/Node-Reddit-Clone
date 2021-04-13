@@ -108,16 +108,16 @@ Now that we have `{{posts}}`, we can use handlebars' [built in `each` operator](
 >
 ```html
 <div class="row">
-    <div class="col-sm-8 col-sm-offset-2">
-        <ul>
-            {{#each posts}}
-                <li class="list-group-item">
-                    <div class="lead">{{this.title}}</div>
-                    <a href="{{this.url}}" target="_blank">{{this.url}}</a>
-                </li>
-            {{/each}}
-        </ul>
-    </div>
+  <div class="col-sm-8 col-sm-offset-2">
+    <ul>
+      {{#each posts}}
+        <li class="list-group-item">
+          <div class="lead">{{this.title}}</div>
+          <a href="{{this.url}}" target="_blank">{{this.url}}</a>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
 </div>
 ```
 
