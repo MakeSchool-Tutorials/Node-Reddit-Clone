@@ -53,7 +53,7 @@ Now that we have the links, let's make the `/sign-up` route work.
 ```js
 module.exports = (app) => {
   // SIGN UP FORM
-  app.get("/sign-up", (req, res) => {
+  app.get('/sign-up', (req, res) => {
     res.render("sign-up");
   });
 }
@@ -79,16 +79,14 @@ Now we can create our sign up form with `username` and `password` fields.
 > Define a `User` model. Add a new file called `user.js` in your `models` folder.
 >
 ```js
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 >
 const UserSchema = new Schema({
-  createdAt: { type: Date },
-  updatedAt: { type: Date },
-  password: { type: String, select: false },
-  username: { type: String, required: true }
+  username: { type: String, required: true },
+  password: { type: String, select: false }
 },
-  {timestamps: {createdAt: 'created_at'}}
+  { timestamps: true }
 );
 >
 module.exports = mongoose.model("User", UserSchema);
@@ -102,14 +100,14 @@ const User = require("../models/user");
 module.exports = app => {
   ...
   // SIGN UP POST
-  app.post("/sign-up", (req, res) => {
+  app.post('/sign-up', (req, res) => {
     // Create User
     const user = new User(req.body);
 >
     user
       .save()
       .then(user => {
-        res.redirect("/");
+        res.redirect('/');
       })
       .catch(err => {
         console.log(err.message);
@@ -132,6 +130,7 @@ The special issue we have with users is that we can't know their password, so we
 
 >[info]
 > You can think of **hashing** as a function whose input is text (or anything) and whose output is a hashed string: a new, very large string that isn't even remotely similar to the input string.
+> If you want to learn more check out [this video](https://vid.puffyan.us/watch?v=cczlpiiu42M) made by Simply Explained.
 >
 This function can also take in the hashed string as an input and provide the original, pre-hashed string as an output. The idea being that only this function can convert between the two, and that unless you have the secret sauce in that specific instance of that function, you won't be able to crack the hashed string.
 
@@ -157,24 +156,21 @@ Read more about `dotenv` [here](https://www.npmjs.com/package/dotenv).
 > Read this implementation closely and implement the same into your `User` model.
 >
 ```js
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
+const bcrypt = require('bcryptjs');
 >
-const UserSchema = new Schema({
-    createdAt: { type: Date },
-    updatedAt: { type: Date },
-    password: { type: String, select: false },
-    username: { type: String, required: true }
+const userSchema = new Schema({
+    username: { type: String, required: true },
+    password: { type: String, select: false }
 },
-    { timestamps: { createdAt: 'created_at' } }
+    { timestamps: true }
 );
 >
-// Must use function here! ES6 => functions do not bind this!
-UserSchema.pre("save", function (next) {
+// Must use function expressions here! ES6 => functions do not bind this!
+userSchema.pre('save', function (next) {
     // ENCRYPT PASSWORD
     const user = this;
-    if (!user.isModified("password")) {
+    if (!user.isModified('password')) {
         return next();
     }
     bcrypt.genSalt(10, (err, salt) => {
@@ -186,13 +182,13 @@ UserSchema.pre("save", function (next) {
 });
 >
 // Need to use function to enable this.password to work.
-UserSchema.methods.comparePassword = function (password, done) {
+userSchema.methods.comparePassword = function (password, done) {
     bcrypt.compare(password, this.password, (err, isMatch) => {
         done(err, isMatch);
     });
 };
 >
-module.exports = mongoose.model("User", UserSchema);
+module.exports = model('User', userSchema);
 ```
 
 Now let's sign up and check if our password was encrypted. We'll be able to see if the password is salted and hashed, and later we'll be able to test if the encryption actually worked when we create the login form.
@@ -207,7 +203,7 @@ In our case, being logged in will mean that there is an authentic **JWT token - 
 > Install `cookie-parser` and `jsonWebToken`:
 >
 ```bash
-npm install cookie-parser jsonwebtoken -s
+npm install cookie-parser jsonwebtoken
 ```
 
 # Use Middleware to handle tokens
@@ -223,15 +219,15 @@ First, we generate **JSON Web Tokens (JWTs)** --- consequently, we need to requi
 const jwt = require('jsonwebtoken');
 ...
 // SIGN UP POST
-app.post("/sign-up", (req, res) => {
+app.post('/sign-up', (req, res) => {
   // Create User and JWT
   const user = new User(req.body);
 >
   user
     .save()
     .then(user => {
-      var token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
-      res.redirect("/");
+      const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '60 days' });
+      res.redirect('/');
     })
     .catch(err => {
       console.log(err.message);
@@ -248,10 +244,10 @@ Next we need to set the JWT as a cookie so that it will be included in all futur
 >
 ```js
 ...
-var cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 ...
-var app = express();
+const app = express();
 ...
 app.use(cookieParser()); // Add this after you initialize express.
 ...
@@ -265,7 +261,7 @@ Next we'll set the cookie. (We'll want our JWT cookie variable's name to bit uni
 ```js
 ...
   user.save().then((user) => {
-      var token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
+      const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '60 days' });
       res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
       res.redirect('/');
 ...
@@ -344,29 +340,28 @@ The form should look like the following:
 >
 ```js
 // LOGIN
-app.post("/login", (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
   // Find this user name
-  User.findOne({ username }, "username password")
+  User.findOne({ username }, 'username password')
     .then(user => {
       if (!user) {
         // User not found
-        return res.status(401).send({ message: "Wrong Username or Password" });
+        return res.status(401).send({ message: 'Wrong Username or Password' });
       }
       // Check the password
       user.comparePassword(password, (err, isMatch) => {
         if (!isMatch) {
           // Password does not match
-          return res.status(401).send({ message: "Wrong Username or password" });
+          return res.status(401).send({ message: 'Wrong Username or password' });
         }
         // Create a token
         const token = jwt.sign({ _id: user._id, username: user.username }, process.env.SECRET, {
           expiresIn: "60 days"
         });
         // Set a cookie and redirect to root
-        res.cookie("nToken", token, { maxAge: 900000, httpOnly: true });
-        res.redirect("/");
+        res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
+        res.redirect('/');
       });
     })
     .catch(err => {
