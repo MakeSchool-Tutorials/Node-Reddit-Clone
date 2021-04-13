@@ -30,8 +30,8 @@ We can always check if `req.cookies.nToken` is present, but shouldn't we also ch
 >
 ```js
 const checkAuth = (req, res, next) => {
-  console.log("Checking authentication");
-  if (typeof req.cookies.nToken === "undefined" || req.cookies.nToken === null) {
+  console.log('Checking authentication');
+  if (typeof req.cookies.nToken === 'undefined' || req.cookies.nToken === null) {
     req.user = null;
   } else {
     const token = req.cookies.nToken;
@@ -72,7 +72,7 @@ Now in any route we can set `currentUser` equal to `req.user` which will either 
 > Update the `INDEX` method in your `posts` controller to include `currentUser`:
 >
 ```js
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   const currentUser = req.user;
 >
   Post.find({})
@@ -109,12 +109,12 @@ Right now, if you aren't logged in, you could still just navigate to `/posts/new
 >
 ```js
 // CREATE
-app.post("/posts/new", (req, res) => {
+app.post('/posts/new', (req, res) => {
   if (req.user) {
     const post = new Post(req.body);
 >
     post.save(function(err, post) {
-      return res.redirect(`/`);
+      return res.redirect('/');
     });
   } else {
     return res.status(401); // UNAUTHORIZED
@@ -185,7 +185,7 @@ const User = require('../models/user');
 module.exports = function (app) {
 ...
 // CREATE
-    app.post("/posts/new", (req, res) => {
+    app.post('/posts/new', (req, res) => {
         if (req.user) {
             const post = new Post(req.body);
             post.author = req.user._id;
@@ -277,13 +277,13 @@ Let's work on the single post first, this should be very similar to what we just
 > Update `SHOW` in the `posts` controller to `populate` the author:
 >
 ```js
-app.get("/posts/:id", function (req, res) {
+app.get('/posts/:id', function (req, res) {
         const currentUser = req.user;
         // LOOK UP THE POST
 >
         Post.findById(req.params.id).lean().populate('comments').populate('author')
             .then(post => {
-                res.render("posts-show", { post, currentUser });  
+                res.render('posts-show', { post, currentUser });  
             })
             .catch(err => {
                 console.log(err.message);
@@ -300,11 +300,12 @@ Finally, let's get `author` showing for posts on a subreddit.
 >
 ```js
 // SUBREDDIT
-app.get("/n/:subreddit", function (req, res) {
+app.get('/n/:subreddit', function (req, res) {
     const currentUser = req.user;
-    Post.find({ subreddit: req.params.subreddit }).lean().populate('author')
+    const { subreddit } = req.params
+    Post.find({ subreddit }).lean().populate('author')
         .then(posts => {
-            res.render("posts-index", { posts, currentUser });
+            res.render('posts-index', { posts, currentUser });
         })
         .catch(err => {
             console.log(err);
@@ -349,13 +350,13 @@ comment.author = req.user._id;
 >
 ```js
 // SHOW
-app.get("/posts/:id", function (req, res) {
+app.get('/posts/:id', function (req, res) {
    const currentUser = req.user;
    // LOOK UP THE POST
 >
-   Post.findById(req.params.id).lean().populate({path:'comments', populate: {path: 'author'}}).populate('author')
+   Post.findById(req.params.id).lean().populate({ path:'comments', populate: { path: 'author' } }).populate('author')
        .then(post => {
-           res.render("posts-show", { post, currentUser });  
+           res.render('posts-show', { post, currentUser });  
        })
        .catch(err => {
            console.log(err.message);
