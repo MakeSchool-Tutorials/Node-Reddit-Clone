@@ -149,7 +149,7 @@ The title is a link to the show page. If we click it, what happens? Error! No ro
 We need the path `/posts/:id` to resolve to displaying a `posts-show` template.
 
 > [action]
-> open `controllers/post.js`, and add a new GET endpoint. Make sure all middleware requirements happen ABOVE it:
+> open `controllers/posts.js`, and add a new GET endpoint. Make sure all middleware requirements happen ABOVE it:
 >
 ```js
 app.get('/posts/:id', function(req, res) {
