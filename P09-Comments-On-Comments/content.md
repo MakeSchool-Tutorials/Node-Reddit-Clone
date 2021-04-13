@@ -57,7 +57,7 @@ Great! Because this function recursively calls itself, we can now populate field
 const { Schema, model } = require('mongoose');
 const Populate = require('../util/autopopulate');
 >
-const PostSchema = new Schema({
+const postSchema = new Schema({
 ...
 });
 // Always populate the author field
@@ -65,7 +65,7 @@ PostSchema
     .pre('findOne', Populate('author'))
     .pre('find', Populate('author'))
 >
-module.exports = mongoose.model("Post", PostSchema);
+module.exports = model('Post', postSchema);
 ```
 >
 > `/models/comment.js`
@@ -74,7 +74,7 @@ module.exports = mongoose.model("Post", PostSchema);
 const { Schema, model } = require('mongoose');
 const Populate = require('../util/autopopulate');
 >
-const CommentSchema = new Schema({
+const commentSchema = new Schema({
   content: { type: String, required: true },
   author : { type: Schema.Types.ObjectId, ref: 'User', required: true },
 [bold]  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }] [/bold]
@@ -87,7 +87,7 @@ CommentSchema
     .pre('findOne', Populate('comments'))
     .pre('find', Populate('comments'))
 >
-module.exports = model("Comment", CommentSchema);
+module.exports = model('Comment', commentSchema);
 ```
 
 Finally, let's update our controllers to simplify their logic to just use the [lean](https://mongoosejs.com/docs/api.html#query_Query-lean) method.
