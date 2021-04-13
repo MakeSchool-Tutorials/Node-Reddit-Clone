@@ -31,14 +31,14 @@ const { describe, it } = require('mocha');
 >
 chai.use(chaiHttp);
 >
-describe("site", function() {
+describe('site', function() {
   // Describe what you are testing
-  it("Should have home page", function(done) {
+  it('Should have home page', function(done) {
     // Describe what should happen
     // In this case we test that the home page loads
     chai
       .request(app)
-      .get("/")
+      .get('/')
       .end(function(err, res) {
         if (err) {
           return done(err);
@@ -119,7 +119,7 @@ describe('Posts', function() {
       url: 'https://www.google.com',
       summary: 'post summary'
   };
-  it("should create with valid attributes at POST /posts/new", function (done) {
+  it('should create with valid attributes at POST /posts/new', function (done) {
     // TODO: test code goes here!
   });
 });
@@ -145,10 +145,10 @@ it('Should create with valid attributes at POST /posts/new', function(done) {
   Post.estimatedDocumentCount()
     .then(function (initialDocCount) {
         agent
-            .post("/posts/new")
+            .post('/posts/new')
             // This line fakes a form post,
             // since we're not actually filling out a form
-            .set("content-type", "application/x-www-form-urlencoded")
+            .set('content-type', 'application/x-www-form-urlencoded')
             // Make a request to create another
             .send(newPost)
             .then(function (res) {
