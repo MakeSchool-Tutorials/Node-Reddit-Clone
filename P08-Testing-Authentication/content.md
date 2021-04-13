@@ -31,7 +31,7 @@ chai.use(chaiHttp);
 // Agent that will keep track of our cookies
 const agent = chai.request.agent(server);
 >
-const User = require("../models/user");
+const User = require('../models/user');
 >
 describe('User', function() {
   // TESTS WILL GO HERE.
@@ -149,7 +149,7 @@ before(function (done) {
 Almost finished, just have to clean up now. Much like we deleted the test post in our `after` hook, we have to also delete the test user now too, in addition to closing the `agent`.
 
 > [action]
-> Require your user model file at the top of the file `const User = require("../models/user");`
+> Require your user model file at the top of the file `const User = require('../models/user');`
 > Replace your `after` hook with the following code block:
 >
 ```js
