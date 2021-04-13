@@ -102,15 +102,15 @@ app.use(express.static('public'));
 >
 ```js
 $(document).ready(function() {
-  $(".vote-up").submit(function(e) {
+  $('.vote-up').submit(function(e) {
     e.preventDefault();
 >
-    const postId = $(this).data("id");
+    const postId = $(this).data('id');
     $.ajax({
-      type: "PUT",
-      url: "posts/" + postId + "/vote-up",
+      type: 'PUT',
+      url: 'posts/' + postId + '/vote-up',
       success: function(data) {
-        console.log("voted up!");
+        console.log('voted up!');
       },
       error: function(err) {
         console.log(err.messsage);
@@ -118,15 +118,15 @@ $(document).ready(function() {
     });
   });
 >
-  $(".vote-down").submit(function(e) {
+  $('.vote-down').submit(function(e) {
     e.preventDefault();
 >
-    const postId = $(this).data("id");
+    const postId = $(this).data('id');
     $.ajax({
-      type: "PUT",
-      url: "posts/" + postId + "/vote-down",
+      type: 'PUT',
+      url: 'posts/' + postId + '/vote-down',
       success: function(data) {
-        console.log("voted down!");
+        console.log('voted down!');
       },
       error: function(err) {
         console.log(err.messsage);
@@ -147,9 +147,9 @@ We want to track who voted on what, and we want to know what the total score of 
 >
 ```js
 ...
-upVotes : [{ type: Schema.Types.ObjectId, ref: "User"}],
-downVotes : [{ type: Schema.Types.ObjectId, ref: "User"}],
-voteScore : {type: Number}
+upVotes : [{ type: Schema.Types.ObjectId, ref: 'User' }],
+downVotes : [{ type: Schema.Types.ObjectId, ref: 'User' }],
+voteScore : { type: Number }
 ...
 ```
 >
@@ -173,7 +173,7 @@ Reminder: we're using `PUT` because we are _editing_ an existing resource.
 > Add these voting routes to the `posts` controller:
 >
 ```js
-app.put("/posts/:id/vote-up", function(req, res) {
+app.put('/posts/:id/vote-up', function(req, res) {
   Post.findById(req.params.id).exec(function(err, post) {
     post.upVotes.push(req.user._id);
     post.voteScore = post.voteScore + 1;
@@ -183,7 +183,7 @@ app.put("/posts/:id/vote-up", function(req, res) {
   });
 });
 >
-app.put("/posts/:id/vote-down", function(req, res) {
+app.put('/posts/:id/vote-down', function(req, res) {
   Post.findById(req.params.id).exec(function(err, post) {
     post.downVotes.push(req.user._id);
     post.voteScore = post.voteScore - 1;
