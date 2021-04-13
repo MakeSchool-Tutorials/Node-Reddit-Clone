@@ -39,7 +39,7 @@ mongoose.connect(
   function(err, db) {
     assert.equal(null, err);
     console.log("Connected successfully to database");
-
+>
     // db.close(); turn on for testing
   }
 );
@@ -101,7 +101,7 @@ Great, now let's go back to `posts-index.handlebars` and make it look good!
 </div>
 ```
 
-Now that we have `{{posts}}`, we can use handlebars' [built in `each` operator](http://handlebarsjs.com/builtin_helpers.html) to loop over the posts, and display each one.
+Now that we have `{{posts}}`, we can use handlebars' [built in `each` operator](https://handlebarsjs.com/guide/builtin-helpers.html#each) to loop over the posts, and display each one.
 
 > [action]
 > In each post, use bootstrap's `list-group` and `list-group-item` classes. Display the post title in a div with the class `lead`, and add an anchor tag that links to the post's url. Finally, add `target="_blank"` to the anchor tag, so that the url opens in a new tab. Here's the full `posts-index.handlebars`:
