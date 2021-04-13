@@ -110,7 +110,7 @@ module.exports = app => {
 > Next, require this file in your `server.js` file, and pass in the `app` variable as an argument.
 >
 ```js
-require('./controllers/posts.js')(app);
+require('./controllers/posts')(app);
 ```
 
 What happens when you submit the form?
@@ -303,7 +303,7 @@ $ git push
 
 > [challenge]
 > Create a new model, and figure out how you can display these new attributes in your app:
-
+>
 ```js
 const { Schema, model } = require('mongoose');
 >
