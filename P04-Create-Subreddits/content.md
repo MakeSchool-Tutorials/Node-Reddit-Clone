@@ -100,7 +100,7 @@ Let's see if we can make this route work.
 >
 ```js
 // SUBREDDIT
-app.get("/n/:subreddit", function(req, res) {
+app.get('/n/:subreddit', function(req, res) {
   console.log(req.params.subreddit);
 });
 ```
@@ -110,14 +110,14 @@ Let's switch out our console log for an actual navigation to our subreddit! We w
 We can also reuse our `posts-index` template for displaying our posts in the subreddit!
 
 > [action]
->Tweak your `app.get("/n/:subreddit"` call to return actual posts:
+>Tweak your `app.get('/n/:subreddit'` call to return actual posts:
 >
 ```js
   // SUBREDDIT
-app.get("/n/:subreddit", function(req, res) {
+app.get('/n/:subreddit', function(req, res) {
   Post.find({ subreddit: req.params.subreddit }).lean()
     .then(posts => {
-      res.render("posts-index", { posts });
+      res.render('posts-index', { posts });
     })
     .catch(err => {
       console.log(err);
