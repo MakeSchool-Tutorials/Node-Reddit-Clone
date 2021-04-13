@@ -77,7 +77,7 @@ app.get('/', (req, res) => {
 >
   Post.find({})
     .then(posts => {
-      res.render("posts-index", { posts, currentUser });
+      res.render('posts-index', { posts, currentUser });
     })
     .catch(err => {
       console.log(err.message);
@@ -160,7 +160,7 @@ To accomplish this, there are no changes required to the views we've already cre
 >
 ```js
 ...
- author : { type: Schema.Types.ObjectId, ref: "User", required: true }
+ author : { type: Schema.Types.ObjectId, ref: 'User', required: true }
 ...
 ```
 >
@@ -168,7 +168,7 @@ Additionally, add the `posts` attribute to the `User` model. It will be an array
 >
 ```js
   ...
-  posts : [{ type: Schema.Types.ObjectId, ref: "Post" }]
+  posts : [{ type: Schema.Types.ObjectId, ref: 'Post' }]
   ...
 ```
 
