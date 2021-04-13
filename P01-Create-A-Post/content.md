@@ -97,7 +97,7 @@ Nothing! We're missing a `/posts/new` route, so let's make it.
 
 > [action]
 > First, make a new folder called `controllers`. Within, create the file `posts.js`.
-
+>
 ```js
 module.exports = app => {
   // CREATE
@@ -106,9 +106,9 @@ module.exports = app => {
   });
 };
 ```
-
+>
 > Next, require this file in your `server.js` file, and pass in the `app` variable as an argument.
-
+>
 ```js
 require('./controllers/posts.js')(app);
 ```
@@ -138,19 +138,19 @@ Essentially, `express.json()` is a necessary middleware to communicate with your
 
 > [action]
 > Install `express-validator`:
-
+>
 ```bash
 npm install express-validator
 ```
-
+>
 > Note: as of npm 5.0.0 installed modules are added as a dependency by default. The `--save` option is no longer needed.
 > [Stack Overflow Answer](https://stackoverflow.com/questions/19578796/what-is-the-save-option-for-npm-install)
 
 <!-- -->
 
 > [action]
-> Next, add the following to your `server.js` file":
-
+> Next, add the following to your `server.js` file:
+>
 ```js
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -166,9 +166,8 @@ You're going to need to connect to a NoSQL database called [MongoDB](https://doc
 > Let's start off by creating a new `/data` folder in the top-level structure of your project, then create a new JavaScript file.
 >
 > Open your terminal and type:
-
-```bash
 >
+```bash
 mkdir data
 cd data
 touch reddit-db.js
@@ -178,14 +177,14 @@ Now, we need to make sure that we have `mongodb` installed by doing a `which` co
 
 > [action]
 > You should see a destination path to the Mongo executable:
-
+>
 ```bash
 $ which mongod
 /usr/local/bin/mongod
 ```
-
+>
 > We're also going to make sure that our Mongo database is running:
-
+>
 ```bash
 brew services restart mongodb-community
 ```
@@ -194,7 +193,7 @@ Great! Next, we're going to use the `reddit-db.js` file we made earlier to conne
 
 > [action]
 > Open `reddit-db.js`, and paste the following code inside:
-
+>
 ```js
 /* Mongoose Connection */
 const mongoose = require('mongoose');
@@ -223,7 +222,7 @@ Now all that's left is to tie this into our main `server.js` file.
 
 > [action]
 > Open up `server.js`, and paste this in:
-
+>
 ```js
 // Set db
 require('./data/reddit-db');
@@ -244,8 +243,8 @@ In order to interact with the MongoDB database we're going to use the npm module
 > [action]
 > Create the folder `models` and inside put the `post.js` file. Here's a sample model for our `Post` resource.
 > We can use [destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) to get `Schema` directly from the require statement.
-> If you prefer video form you can check out [JS Destructuring in 100 Seconds](https://vid.puffyan.us/watch?v=UgEaJBz3bjY)
-
+> If you would like a video explaining destructuring check out [JS Destructuring in 100 Seconds](https://vid.puffyan.us/watch?v=UgEaJBz3bjY)
+>
 ```js
 const { Schema, model } = require('mongoose');
 >
@@ -257,15 +256,15 @@ const postSchema = new Schema({
 >
 module.exports = model('Post', postSchema);
 ```
-
+>
 > Now that we have a model, require it at the top of `controllers/posts.js`:
-
+>
 ```js
 const Post = require('../models/post');
 ```
-
+>
 > Put it to use in our "create posts" endpoint:
-
+>
 ```js
 const Post = require('../models/post');
 >
