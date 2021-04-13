@@ -109,7 +109,7 @@ Ok --- we've got user narratives, wireframes, and a plan for the first few featu
 </html>
 ```
 
-1. Now add the [navbar component](https://getbootstrap.com/docs/4.1/components/navbar/) to your layout template.
+1. Now add the [navbar component](https://getbootstrap.com/docs/5.0/components/navbar/) to your layout template.
 
 # Product So Far
 
