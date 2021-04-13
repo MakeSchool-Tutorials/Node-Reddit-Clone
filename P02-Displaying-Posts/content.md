@@ -43,7 +43,7 @@ mongoose.connect(
     // db.close(); turn on for testing
   }
 );
-mongoose.connection.on("error", console.error.bind(console, "MongoDB connection Error:"));
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection Error:'));
 ```
 
 Note that the following line we included previously allows us to display debug info from Mongoose in the console:
