@@ -77,7 +77,7 @@ Follow the pattern you used for the `Post` resource to create a `Comment` resour
 >
 ```js
 // CREATE Comment
-app.post("/posts/:postId/comments", function(req, res) {
+app.post('/posts/:postId/comments', function(req, res) {
   // INSTANTIATE INSTANCE OF MODEL
   const comment = new Comment(req.body);
 >
@@ -100,13 +100,13 @@ app.post("/posts/:postId/comments", function(req, res) {
 > Create a Comment model in a `comment.js` file in your `models` folder
 >
 ```js
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 >
 const CommentSchema = new Schema({
   content: { type: String, required: true }
 },
-  {timestamps: {createdAt: 'created_at'}}
+  { timestamps: true }
 );
 >
 module.exports = mongoose.model("Comment", CommentSchema);
@@ -117,9 +117,9 @@ module.exports = mongoose.model("Comment", CommentSchema);
 >[action]
 > Require the comment model in the comments controller
 >
-  ```js
-  const Comment = require('../models/comment');
-  ```
+```js
+const Comment = require('../models/comment');
+```
 
 Alright, let's check our work:
 
@@ -142,7 +142,7 @@ const Post = require('../models/post');
 const Comment = require('../models/comment');
 >
 // CREATE Comment
-app.post("/posts/:postId/comments", function(req, res) {
+app.post('/posts/:postId/comments', function(req, res) {
   // INSTANTIATE INSTANCE OF MODEL
   const comment = new Comment(req.body);
 >
