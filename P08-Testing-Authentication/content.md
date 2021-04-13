@@ -21,10 +21,11 @@ The biggest challenge is tracking the `cookie` set by the server when a user log
 > Create the file `test/auth.js`. Within, we'll require the libraries we're going to need.
 >
 ```js
-const chai = require("chai");
-const chaiHttp = require("chai-http");
-const server = require("../server");
-const should = chai.should();
+const server = require('../server');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const { describe, it } = require('mocha');
+
 chai.use(chaiHttp);
 >
 // Agent that will keep track of our cookies
@@ -32,7 +33,7 @@ const agent = chai.request.agent(server);
 >
 const User = require("../models/user");
 >
-describe("User", function() {
+describe('User', function() {
   // TESTS WILL GO HERE.
 });
 ```
@@ -43,9 +44,9 @@ We can now write our first test that verifies that you cannot login if you haven
 > Add this test within your `User` block:
 >
 ```js
-it("should not be able to login if they have not registered", function(done) {
-  agent.post("/login", { email: "wrong@wrong.com", password: "nope" }).end(function(err, res) {
-    res.status.should.be.equal(401);
+it('should not be able to login if they have not registered', function(done) {
+  agent.post('/login', { email: 'wrong@example.com', password: 'nope' }).end(function(err, res) {
+    res.should.have.status(401);
     done();
   });
 });
@@ -58,15 +59,15 @@ Let's add a slightly more complex one: signing up a user!
 >
 ```js
 // signup
-it("should be able to signup", function(done) {
-  User.findOneAndRemove({ username: "testone" }, function() {
+it('should be able to signup', function(done) {
+  User.findOneAndRemove({ username: 'testone' }, function() {
     agent
-      .post("/sign-up")
-      .send({ username: "testone", password: "password" })
+      .post('/sign-up;)
+      .send({ username: 'testone', password: 'password' })
       .end(function(err, res) {
         console.log(res.body);
         res.should.have.status(200);
-        agent.should.have.cookie("nToken");
+        agent.should.have.cookie('nToken');
         done();
       });
   });
@@ -134,7 +135,7 @@ Next we need to add a `before` hook. Much like the `after` hook cleans up our te
 before(function (done) {
   agent
     .post('/sign-up')
-    .set("content-type", "application/x-www-form-urlencoded")
+    .set('content-type', 'application/x-www-form-urlencoded')
     .send(user)
     .then(function (res) {
       done();
@@ -198,13 +199,13 @@ Next, write a test that verifies that your login implementation works properly:
 >
 ```js
 // login
-it("should be able to login", function(done) {
+it('should be able to login', function(done) {
   agent
-    .post("/login")
-    .send({ username: "testone", password: "password" })
+    .post('/login')
+    .send({ username: 'testone', password: 'password' })
     .end(function(err, res) {
       res.should.have.status(200);
-      agent.should.have.cookie("nToken");
+      agent.should.have.cookie('nToken');
       done();
     });
 });
@@ -219,10 +220,10 @@ Finally, we write a test to verify that the logout functionality works as expect
 >
 ```js
 // logout
-it("should be able to logout", function(done) {
-  agent.get("/logout").end(function(err, res) {
+it('should be able to logout', function(done) {
+  agent.get('/logout').end(function(err, res) {
     res.should.have.status(200);
-    agent.should.not.have.cookie("nToken");
+    agent.should.not.have.cookie('nToken');
     done();
   });
 });
