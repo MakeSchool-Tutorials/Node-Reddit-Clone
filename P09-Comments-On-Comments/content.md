@@ -100,7 +100,7 @@ Finally, let's update our controllers to simplify their logic to just use the [l
 ```js
 // SHOW
 app.get("/posts/:id", function (req, res) {
-    var currentUser = req.user;
+    const currentUser = req.user;
     Post.findById(req.params.id).populate('comments').lean()
         .then(post => {
             res.render("posts-show", { post, currentUser });  
@@ -112,7 +112,7 @@ app.get("/posts/:id", function (req, res) {
 >
 // SUBREDDIT
 app.get("/n/:subreddit", function (req, res) {
-    var currentUser = req.user;
+    const currentUser = req.user;
     Post.find({ subreddit: req.params.subreddit }).lean()
         .then(posts => {
             res.render("posts-index", { posts, currentUser });
@@ -198,14 +198,14 @@ Let's make a new `replies.js` file in our `controllers` folder. Within, we'll ne
 > create `/controllers/replies` and include the following code:
 >
 ```js
-var Post = require("../models/post");
-var Comment = require("../models/comment");
-var User = require("../models/user");
+const Post = require("../models/post");
+const Comment = require("../models/comment");
+const User = require("../models/user");
 >
 module.exports = app => {
   // NEW REPLY
   app.get("/posts/:postId/comments/:commentId/replies/new", (req, res) => {
-    var currentUser = req.user;
+    const currentUser = req.user;
     let post;
     Post.findById(req.params.postId).lean()
       .then(p => {
