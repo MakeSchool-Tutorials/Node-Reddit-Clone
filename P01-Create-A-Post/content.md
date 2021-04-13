@@ -244,6 +244,7 @@ In order to interact with the MongoDB database we're going to use the npm module
 > [action]
 > Create the folder `models` and inside put the `post.js` file. Here's a sample model for our `Post` resource.
 > We can use [destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) to get `Schema` directly from the require statement.
+> If you prefer video form you can check out [JS Destructuring in 100 Seconds](https://vid.puffyan.us/watch?v=UgEaJBz3bjY)
 
 ```js
 const { Schema } = require('mongoose');
