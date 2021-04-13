@@ -306,8 +306,7 @@ $ git push
 > Create a new model, and figure out how you can display these new attributes in your app:
 
 ```js
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 >
 const postSchema = new Schema({
   title: { type: String, required: true },
@@ -315,7 +314,7 @@ const postSchema = new Schema({
   summary: { type: String, required: true }
 }, { timestamps: true });
 >
-module.exports = mongoose.model('Post', postSchema);
+module.exports = model('Post', postSchema);
 ```
 
 As of Mongoose 4.0 you can now set [timestamps](https://mongoosejs.com/docs/guide.html#timestamps) options on the Schema and have Mongoose handle the created at and updated at attributes for you. The type assigned is `Date`.
