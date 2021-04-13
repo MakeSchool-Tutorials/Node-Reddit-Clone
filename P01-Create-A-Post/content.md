@@ -125,7 +125,7 @@ It's time to get `req.body` to reflect and contain the submitted form inputs fro
 
 Research what [express json](https://expressjs.com/en/api.html) does in the documentation.
 
-While you're at it, also research the role of [express validator](https://www.npmjs.com/package/express-validator). What role does it play alongside the `express.json()` middleware?
+While you're at it, also research the role of [express validator](https://express-validator.github.io/docs/). What role does it play alongside the `express.json()` middleware?
 
 Essentially, `express.json()` is a necessary middleware to communicate with your `POST` requests.
 
