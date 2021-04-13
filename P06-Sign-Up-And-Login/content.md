@@ -54,7 +54,7 @@ Now that we have the links, let's make the `/sign-up` route work.
 module.exports = (app) => {
   // SIGN UP FORM
   app.get('/sign-up', (req, res) => {
-    res.render("sign-up");
+    res.render('sign-up');
   });
 }
 ```
@@ -79,23 +79,22 @@ Now we can create our sign up form with `username` and `password` fields.
 > Define a `User` model. Add a new file called `user.js` in your `models` folder.
 >
 ```js
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 >
-const UserSchema = new Schema({
+const userSchema = new Schema({
   username: { type: String, required: true },
   password: { type: String, select: false }
 },
   { timestamps: true }
 );
 >
-module.exports = mongoose.model("User", UserSchema);
+module.exports = model('User', userSchema);
 ```
 >
 > Next define a route `/sign-up` in `/controllers/auth.js`.
 >
 ```js
-const User = require("../models/user");
+const User = require('../models/user');
 >
 module.exports = app => {
   ...
@@ -357,7 +356,7 @@ app.post('/login', (req, res) => {
         }
         // Create a token
         const token = jwt.sign({ _id: user._id, username: user.username }, process.env.SECRET, {
-          expiresIn: "60 days"
+          expiresIn: '60 days'
         });
         // Set a cookie and redirect to root
         res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
