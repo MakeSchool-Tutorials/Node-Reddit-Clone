@@ -247,7 +247,7 @@ In order to interact with the MongoDB database we're going to use the npm module
 > If you prefer video form you can check out [JS Destructuring in 100 Seconds](https://vid.puffyan.us/watch?v=UgEaJBz3bjY)
 
 ```js
-const { Schema } = require('mongoose');
+const { Schema, model } = require('mongoose');
 >
 const postSchema = new Schema({
   title: { type: String, required: true },
@@ -255,7 +255,7 @@ const postSchema = new Schema({
   summary: { type: String, required: true }
 });
 >
-module.exports = mongoose.model('Post', postSchema);
+module.exports = model('Post', postSchema);
 ```
 
 > Now that we have a model, require it at the top of `controllers/posts.js`:
