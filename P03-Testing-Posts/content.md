@@ -20,12 +20,14 @@ Now create a folder called `test` in the root of your project.
 >
 > Add a file to your new `test` folder called `index.js` and let's require our testing libraries and then create our first `hello world` style test.
 > We can use `assert`, `expect`, or `should`. Check out this [Stack Overflow article](https://stackoverflow.com/questions/21396524/what-is-the-difference-between-assert-expect-and-should-in-chai) to get a better understanding of the differences. In this tutorial we will use `should`.
+> Although we are using `should` we do not need to import it as explained in this [GitHub issue](https://github.com/chaijs/chai/issues/1179)
+> Using destructuring, we will import `describe` and `it` from mocha in order to keep our linter happy.
 >
 ```js
 const app = require('./../server');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const should = chai.should();
+const { describe, it } = require('mocha');
 >
 chai.use(chaiHttp);
 >
@@ -41,7 +43,7 @@ describe("site", function() {
         if (err) {
           return done(err);
         }
-        res.status.should.be.equal(200);
+        res.should.have.status(200);
         return done(); // Call done if the test completed successfully.
       });
   });
@@ -71,9 +73,11 @@ Now let's run the test.
 >
 ```json
 "scripts": {
-  "test": "mocha"
+  "test": "mocha --exit"
 },
 ```
+>
+> Note: the `--exit` command exits the tests after they are done
 
 In order for this test to run the server will have to be running on `localhost 3000`, so make sure you've killed `nodemon` before running your tests.
 
@@ -95,17 +99,16 @@ Next let's make a test for the `/posts/create` route we made. We can make a new 
 >
 ```js
 // test/posts.js
-const app = require("./../server");
-const chai = require("chai");
-const chaiHttp = require("chai-http");
-const expect = chai.expect;
+const app = require('./../server');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const { describe, it } = require('mocha');
 >
 // Import the Post model from our models folder so we
 // we can use it in our tests.
 const Post = require('../models/post');
 const server = require('../server');
 >
-chai.should();
 chai.use(chaiHttp);
 >
 describe('Posts', function() {
@@ -152,9 +155,9 @@ it('Should create with valid attributes at POST /posts/new', function(done) {
                 Post.estimatedDocumentCount()
                     .then(function (newDocCount) {
                         // Check that the database has one more post in it
-                        expect(res).to.have.status(200);
+                        res.should.have.status(200);
                         // Check that the database has one more post in it
-                        expect(newDocCount).to.be.equal(initialDocCount + 1)
+                        newDocCount.should.equal(initialDocCount + 1)
                         done();
                     })
                     .catch(function (err) {
@@ -187,6 +190,8 @@ after(function () {
   Post.findOneAndDelete(newPost);
 });
 ```
+>
+> Also add `after` to your deconstruction of `require('mocha')` to rid yourself of any linter warnings
 
 Now we have a test for the `/posts/create` route that should be green! Can you make it fail? How about if our `post` object doesn't have a title, url, or summary? Those are all required fields. What do you see if you change that and run the test? Does it fail? How do you know what made it fail?
 
