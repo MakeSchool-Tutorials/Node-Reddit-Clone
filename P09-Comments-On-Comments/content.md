@@ -54,9 +54,8 @@ Great! Because this function recursively calls itself, we can now populate field
 >
 ```js
 // models/post.js
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const Populate = require("../util/autopopulate");
+const { Schema, model } = require('mongoose');
+const Populate = require('../util/autopopulate');
 >
 const PostSchema = new Schema({
 ...
@@ -72,14 +71,13 @@ module.exports = mongoose.model("Post", PostSchema);
 > `/models/comment.js`
 >
 ```js
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const Populate = require("../util/autopopulate");
+const { Schema, model } = require('mongoose');
+const Populate = require('../util/autopopulate');
 >
 const CommentSchema = new Schema({
   content: { type: String, required: true },
-  author : { type: Schema.Types.ObjectId, ref: "User", required: true },
-[bold]  comments: [{type: Schema.Types.ObjectId, ref: "Comment"}] [/bold]
+  author : { type: Schema.Types.ObjectId, ref: 'User', required: true },
+[bold]  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }] [/bold]
 });
 >
 // Always populate the author field
@@ -89,7 +87,7 @@ CommentSchema
     .pre('findOne', Populate('comments'))
     .pre('find', Populate('comments'))
 >
-module.exports = mongoose.model("Comment", CommentSchema);
+module.exports = model("Comment", CommentSchema);
 ```
 
 Finally, let's update our controllers to simplify their logic to just use the [lean](https://mongoosejs.com/docs/api.html#query_Query-lean) method.
@@ -99,11 +97,11 @@ Finally, let's update our controllers to simplify their logic to just use the [l
 >
 ```js
 // SHOW
-app.get("/posts/:id", function (req, res) {
+app.get('/posts/:id', function (req, res) {
     const currentUser = req.user;
     Post.findById(req.params.id).populate('comments').lean()
         .then(post => {
-            res.render("posts-show", { post, currentUser });  
+            res.render('posts-show', { post, currentUser });  
         })
         .catch(err => {
             console.log(err.message);
@@ -111,11 +109,11 @@ app.get("/posts/:id", function (req, res) {
 });
 >
 // SUBREDDIT
-app.get("/n/:subreddit", function (req, res) {
+app.get('/n/:subreddit', function (req, res) {
     const currentUser = req.user;
     Post.find({ subreddit: req.params.subreddit }).lean()
         .then(posts => {
-            res.render("posts-index", { posts, currentUser });
+            res.render('posts-index', { posts, currentUser });
         })
         .catch(err => {
             console.log(err);
@@ -131,7 +129,7 @@ Notice it was only a one line change for each, but it's a lot simpler now! One m
 ```js
 module.exports = function (app) {
     // CREATE Comment
-    app.post("/posts/:postId/comments", function (req, res) {
+    app.post('/posts/:postId/comments', function (req, res) {
         const comment = new Comment(req.body);
         comment.author = req.user._id;
         comment
@@ -198,13 +196,13 @@ Let's make a new `replies.js` file in our `controllers` folder. Within, we'll ne
 > create `/controllers/replies` and include the following code:
 >
 ```js
-const Post = require("../models/post");
-const Comment = require("../models/comment");
-const User = require("../models/user");
+const Post = require('../models/post');
+const Comment = require('../models/comment');
+const User = require('../models/user');
 >
 module.exports = app => {
   // NEW REPLY
-  app.get("/posts/:postId/comments/:commentId/replies/new", (req, res) => {
+  app.get('/posts/:postId/comments/:commentId/replies/new', (req, res) => {
     const currentUser = req.user;
     let post;
     Post.findById(req.params.postId).lean()
@@ -213,7 +211,7 @@ module.exports = app => {
         return Comment.findById(req.params.commentId).lean();
       })
       .then(comment => {
-        res.render("replies-new", { post, comment, currentUser });
+        res.render('replies-new', { post, comment, currentUser });
       })
       .catch(err => {
         console.log(err.message);
@@ -221,7 +219,7 @@ module.exports = app => {
   });
 >
   // CREATE REPLY
-  app.post("/posts/:postId/comments/:commentId/replies", (req, res) => {
+  app.post('/posts/:postId/comments/:commentId/replies', (req, res) => {
     console.log(req.body);
   });
 };
@@ -265,7 +263,7 @@ The next step is to write our `/replies/create` route logic.
 >
 ```js
 // CREATE REPLY
-app.post("/posts/:postId/comments/:commentId/replies", (req, res) => {
+app.post('/posts/:postId/comments/:commentId/replies', (req, res) => {
     // TURN REPLY INTO A COMMENT OBJECT
     const reply = new Comment(req.body);
     reply.author = req.user._id
