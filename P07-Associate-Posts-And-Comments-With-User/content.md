@@ -29,13 +29,13 @@ We can always check if `req.cookies.nToken` is present, but shouldn't we also ch
 > Put `checkAuth` in `server.js` so it is used for every route:
 >
 ```js
-var checkAuth = (req, res, next) => {
+const checkAuth = (req, res, next) => {
   console.log("Checking authentication");
   if (typeof req.cookies.nToken === "undefined" || req.cookies.nToken === null) {
     req.user = null;
   } else {
-    var token = req.cookies.nToken;
-    var decodedToken = jwt.decode(token, { complete: true }) || {};
+    const token = req.cookies.nToken;
+    const decodedToken = jwt.decode(token, { complete: true }) || {};
     req.user = decodedToken.payload;
   }
 >
@@ -73,7 +73,7 @@ Now in any route we can set `currentUser` equal to `req.user` which will either 
 >
 ```js
 app.get("/", (req, res) => {
-  var currentUser = req.user;
+  const currentUser = req.user;
 >
   Post.find({})
     .then(posts => {
@@ -111,7 +111,7 @@ Right now, if you aren't logged in, you could still just navigate to `/posts/new
 // CREATE
 app.post("/posts/new", (req, res) => {
   if (req.user) {
-    var post = new Post(req.body);
+    const post = new Post(req.body);
 >
     post.save(function(err, post) {
       return res.redirect(`/`);
@@ -187,7 +187,7 @@ module.exports = function (app) {
 // CREATE
     app.post("/posts/new", (req, res) => {
         if (req.user) {
-            var post = new Post(req.body);
+            const post = new Post(req.body);
             post.author = req.user._id;
 >
             post
@@ -236,7 +236,7 @@ If you refresh right now, you'll just see an `ObjectId` for the `author`. We nee
 ```js
 // INDEX
     app.get('/', (req, res) => {
-        var currentUser = req.user;
+        const currentUser = req.user;
         // res.render('home', {});
         console.log(req.cookies);
         Post.find({}).lean().populate('author')
@@ -278,7 +278,7 @@ Let's work on the single post first, this should be very similar to what we just
 >
 ```js
 app.get("/posts/:id", function (req, res) {
-        var currentUser = req.user;
+        const currentUser = req.user;
         // LOOK UP THE POST
 >
         Post.findById(req.params.id).lean().populate('comments').populate('author')
@@ -301,7 +301,7 @@ Finally, let's get `author` showing for posts on a subreddit.
 ```js
 // SUBREDDIT
 app.get("/n/:subreddit", function (req, res) {
-    var currentUser = req.user;
+    const currentUser = req.user;
     Post.find({ subreddit: req.params.subreddit }).lean().populate('author')
         .then(posts => {
             res.render("posts-index", { posts, currentUser });
@@ -350,7 +350,7 @@ comment.author = req.user._id;
 ```js
 // SHOW
 app.get("/posts/:id", function (req, res) {
-   var currentUser = req.user;
+   const currentUser = req.user;
    // LOOK UP THE POST
 >
    Post.findById(req.params.id).lean().populate({path:'comments', populate: {path: 'author'}}).populate('author')
