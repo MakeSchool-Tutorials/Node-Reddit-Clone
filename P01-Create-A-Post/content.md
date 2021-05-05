@@ -28,7 +28,7 @@ To create a new instance of a resource, we first have to make a button to make a
 > Since making a post is a very important **Call To Action (CTA)**, we'll put it in the navbar.
 
 ```html
-<a href="/posts/new" class="btn btn-primary navbar-btn">New Post</a>
+<li><a href="/posts/new" class="btn btn-primary navbar-btn">New Post</a></li>
 ```
 
 Next, we have to create the form. Let's follow RESTful routing and make the url match this pattern: `/<<RESOURCE NAME PLURAL>>/new`. In the case of a resource `Post`, the path will be `/posts/new`.
@@ -99,7 +99,7 @@ Nothing! We're missing a `/posts/new` route, so let's make it.
 > First, make a new folder called `controllers`. Within, create the file `posts.js`.
 >
 ```js
-module.exports = app => {
+module.exports = (app) => {
   // CREATE
   app.post('/posts/new', (req, res) => {
     console.log(req.body);
@@ -275,15 +275,18 @@ module.exports = (app) => {
     // INSTANTIATE INSTANCE OF POST MODEL
     const post = new Post(req.body);
 >
-    // SAVE INSTANCE OF POST MODEL TO DB
-    post.save((err, post) => {
-      // REDIRECT TO THE ROOT
-      return res.redirect('/');
-    })
+    // SAVE INSTANCE OF POST MODEL TO DB AND REDIRECT TO THE ROOT
+    post.save(() => res.redirect('/'));
   });
 >
 };
 ```
+>
+> Notice how `res.direct` is on the same line and we have left out the curly brackets.
+> This is not a mistake. If an arrow function only has one line in the curly brackets and we want to return that line, we can put it on the same line and remove the curly brackets.
+> [Read more](https://codeburst.io/javascript-understand-arrow-function-syntax-ab4081bba85b?gi=b9a68f0812ca).
+> 
+> Additionally, we want to ensure we always return the `res` and exit the code execution, unless we have a specific reason why we want to continue the code execution.
 
 # Confirming Posts are Saving
 
@@ -310,7 +313,7 @@ const { Schema, model } = require('mongoose');
 const postSchema = new Schema({
   title: { type: String, required: true },
   url: { type: String, required: true },
-  summary: { type: String, required: true }
+  summary: { type: String, required: true },
 }, { timestamps: true });
 >
 module.exports = model('Post', postSchema);
