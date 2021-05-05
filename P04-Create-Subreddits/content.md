@@ -105,6 +105,12 @@ app.get('/n/:subreddit', (req, res) => {
 });
 ```
 
+**Async/Await stretch challenge!**
+>[challenge]
+>
+Refactor the code block above to be async/await.
+If you get stuck, there are video and text resources linked at the first async/await stretch challenge in the Displaying All Posts section.
+
 Let's switch out our console log for an actual navigation to our subreddit! We want to ensure that we only return posts that have a `subreddit` that matches the one passed into the url.
 
 We can also reuse our `posts-index` template for displaying our posts in the subreddit!
@@ -122,6 +128,12 @@ app.get('/n/:subreddit', (req, res) => {
     });
 });
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
 
 # Product So Far
 

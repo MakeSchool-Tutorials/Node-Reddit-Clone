@@ -97,6 +97,12 @@ app.get('/', (req, res) => {
 });
 ```
 
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
+
 Do the login and sign up links appear and disappear depending upon whether a user is logged in?
 
 Now, hide the "New Post" button for those who are NOT logged in.
@@ -139,6 +145,12 @@ app.post('/posts/new', (req, res) => {
   }
 });
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
 
 # Product So Far
 
@@ -230,6 +242,12 @@ module.exports = (app) => {
 }
 ```
 
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
+
 Test that both the `author` and the `posts` are being saved by looking in your database or logging to the console.
 
 Now, can you do this same pattern for the comments controller when someone creates a comment?
@@ -264,6 +282,12 @@ app.get('/', (req, res) => {
     });
 });
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
 
 # Product So Far
 
@@ -324,6 +348,12 @@ app.get('/n/:subreddit', (req, res) => {
     });
 });
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor all the code blocks above to be async/await.
 
 # Now Commit
 

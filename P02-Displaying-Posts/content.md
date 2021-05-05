@@ -62,12 +62,54 @@ mongoose.set('debug', true);
 ```js
 app.get('/', (req, res) => {
   Post.find({}).lean()
-    .then(posts => res.render('posts-index', { posts }))
-    .catch(err => {
+    .then((posts) => res.render('posts-index', { posts }))
+    .catch((err) => {
       console.log(err.message);
     })
 })
 ```
+
+
+**Want more of a challenge?**
+>[challenge]
+>
+As a stretch challenge try rewritting the code block above to be async/await.
+Here is are some video resources:
+>
+[Fireship](https://invidious.tube/watch?v=vn3tm0quoqE)
+>
+[The Event Loop](https://invidious.tube/watch?v=cCOL7MC4Pl0)
+>
+[Callbacks vs Promises vs RxJs Observables vs async/await](https://invidious.tube/watch?v=jgWnccjXR4I)
+>
+And also some text resources:
+>
+[Callbacks vs Promises vs RxJS vs async/await](https://academind.com/tutorials/callbacks-vs-promises-vs-rxjs-vs-async-awaits/) 
+>
+[Async/Await vs Promises](https://levelup.gitconnected.com/async-await-vs-promises-4fe98d11038f?gi=853e56aa6d97)
+>
+[async/await vs then/catch](https://www.smashingmagazine.com/2020/11/comparison-async-await-versus-then-catch/)
+
+
+**Async/Await Solution**
+>[solution]
+>
+> We will not give you the solution to every async/await stretch challenge but hopefully this first one gives you a positive direction to head in.
+>
+```js
+app.get('/', async (req, res) => {
+  try {
+    const posts = await Post.find({}).lean();
+    return res.render('posts-index', { posts });
+  } catch (err) {
+    console.log(err.message);
+  }
+});
+```
+>
+> Now, how clean does that async/await code look?
+
+
 
 Try running this and see if your `posts-index` is being displayed. If so, replace your `hello world` with the variable `{{posts}}`. What do you see?
 
@@ -159,6 +201,12 @@ app.get('/posts/:id', (req, res) => {
     });
 });
 ```
+
+**Async/Await stretch challenge!**
+>[challenge]
+>
+Refactor the code block above to be async/await.
+If you get stuck, there are video and text resources linked at the first async/await stretch challenge.
 
 What happens if we refresh? No template!
 

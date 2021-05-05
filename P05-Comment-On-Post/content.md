@@ -60,20 +60,20 @@ Follow the pattern you used for the `Post` resource to create a `Comment` resour
 > [action]
 > Create a comments controller as a new file `comments.js` in your `controllers` folder
 >
-  ```js
-  module.exports = (app) => {
+```js
+module.exports = (app) => {
 >
-  };
-  ```
+};
+```
 
 <!-- -->
 
 > [action]
 > Export the comments controller into `server.js`.
 >
-  ```js
-    require('./controllers/comments.js')(app);
-  ```
+```js
+require('./controllers/comments.js')(app);
+```
 
 <!-- -->
 
@@ -120,6 +120,12 @@ module.exports = model('Comment', commentSchema);
 ```js
 const Comment = require('../models/comment');
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor all the code blocks above to be async/await.
 
 Alright, let's check our work:
 
@@ -177,6 +183,12 @@ Why did I recommend we use `unshift` here instead of `push`?
 comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
 ```
 
+<!-- -->
+
+>[challenge]
+>
+Refactor all the code blocks above to be async/await.
+
 Finally, create some new comments and confirm that their `_id`'s are being added to this `comments` attribute.
 
 # Displaying Comments
@@ -207,6 +219,12 @@ Post
     console.log(err.message);
   });
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
 
 Now do we see the comments? Sure do! Well...at least as an object...
 

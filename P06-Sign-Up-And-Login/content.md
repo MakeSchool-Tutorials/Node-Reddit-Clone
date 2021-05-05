@@ -109,6 +109,12 @@ module.exports = app => {
 };
 ```
 
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
+
 # Product So Far
 
 Your form should look similar to this:
@@ -265,6 +271,12 @@ Now lets see if the cookie is set by examining the cookies in the client.
 >[action]
 > Go through the Sign Up flow on Reddit.js. Then open the Developer Tools, and view the cookies under Developer Tools > Application tab > Cookies, or by typing in `document.cookies` in the client console. Do you see the cookie?
 
+<!-- -->
+
+>[challenge]
+>
+Refactor all the code blocks above to be async/await.
+
 # Now Commit
 
 ```bash
@@ -359,6 +371,12 @@ app.post('/login', (req, res) => {
     });
 });
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
 
 # Now Commit
 

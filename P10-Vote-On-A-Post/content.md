@@ -194,6 +194,12 @@ app.put('/posts/:id/vote-down', (req, res) => {
 });
 ```
 
+<!-- -->
+
+>[challenge]
+>
+Refactor the code blocks above to be async/await.
+
 # Product So Far
 
 Create a new post and see if you can vote up or down on your new post. Check the console logs to make sure the votes are being tracked appropriately.
