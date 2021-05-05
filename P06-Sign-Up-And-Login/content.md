@@ -40,7 +40,7 @@ Always think first about what the user's experience should be, and then develop 
       <li><a href="/sign-up">Sign Up</a></li>
     </ul>
   </div>
-</div>
+</nav>
 ```
 
 ![AUTH LINKS](assets/auth-home.png)
@@ -53,10 +53,8 @@ Now that we have the links, let's make the `/sign-up` route work.
 ```js
 module.exports = (app) => {
   // SIGN UP FORM
-  app.get('/sign-up', (req, res) => {
-    res.render('sign-up');
-  });
-}
+  app.get('/sign-up', (req, res) => res.render('sign-up'));
+};
 ```
 >
 > Remember to add this new controller as a `require` within `sever.js`:
@@ -83,10 +81,8 @@ const { Schema, model } = require('mongoose');
 >
 const userSchema = new Schema({
   username: { type: String, required: true },
-  password: { type: String, select: false }
-},
-  { timestamps: true }
-);
+  password: { type: String, select: false },
+}, { timestamps: true });
 >
 module.exports = model('User', userSchema);
 ```
@@ -105,10 +101,8 @@ module.exports = app => {
 >
     user
       .save()
-      .then(user => {
-        res.redirect('/');
-      })
-      .catch(err => {
+      .then(() => res.redirect('/'))
+      .catch((err) => {
         console.log(err.message);
       });
   });
@@ -159,32 +153,30 @@ const { Schema, model } = require('mongoose');
 const bcrypt = require('bcryptjs');
 >
 const userSchema = new Schema({
-    username: { type: String, required: true },
-    password: { type: String, select: false }
-},
-    { timestamps: true }
-);
+  username: { type: String, required: true },
+  password: { type: String, select: false },
+}, { timestamps: true });
 >
 // Must use function expressions here! ES6 => functions do not bind this!
 userSchema.pre('save', function (next) {
-    // ENCRYPT PASSWORD
-    const user = this;
-    if (!user.isModified('password')) {
-        return next();
-    }
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(user.password, salt, (err, hash) => {
-            user.password = hash;
-            next();
-        });
+  // ENCRYPT PASSWORD
+  const user = this;
+  if (!user.isModified('password')) {
+    return next();
+  }
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(user.password, salt, (_, hash) => {
+      user.password = hash;
+      next();
     });
+  });
 });
 >
 // Need to use function to enable this.password to work.
 userSchema.methods.comparePassword = function (password, done) {
-    bcrypt.compare(password, this.password, (err, isMatch) => {
-        done(err, isMatch);
-    });
+  bcrypt.compare(password, this.password, (err, isMatch) => {
+    done(err, isMatch);
+  });
 };
 >
 module.exports = model('User', userSchema);
@@ -224,13 +216,13 @@ app.post('/sign-up', (req, res) => {
 >
   user
     .save()
-    .then(user => {
+    .then((user) => {
       const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '60 days' });
-      res.redirect('/');
+      return res.redirect('/');
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err.message);
-      return res.status(400).send({ err: err });
+      return res.status(400).send({ err });
     });
 });
 ...
@@ -244,7 +236,6 @@ Next we need to set the JWT as a cookie so that it will be included in all futur
 ```js
 ...
 const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
 ...
 const app = express();
 ...
@@ -259,12 +250,14 @@ Next we'll set the cookie. (We'll want our JWT cookie variable's name to bit uni
 
 ```js
 ...
-  user.save().then((user) => {
+  user
+    .save()
+    .then(() => {
       const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '60 days' });
       res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
-      res.redirect('/');
+      return res.redirect('/');
+    });
 ...
-})
 ```
 
 Now lets see if the cookie is set by examining the cookies in the client.
@@ -297,7 +290,7 @@ Now that we have signed up, let's log out. Since "being logged in" just means th
   // LOGOUT
   app.get('/logout', (req, res) => {
     res.clearCookie('nToken');
-    res.redirect('/');
+    return res.redirect('/');
   });
 ```
 
@@ -321,9 +314,7 @@ Now that we've signed up, logged out, now let's login. We can use the same patte
 >
 ```js
   // LOGIN FORM
-  app.get('/login', (req, res) => {
-    res.render('login');
-  });
+  app.get('/login', (req, res) => res.render('login'));
 ```
 >
 > Use the `sign-up` template code to make a new `login` view. It should be a very similar form to what you used for `sign-up`. Be sure to change the `action` field on the form!
@@ -343,7 +334,7 @@ app.post('/login', (req, res) => {
   const { username, password } = req.body;
   // Find this user name
   User.findOne({ username }, 'username password')
-    .then(user => {
+    .then((user) => {
       if (!user) {
         // User not found
         return res.status(401).send({ message: 'Wrong Username or Password' });
@@ -356,14 +347,14 @@ app.post('/login', (req, res) => {
         }
         // Create a token
         const token = jwt.sign({ _id: user._id, username: user.username }, process.env.SECRET, {
-          expiresIn: '60 days'
+          expiresIn: '60 days',
         });
         // Set a cookie and redirect to root
         res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
-        res.redirect('/');
+        return res.redirect('/');
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
     });
 });

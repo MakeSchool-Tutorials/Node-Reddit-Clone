@@ -21,19 +21,22 @@ The biggest challenge is tracking the `cookie` set by the server when a user log
 > Create the file `test/auth.js`. Within, we'll require the libraries we're going to need.
 >
 ```js
-const server = require('../server');
+// test/auth.js
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { describe, it } = require('mocha');
-
+const app = require('../server');
+>
+const should = chai.should();
+>
 chai.use(chaiHttp);
 >
 // Agent that will keep track of our cookies
-const agent = chai.request.agent(server);
+const agent = chai.request.agent(app);
 >
 const User = require('../models/user');
 >
-describe('User', function() {
+describe('User', function () {
   // TESTS WILL GO HERE.
 });
 ```
@@ -44,8 +47,8 @@ We can now write our first test that verifies that you cannot login if you haven
 > Add this test within your `User` block:
 >
 ```js
-it('should not be able to login if they have not registered', function(done) {
-  agent.post('/login', { email: 'wrong@example.com', password: 'nope' }).end(function(err, res) {
+it('should not be able to login if they have not registered', function (done) {
+  agent.post('/login', { email: 'wrong@example.com', password: 'nope' }).end(function (err, res) {
     res.should.have.status(401);
     done();
   });
@@ -59,12 +62,12 @@ Let's add a slightly more complex one: signing up a user!
 >
 ```js
 // signup
-it('should be able to signup', function(done) {
+it('should be able to signup', function (done) {
   User.findOneAndRemove({ username: 'testone' }, function() {
     agent
-      .post('/sign-up;)
+      .post('/sign-up')
       .send({ username: 'testone', password: 'password' })
-      .end(function(err, res) {
+      .end(function (err, res) {
         console.log(res.body);
         res.should.have.status(200);
         agent.should.have.cookie('nToken');
@@ -81,9 +84,11 @@ It's important to note that the server started by the `agent` will not automatic
 >
 ```js
 after(function () {
-  agent.close()
+  agent.close();
 });
 ```
+>
+> Do not forget to add `after` to your require statement.
 
 # Now Commit
 
@@ -120,9 +125,10 @@ const newPost = {
 ...
 }
 >
+// User that we'll use for testing purposes
 const user = {
-    username: 'poststest',
-    password: 'testposts'
+  username: 'poststest',
+  password: 'testposts',
 };
 ```
 
@@ -145,31 +151,39 @@ before(function (done) {
     });
 });
 ```
+>
+> Remember to require `before` from `mocha` at the top of the file
 
 Almost finished, just have to clean up now. Much like we deleted the test post in our `after` hook, we have to also delete the test user now too, in addition to closing the `agent`.
 
 > [action]
-> Require your user model file at the top of the file `const User = require('../models/user');`
+> Require your user model file at the top of the file 
+>
+```js
+const User = require('../models/user');
+```
+>
 > Replace your `after` hook with the following code block:
 >
 ```js
 after(function (done) {
   Post.findOneAndDelete(newPost)
-  .then(function (res) {
-      agent.close()
+  .then(function () {
+    agent.close();
 >
-      User.findOneAndDelete({
-          username: user.username
+    User
+      .findOneAndDelete({
+        username: user.username,
       })
-        .then(function (res) {
-            done()
-        })
-        .catch(function (err) {
-            done(err);
-        });
+      .then(function () {
+        done();
+      })
+      .catch(function (err) {
+        done(err);
+      });
   })
   .catch(function (err) {
-      done(err);
+    done(err);
   });
 });
 ```
@@ -199,11 +213,11 @@ Next, write a test that verifies that your login implementation works properly:
 >
 ```js
 // login
-it('should be able to login', function(done) {
+it('should be able to login', function (done) {
   agent
     .post('/login')
     .send({ username: 'testone', password: 'password' })
-    .end(function(err, res) {
+    .end(function (err, res) {
       res.should.have.status(200);
       agent.should.have.cookie('nToken');
       done();
@@ -220,8 +234,8 @@ Finally, we write a test to verify that the logout functionality works as expect
 >
 ```js
 // logout
-it('should be able to logout', function(done) {
-  agent.get('/logout').end(function(err, res) {
+it('should be able to logout', function (done) {
+  agent.get('/logout').end(function (err, res) {
     res.should.have.status(200);
     agent.should.not.have.cookie('nToken');
     done();

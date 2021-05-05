@@ -149,7 +149,7 @@ We want to track who voted on what, and we want to know what the total score of 
 ...
 upVotes : [{ type: Schema.Types.ObjectId, ref: 'User' }],
 downVotes : [{ type: Schema.Types.ObjectId, ref: 'User' }],
-voteScore : { type: Number }
+voteScore : { type: Number },
 ...
 ```
 >
@@ -173,23 +173,23 @@ Reminder: we're using `PUT` because we are _editing_ an existing resource.
 > Add these voting routes to the `posts` controller:
 >
 ```js
-app.put('/posts/:id/vote-up', function(req, res) {
-  Post.findById(req.params.id).exec(function(err, post) {
+app.put('/posts/:id/vote-up', (req, res) => {
+  Post.findById(req.params.id).then((err, post) => {
     post.upVotes.push(req.user._id);
-    post.voteScore = post.voteScore + 1;
+    post.voteScore += 1;
     post.save();
 >
-    res.status(200);
+    return res.status(200);
   });
 });
 >
-app.put('/posts/:id/vote-down', function(req, res) {
-  Post.findById(req.params.id).exec(function(err, post) {
+app.put('/posts/:id/vote-down', (req, res) => {
+  Post.findById(req.params.id).then((err, post) => {
     post.downVotes.push(req.user._id);
-    post.voteScore = post.voteScore - 1;
+    post.voteScore -= 1;
     post.save();
 >
-    res.status(200);
+    return res.status(200);
   });
 });
 ```

@@ -37,12 +37,10 @@ We're going to be using our optimization in a lot of places, so we should make i
 > In `autopopulate.js`, place the following code:
 >
 ```js
-module.exports = field => {
-    return function(next) {
-        this.populate(field);
-        next();
-    }
-}
+module.exports = (field) => function (next) {
+  this.populate(field);
+  next();
+};
 ```
 
 Great! Because this function recursively calls itself, we can now populate fields every time we load a model! Let's make some changes so that our `posts` and `comments` take advantage of this functionality.
@@ -61,9 +59,9 @@ const postSchema = new Schema({
 ...
 });
 // Always populate the author field
-PostSchema
-    .pre('findOne', Populate('author'))
-    .pre('find', Populate('author'))
+postSchema
+  .pre('findOne', Populate('author'))
+  .pre('find', Populate('author'));
 >
 module.exports = model('Post', postSchema);
 ```
@@ -77,15 +75,15 @@ const Populate = require('../util/autopopulate');
 const commentSchema = new Schema({
   content: { type: String, required: true },
   author : { type: Schema.Types.ObjectId, ref: 'User', required: true },
-[bold]  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }] [/bold]
-});
+  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+}, { timestamps: true });
 >
 // Always populate the author field
-CommentSchema
-    .pre('findOne', Populate('author'))
-    .pre('find', Populate('author'))
-    .pre('findOne', Populate('comments'))
-    .pre('find', Populate('comments'))
+commentSchema
+  .pre('findOne', Populate('author'))
+  .pre('find', Populate('author'))
+  .pre('findOne', Populate('comments'))
+  .pre('find', Populate('comments'));
 >
 module.exports = model('Comment', commentSchema);
 ```
@@ -97,27 +95,23 @@ Finally, let's update our controllers to simplify their logic to just use the [l
 >
 ```js
 // SHOW
-app.get('/posts/:id', function (req, res) {
-    const currentUser = req.user;
-    Post.findById(req.params.id).populate('comments').lean()
-        .then(post => {
-            res.render('posts-show', { post, currentUser });  
-        })
-        .catch(err => {
-            console.log(err.message);
-        });
+app.get('/posts/:id', (req, res) => {
+  const currentUser = req.user;
+  Post.findById(req.params.id).populate('comments').lean()
+    .then((post) => res.render('posts-show', { post, currentUser }))
+    .catch((err) => {
+      console.log(err.message);
+    });
 });
 >
 // SUBREDDIT
-app.get('/n/:subreddit', function (req, res) {
-    const currentUser = req.user;
-    Post.find({ subreddit: req.params.subreddit }).lean()
-        .then(posts => {
-            res.render('posts-index', { posts, currentUser });
-        })
-        .catch(err => {
-            console.log(err);
-        });
+app.get('/n/:subreddit', (req, res) => {
+  const { user } = req;
+  Post.find({ subreddit: req.params.subreddit }).lean()
+    .then((posts) => res.render('posts-index', { posts, user }))
+    .catch((err) => {
+      console.log(err);
+    });
 });
 ```
 
@@ -127,31 +121,30 @@ Notice it was only a one line change for each, but it's a lot simpler now! One m
 > Update `/comments/create` in `/controllers/comments` to the following:
 >
 ```js
-module.exports = function (app) {
-    // CREATE Comment
-    app.post('/posts/:postId/comments', function (req, res) {
-        const comment = new Comment(req.body);
-        comment.author = req.user._id;
-        comment
-            .save()
-            .then(comment => {
-                return Promise.all([
-                    Post.findById(req.params.postId)
-                ]);
-            })
-            .then(([post, user]) => {
-                post.comments.unshift(comment);
-                return Promise.all([
-                    post.save()
-                ]);
-            })
-            .then(post => {
-                res.redirect(`/posts/${req.params.postId}`);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    });
+const Post = require('../models/post');
+const Comment = require('../models/comment');
+>
+module.exports = (app) => {
+  // CREATE Comment
+  app.post('/posts/:postId/comments', (req, res) => {
+    const comment = new Comment(req.body);
+    comment.author = req.user._id;
+    comment
+      .save()
+      .then(() => Promise.all([
+        Post.findById(req.params.postId),
+      ]))
+      .then(([post]) => {
+        post.comments.unshift(comment);
+        return Promise.all([
+          post.save(),
+        ]);
+      })
+      .then(() => res.redirect(`/posts/${req.params.postId}`))
+      .catch((err) => {
+        console.log(err);
+      });
+  });
 };
 ```
 
@@ -197,23 +190,23 @@ Let's make a new `replies.js` file in our `controllers` folder. Within, we'll ne
 >
 ```js
 const Post = require('../models/post');
-const Comment = require('../models/comment');
 const User = require('../models/user');
+const Comment = require('../models/comment');
 >
-module.exports = app => {
+module.exports = (app) => {
   // NEW REPLY
   app.get('/posts/:postId/comments/:commentId/replies/new', (req, res) => {
     const currentUser = req.user;
     let post;
     Post.findById(req.params.postId).lean()
-      .then(p => {
+      .then((p) => {
         post = p;
         return Comment.findById(req.params.commentId).lean();
       })
-      .then(comment => {
+      .then((comment) => {
         res.render('replies-new', { post, comment, currentUser });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err.message);
       });
   });
@@ -264,32 +257,29 @@ The next step is to write our `/replies/create` route logic.
 ```js
 // CREATE REPLY
 app.post('/posts/:postId/comments/:commentId/replies', (req, res) => {
-    // TURN REPLY INTO A COMMENT OBJECT
-    const reply = new Comment(req.body);
-    reply.author = req.user._id
-    // LOOKUP THE PARENT POST
-    Post.findById(req.params.postId)
-        .then(post => {
-            // FIND THE CHILD COMMENT
-            Promise.all([
-                reply.save(),
-                Comment.findById(req.params.commentId),
-            ])
-                .then(([reply, comment]) => {
-                    // ADD THE REPLY
-                    comment.comments.unshift(reply._id);
->
-                    return Promise.all([
-                        comment.save(),
-                    ]);
-                })
-                .then(() => {
-                    res.redirect(`/posts/${req.params.postId}`);
-                })
-                .catch(console.error);
-            // SAVE THE CHANGE TO THE PARENT DOCUMENT
-            return post.save();
+  // TURN REPLY INTO A COMMENT OBJECT
+  const reply = new Comment(req.body);
+  reply.author = req.user._id;
+  // LOOKUP THE PARENT POST
+  Post.findById(req.params.postId)
+    .then((post) => {
+      // FIND THE CHILD COMMENT
+      Promise.all([
+        reply.save(),
+        Comment.findById(req.params.commentId),
+      ])
+        .then(([reply, comment]) => {
+          // ADD THE REPLY
+          comment.comments.unshift(reply._id);
+          return Promise.all([
+            comment.save(),
+          ]);
         })
+        .then(() => res.redirect(`/posts/${req.params.postId}`))
+        .catch(console.error);
+      // SAVE THE CHANGE TO THE PARENT DOCUMENT
+      return post.save();
+    });
 });
 ```
 

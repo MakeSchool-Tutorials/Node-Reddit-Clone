@@ -42,7 +42,7 @@ If we were using a SQL database we would have to make a new table called "subred
 >Next we update our `Post` model to have a `subreddit` attribute. This attribute will just be a `String`.
 >
 ```js
-subreddit: { type: String, required: true }
+subreddit: { type: String, required: true },
 ```
 
 After that, your form should look like this:
@@ -100,7 +100,7 @@ Let's see if we can make this route work.
 >
 ```js
 // SUBREDDIT
-app.get('/n/:subreddit', function(req, res) {
+app.get('/n/:subreddit', (req, res) => {
   console.log(req.params.subreddit);
 });
 ```
@@ -113,13 +113,11 @@ We can also reuse our `posts-index` template for displaying our posts in the sub
 >Tweak your `app.get('/n/:subreddit'` call to return actual posts:
 >
 ```js
-  // SUBREDDIT
-app.get('/n/:subreddit', function(req, res) {
+// SUBREDDIT
+app.get('/n/:subreddit', (req, res) => {
   Post.find({ subreddit: req.params.subreddit }).lean()
-    .then(posts => {
-      res.render('posts-index', { posts });
-    })
-    .catch(err => {
+    .then((posts) => res.render('posts-index', { posts }))
+    .catch((err) => {
       console.log(err);
     });
 });

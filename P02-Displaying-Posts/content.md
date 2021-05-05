@@ -36,7 +36,7 @@ mongoose.connect(
   {
     useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false,
   },
-  function(err, db) {
+  (err) => {
     assert.equal(null, err);
     console.log("Connected successfully to database");
 >
@@ -62,9 +62,7 @@ mongoose.set('debug', true);
 ```js
 app.get('/', (req, res) => {
   Post.find({}).lean()
-    .then(posts => {
-      res.render('posts-index', { posts });
-    })
+    .then(posts => res.render('posts-index', { posts }))
     .catch(err => {
       console.log(err.message);
     })
@@ -152,13 +150,11 @@ We need the path `/posts/:id` to resolve to displaying a `posts-show` template.
 > open `controllers/posts.js`, and add a new GET endpoint. Make sure all middleware requirements happen ABOVE it:
 >
 ```js
-app.get('/posts/:id', function(req, res) {
-  // LOOK UP THE POST
+// LOOK UP THE POST
+app.get('/posts/:id', (req, res) => {
   Post.findById(req.params.id).lean()
-    .then(post => {
-      res.render('posts-show', { post });
-    })
-    .catch(err => {
+    .then((post) => res.render('posts-show', { post }))
+    .catch((err) => {
       console.log(err.message);
     });
 });
