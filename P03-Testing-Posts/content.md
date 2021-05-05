@@ -30,6 +30,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { describe, it } = require('mocha');
 const app = require('../server');
+const agent = chai.request.agent(app);
 >
 const should = chai.should();
 >
@@ -40,8 +41,7 @@ describe('site', function () {
   it('Should have home page', function (done) {
     // Describe what should happen
     // In this case we test that the home page loads
-    chai
-      .request(app)
+    agent
       .get('/')
       .end(function (err, res) {
         if (err) {
@@ -106,6 +106,7 @@ Next let's make a test for the `/posts/create` route we made. We can make a new 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { describe, it } = require('mocha');
+const agent = chai.request.agent(app);
 >
 // Import the Post model from our models folder so we
 // we can use it in our tests.
@@ -148,8 +149,7 @@ it('Should create with valid attributes at POST /posts/new', function(done) {
   // Checks how many posts there are now
   Post.estimatedDocumentCount()
     .then(function (initialDocCount) {
-      chai
-        .request(app)
+      agent
         .post('/posts/new')
         // This line fakes a form post,
         // since we're not actually filling out a form
