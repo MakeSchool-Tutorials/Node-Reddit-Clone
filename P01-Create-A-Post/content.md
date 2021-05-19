@@ -6,11 +6,11 @@ slug: create-a-post
 Follow the technical planning list we made, and make sub tasks for each major feature.
 
 1. **Create a post**
-    1. Make a /posts/new route (`/posts/new`) and template (`posts-new.handlebars`)
-    1. Add form to `posts-new` template
-    1. Make `create` posts route and check that form data is sending to new route
-    1. Add `Post` model with mongoose
-    1. Confirm posts are saving to database
+   1. Make a /posts/new route (`/posts/new`) and template (`posts-new.handlebars`)
+   1. Add form to `posts-new` template
+   1. Make `create` posts route and check that form data is sending to new route
+   1. Add `Post` model with mongoose
+   1. Confirm posts are saving to database
 1. Show all posts
 1. Show one post
 1. Comment on posts
@@ -25,10 +25,10 @@ Follow the technical planning list we made, and make sub tasks for each major fe
 To create a new instance of a resource, we first have to make a button to make a new post.
 
 > [action]
->Since making a post is a very important **Call To Action (CTA)**, we'll put it in the navbar.
->
+> Since making a post is a very important **Call To Action (CTA)**, we'll put it in the navbar.
+
 ```html
-<a href="/posts/new" class="btn btn-primary navbar-btn">New Post</a>
+<li><a href="/posts/new" class="btn btn-primary navbar-btn">New Post</a></li>
 ```
 
 Next, we have to create the form. Let's follow RESTful routing and make the url match this pattern: `/<<RESOURCE NAME PLURAL>>/new`. In the case of a resource `Post`, the path will be `/posts/new`.
@@ -36,10 +36,10 @@ Next, we have to create the form. Let's follow RESTful routing and make the url 
 > [action]
 > Create this `/posts/new` route and have it render a newly created template named `posts-new.handlebars`.
 >
-> Now, use the [bootstrap form classes](https://getbootstrap.com/docs/3.3/css/#forms) to add a form for an object with a `title`, `url`, and `summary` attributes. Your form should have an action that points to a `create` route => `/posts`.
+> Now, use the [bootstrap form classes](https://getbootstrap.com/docs/5.0/forms/overview/#overview) to add a form for an object with a `title`, `url`, and `summary` attributes. Your form should have an action that points to a `create` route => `/posts`.
 >
 > **Remember** to put this form in the center 4 columns of a grid.
->
+
 ```html
 <div class="row">
   <div class="col-sm-4 col-sm-offset-4">
@@ -47,17 +47,34 @@ Next, we have to create the form. Let's follow RESTful routing and make the url 
       <legend>New Post</legend>
       <div class="form-group">
         <label for="post-title">Title</label>
-        <input type="text" name="title" class="form-control" id="post-title" placeholder="Title">
+        <input
+          type="text"
+          name="title"
+          class="form-control"
+          id="post-title"
+          placeholder="Title"
+        />
       </div>
       <div class="form-group">
         <label for="post-url">Url</label>
-        <input type="url" name="url" class="form-control" id="post-url" placeholder="https://www.google.com">
+        <input
+          type="url"
+          name="url"
+          class="form-control"
+          id="post-url"
+          placeholder="https://www.google.com"
+        />
       </div>
       <div class="form-group">
         <label for="post-summary">Summary</label>
-        <textarea name="summary" class="form-control" id="post-summary" placeholder="Summary"></textarea>
+        <textarea
+          name="summary"
+          class="form-control"
+          id="post-summary"
+          placeholder="Summary"
+        ></textarea>
       </div>
-      <div class='text-right'>
+      <div class="text-right">
         <button type="submit" class="btn btn-primary">Create Post</button>
       </div>
     </form>
@@ -82,9 +99,9 @@ Nothing! We're missing a `/posts/new` route, so let's make it.
 > First, make a new folder called `controllers`. Within, create the file `posts.js`.
 >
 ```js
-module.exports = app => {
+module.exports = (app) => {
   // CREATE
-  app.post("/posts/new", (req, res) => {
+  app.post('/posts/new', (req, res) => {
     console.log(req.body);
   });
 };
@@ -93,31 +110,24 @@ module.exports = app => {
 > Next, require this file in your `server.js` file, and pass in the `app` variable as an argument.
 >
 ```js
-  require('./controllers/posts.js')(app);
+require('./controllers/posts')(app);
 ```
 
 What happens when you submit the form?
 
 Is `req.body` defined? No?
 
-That's because you need to add the [body parser](https://www.npmjs.com/package/body-parser) module.
-
-> [action]
-> Install the npm module in order to begin the process:
->
-```bash
-npm install body-parser --save
-```
+That's because you need to parse the json coming in through the `req.body`.
 
 It's time to get `req.body` to reflect and contain the submitted form inputs from your front-end.
 
 # Req.body for Middleware
 
-Research what [body parser](https://www.npmjs.com/package/body-parser) is on the [npm website](https://npmjs.com).
+Research what [express json](https://expressjs.com/en/api.html) does in the documentation.
 
-While you're at it, also research the role of [express validator](https://www.npmjs.com/package/express-validator). What role does it play alongside the `body-parser` middleware?
+While you're at it, also research the role of [express validator](https://express-validator.github.io/docs/). What role does it play alongside the `express.json()` middleware?
 
-Essentially, `body-parser` is a necessary middleware to communicate with your `POST` requests.
+Essentially, `express.json()` is a necessary middleware to communicate with your `POST` requests.
 
 `express-validator` is a wrapper around [validator.js](https://github.com/chriso/validator.js) that validates and sanitizes string inputs.
 
@@ -130,28 +140,23 @@ Essentially, `body-parser` is a necessary middleware to communicate with your `P
 > Install `express-validator`:
 >
 ```bash
-npm install express-validator@^5.3.0 --save
+npm install express-validator
 ```
 >
-> Next, add the following two requirements to the top of your `server.js` file, and pass `body-parser` through the `app.use()` module:
->
-```js
-const bodyParser = require('body-parser');
-const expressValidator = require('express-validator');
->
-// Use Body Parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
->
-// Add after body parser initialization!
-app.use(expressValidator());
-```
+> Note: as of npm 5.0.0 installed modules are added as a dependency by default. The `--save` option is no longer needed.
+> [Stack Overflow Answer](https://stackoverflow.com/questions/19578796/what-is-the-save-option-for-npm-install)
 
 <!-- -->
 
-> [info]
+> [action]
+> Next, add the following to your `server.js` file:
 >
-> Why did we install a specific version of express-validator? Unfortunately due to [breaking changes in version 6](https://github.com/express-validator/express-validator/releases/v6.0.0), the use of `app.use(expressValidator())` is not supported in later versions of express-validator. Until a proper migration from 5.x to 6.x is released, this tutorial will use this workaround.
+```js
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+```
+
+<!-- -->
 
 # Connecting to your database
 
@@ -160,10 +165,9 @@ You're going to need to connect to a NoSQL database called [MongoDB](https://doc
 > [action]
 > Let's start off by creating a new `/data` folder in the top-level structure of your project, then create a new JavaScript file.
 >
-Open your terminal and type:
+> Open your terminal and type:
 >
 ```bash
->
 mkdir data
 cd data
 touch reddit-db.js
@@ -179,7 +183,7 @@ $ which mongod
 /usr/local/bin/mongod
 ```
 >
- We're also going to make sure that our Mongo database is running:
+> We're also going to make sure that our Mongo database is running:
 >
 ```bash
 brew services restart mongodb-community
@@ -192,23 +196,24 @@ Great! Next, we're going to use the `reddit-db.js` file we made earlier to conne
 >
 ```js
 /* Mongoose Connection */
-const mongoose = require("mongoose");
-assert = require("assert");
+const mongoose = require('mongoose');
+assert = require('assert');
 >
-const url = "mongodb://localhost/reddit-db";
-mongoose.Promise = global.Promise;
+const url = 'mongodb://localhost/reddit-db';
 mongoose.connect(
   url,
-  { useNewUrlParser: true },
+  {
+    useNewUrlParser: true
+  },
   function(err, db) {
     assert.equal(null, err);
-    console.log("Connected successfully to database");
+    console.log('Connected successfully to database');
 >
     // db.close(); turn on for testing
   }
 );
-mongoose.connection.on("error", console.error.bind(console, "MongoDB connection Error:"));
-mongoose.set("debug", true);
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection Error:'));
+mongoose.set('debug', true);
 >
 module.exports = mongoose.connection;
 ```
@@ -237,27 +242,28 @@ In order to interact with the MongoDB database we're going to use the npm module
 
 > [action]
 > Create the folder `models` and inside put the `post.js` file. Here's a sample model for our `Post` resource.
+> We can use [destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) to get `Schema` directly from the require statement.
+> If you would like a video explaining destructuring check out [JS Destructuring in 100 Seconds](https://vid.puffyan.us/watch?v=UgEaJBz3bjY)
 >
 ```js
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 >
-const PostSchema = new Schema({
+const postSchema = new Schema({
   title: { type: String, required: true },
   url: { type: String, required: true },
   summary: { type: String, required: true }
 });
 >
-module.exports = mongoose.model("Post", PostSchema);
+module.exports = model('Post', postSchema);
 ```
 >
-Now that we have a model, require it at the top of `controllers/posts.js`:
+> Now that we have a model, require it at the top of `controllers/posts.js`:
 >
 ```js
 const Post = require('../models/post');
 ```
 >
-Put it to use in our "create posts" endpoint:
+> Put it to use in our "create posts" endpoint:
 >
 ```js
 const Post = require('../models/post');
@@ -269,15 +275,18 @@ module.exports = (app) => {
     // INSTANTIATE INSTANCE OF POST MODEL
     const post = new Post(req.body);
 >
-    // SAVE INSTANCE OF POST MODEL TO DB
-    post.save((err, post) => {
-      // REDIRECT TO THE ROOT
-      return res.redirect(`/`);
-    })
+    // SAVE INSTANCE OF POST MODEL TO DB AND REDIRECT TO THE ROOT
+    post.save(() => res.redirect('/'));
   });
 >
 };
 ```
+>
+> Notice how `res.direct` is on the same line and we have left out the curly brackets.
+> This is not a mistake. If an arrow function only has one line in the curly brackets and we want to return that line, we can put it on the same line and remove the curly brackets.
+> [Read more](https://codeburst.io/javascript-understand-arrow-function-syntax-ab4081bba85b?gi=b9a68f0812ca).
+> 
+> Additionally, we want to ensure we always return the `res` and exit the code execution, unless we have a specific reason why we want to continue the code execution.
 
 # Confirming Posts are Saving
 
@@ -293,21 +302,21 @@ $ git commit -m 'Users can submit and save posts'
 $ git push
 ```
 
-
 # STRETCH CHALLENGE: Adding Created At and Updated At Attributes
+
 > [challenge]
 > Create a new model, and figure out how you can display these new attributes in your app:
 >
 ```js
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 >
-const PostSchema = new Schema({
+const postSchema = new Schema({
   title: { type: String, required: true },
   url: { type: String, required: true },
-  summary: { type: String, required: true }
-}, {timestamps: {createdAt: 'created_at'}});
+  summary: { type: String, required: true },
+}, { timestamps: true });
 >
-module.exports = mongoose.model("Post", PostSchema);
+module.exports = model('Post', postSchema);
 ```
+
 As of Mongoose 4.0 you can now set [timestamps](https://mongoosejs.com/docs/guide.html#timestamps) options on the Schema and have Mongoose handle the created at and updated at attributes for you. The type assigned is `Date`.

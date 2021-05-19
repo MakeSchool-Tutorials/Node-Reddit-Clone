@@ -26,22 +26,36 @@ So now that we are setting the cookie to be logged in, and can see this cookie o
 We can always check if `req.cookies.nToken` is present, but shouldn't we also check if it is valid? And don't we really want the `_id` of the user this token represents? This is a lot of code to include in every route! In order to refactor this code, we can make our own custom middleware.
 
 > [action]
-> Put `checkAuth` in `server.js` so it is used for every route:
+> Create a new folder `middleware`. In that folder create the file `checkAuth.js`.
 >
 ```js
-var checkAuth = (req, res, next) => {
-  console.log("Checking authentication");
-  if (typeof req.cookies.nToken === "undefined" || req.cookies.nToken === null) {
+const jwt = require('jsonwebtoken');
+>
+const checkAuth = (req, res, next) => {
+  console.log('Checking authentication');
+  if (typeof req.cookies.nToken === 'undefined' || req.cookies.nToken === null) {
     req.user = null;
   } else {
-    var token = req.cookies.nToken;
-    var decodedToken = jwt.decode(token, { complete: true }) || {};
+    const token = req.cookies.nToken;
+    const decodedToken = jwt.decode(token, { complete: true }) || {};
     req.user = decodedToken.payload;
   }
 >
   next();
 };
+>
+module.exports = checkAuth;
+```
+>
+> We can now import the middleware into `server.js` and use it as a middleware before every route.
+> Be sure to place `app.use(checkAuth);` before the controllers.
+>
+```js
+...
+const checkAuth = require('./middleware/checkAuth');
+...
 app.use(checkAuth);
+...
 ```
 
 Go to any route and see if the `Checking authentication` is logged in the terminal.
@@ -72,18 +86,22 @@ Now in any route we can set `currentUser` equal to `req.user` which will either 
 > Update the `INDEX` method in your `posts` controller to include `currentUser`:
 >
 ```js
-app.get("/", (req, res) => {
-  var currentUser = req.user;
+app.get('/', (req, res) => {
+  const currentUser = req.user;
 >
   Post.find({})
-    .then(posts => {
-      res.render("posts-index", { posts, currentUser });
-    })
-    .catch(err => {
+    .then((posts) => res.render('posts-index', { posts, currentUser }))
+    .catch((err) => {
       console.log(err.message);
     });
 });
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
 
 Do the login and sign up links appear and disappear depending upon whether a user is logged in?
 
@@ -93,9 +111,17 @@ Now, hide the "New Post" button for those who are NOT logged in.
 > Update your `navbar` again to hide the "New Post" button if a user is not logged in:
 >
 ```html
-{{#if currentUser}}
-  <a href="/posts/new" class="btn btn-primary navbar-btn">New Post</a>
-{{/if}}
+...
+>
+<ul class="navbar-nav mr-auto">
+  {{#if currentUser}}
+    <li class="nav-item">
+      <a class="nav-link" href="/posts/new">New Post</a>
+    </li>
+  {{/if}}
+</ul>
+>
+...
 ```
 
 Remember, you'll have to add `currentUser` to all of the routes that call `res.render()` so the main templates work. This may seem like some duplication of code, and it is.
@@ -109,18 +135,22 @@ Right now, if you aren't logged in, you could still just navigate to `/posts/new
 >
 ```js
 // CREATE
-app.post("/posts/new", (req, res) => {
+app.post('/posts/new', (req, res) => {
   if (req.user) {
-    var post = new Post(req.body);
+    const post = new Post(req.body);
 >
-    post.save(function(err, post) {
-      return res.redirect(`/`);
-    });
+    post.save(() => res.redirect('/'));
   } else {
     return res.status(401); // UNAUTHORIZED
   }
 });
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
 
 # Product So Far
 
@@ -160,16 +190,16 @@ To accomplish this, there are no changes required to the views we've already cre
 >
 ```js
 ...
- author : { type: Schema.Types.ObjectId, ref: "User", required: true }
+author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 ...
 ```
 >
 Additionally, add the `posts` attribute to the `User` model. It will be an array of `ObjectId`s.
 >
 ```js
-  ...
-  posts : [{ type: Schema.Types.ObjectId, ref: "Post" }]
-  ...
+...
+posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+...
 ```
 
 Now we can update the `posts` controller to save the current user as the author when we create a post,
@@ -181,36 +211,42 @@ and we can look up the current user and add the new post to their `posts`.
 ```js
 const Post = require('../models/posts');
 const User = require('../models/user');
-
-module.exports = function (app) {
-...
-// CREATE
-    app.post("/posts/new", (req, res) => {
-        if (req.user) {
-            var post = new Post(req.body);
-            post.author = req.user._id;
+const Comment = require('../models/comment');
 >
-            post
-                .save()
-                .then(post => {
-                    return User.findById(req.user._id);
-                })
-                .then(user => {
-                    user.posts.unshift(post);
-                    user.save();
-                    // REDIRECT TO THE NEW POST
-                    res.redirect(`/posts/${post._id}`);
-                })
-                .catch(err => {
-                    console.log(err.message);
-                });
-        } else {
-            return res.status(401); // UNAUTHORIZED
-        }
-    });
+module.exports = (app) => {
+...
+  // CREATE
+  app.post('/posts/new', (req, res) => {
+    if (req.user) {
+      const userId = req.user._id;
+      const post = new Post(req.body);
+      post.author = userId;
+>
+      post
+        .save()
+        .then(() => User.findById(userId))
+        .then((user) => {
+          user.posts.unshift(post);
+          user.save();
+          // REDIRECT TO THE NEW POST
+          return res.redirect(`/posts/${post._id}`);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    } else {
+      return res.status(401); // UNAUTHORIZED
+    }
+  });
 ...
 }
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
 
 Test that both the `author` and the `posts` are being saved by looking in your database or logging to the console.
 
@@ -231,23 +267,27 @@ Let's start by just getting the `author` field to appear on the posts you see on
 
 If you refresh right now, you'll just see an `ObjectId` for the `author`. We need to `populate` the field!
 
+> [action]
 > `populate` the `author` field from the `INDEX` method in the `posts` controller:
 >
 ```js
 // INDEX
-    app.get('/', (req, res) => {
-        var currentUser = req.user;
-        // res.render('home', {});
-        console.log(req.cookies);
-        Post.find({}).lean().populate('author')
-        .then(posts => {
-            res.render('posts-index', { posts, currentUser });
-            // res.render('home', {});
-        }).catch(err => {
-            console.log(err.message);
-        })
-    })
+app.get('/', (req, res) => {
+  const { user } = req;
+  console.log(req.cookies);
+  Post.find({}).lean().populate('author')
+    .then((posts) => res.render('posts-index', { posts, user }))
+    .catch((err) => {
+      console.log(err.message);
+    });
+});
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
 
 # Product So Far
 
@@ -277,18 +317,16 @@ Let's work on the single post first, this should be very similar to what we just
 > Update `SHOW` in the `posts` controller to `populate` the author:
 >
 ```js
-app.get("/posts/:id", function (req, res) {
-        var currentUser = req.user;
-        // LOOK UP THE POST
+// LOOK UP THE POST
+app.get('/posts/:id', (req, res) => {
+  const currentUser = req.user;
 >
-        Post.findById(req.params.id).lean().populate('comments').populate('author')
-            .then(post => {
-                res.render("posts-show", { post, currentUser });  
-            })
-            .catch(err => {
-                console.log(err.message);
-            });
+  Post.findById(req.params.id).lean().populate('comments').populate('author')
+    .then((post) => res.render('posts-show', { post, currentUser }))
+    .catch((err) => {
+      console.log(err.message);
     });
+});
 ```
 
 Note we did a _double call_ to `populate` in order to get both fields!
@@ -300,17 +338,22 @@ Finally, let's get `author` showing for posts on a subreddit.
 >
 ```js
 // SUBREDDIT
-app.get("/n/:subreddit", function (req, res) {
-    var currentUser = req.user;
-    Post.find({ subreddit: req.params.subreddit }).lean().populate('author')
-        .then(posts => {
-            res.render("posts-index", { posts, currentUser });
-        })
-        .catch(err => {
-            console.log(err);
-        });
+app.get('/n/:subreddit', (req, res) => {
+  const currentUser = req.user;
+  const { subreddit } = req.params;
+  Post.find({ subreddit }).lean().populate('author')
+    .then((posts) => res.render('posts-index', { posts, currentUser }))
+    .catch((err) => {
+      console.log(err);
+    });
 });
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor all the code blocks above to be async/await.
 
 # Now Commit
 
@@ -327,12 +370,12 @@ Using the previous instructions for associating users and posts, can you make it
 **Hint:** You should review the documentation for [Mongoose's populate](https://mongoosejs.com/docs/populate.html) method. Also look in to how you would nest `populate` calls.
 
 > [solution]
-> Update `posts-comments` to include `author`:
+> Create the template `post-comments` and include `author` in each comment:
 >
 ```html
 {{#each post.comments}}
-    <p>{{this.content}}</p>
-    <p class="text-right">{{this.author.username}}</p>
+  <p>{{this.content}}</p>
+  <p class="text-right">{{this.author.username}}</p>
 {{/each}}
 ```
 >
@@ -349,15 +392,13 @@ comment.author = req.user._id;
 >
 ```js
 // SHOW
-app.get("/posts/:id", function (req, res) {
-   var currentUser = req.user;
+app.get('/posts/:id', function (req, res) {
+   const currentUser = req.user;
    // LOOK UP THE POST
 >
-   Post.findById(req.params.id).lean().populate({path:'comments', populate: {path: 'author'}}).populate('author')
-       .then(post => {
-           res.render("posts-show", { post, currentUser });  
-       })
-       .catch(err => {
+   Post.findById(req.params.id).lean().populate({ path:'comments', populate: { path: 'author' } }).populate('author')
+       .then((post) => res.render('posts-show', { post, currentUser }))
+       .catch((err) => {
            console.log(err.message);
        });
 });

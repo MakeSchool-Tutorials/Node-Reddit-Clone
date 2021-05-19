@@ -23,7 +23,7 @@ Alright next step! Now that we can create posts, let's display them.
 
 Next, you'll need to handle promises from the Mongoose perspective.
 
-I'm going to encourage the use of `promises` to handle asynchronous transactions. Mongoose doesn't supply it's own Promise library; instead Mongoose asks you to set a Promise library of your choosing. The tutorial will use the default **JavaScript Promise**.
+I'm going to encourage the use of `promises` to handle asynchronous transactions. As of Mongoose 5.0 native promises are used by default. [Read more](https://stackoverflow.com/questions/51862570/mongoose-why-we-make-mongoose-promise-global-promise-when-setting-a-mongoo)
 
 Finally, for testing, we can add an error handler for connection errors.
 
@@ -31,20 +31,19 @@ Finally, for testing, we can add an error handler for connection errors.
 > Open `/data/reddit-db.js` and make the following changes to support connection error handling and promises:
 >
 ```js
-mongoose.Promise = global.Promise;
 mongoose.connect(
   url,
   {
     useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false,
   },
-  function(err, db) {
+  (err) => {
     assert.equal(null, err);
     console.log("Connected successfully to database");
-
+>
     // db.close(); turn on for testing
   }
 );
-mongoose.connection.on("error", console.error.bind(console, "MongoDB connection Error:"));
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection Error:'));
 ```
 
 Note that the following line we included previously allows us to display debug info from Mongoose in the console:
@@ -63,14 +62,54 @@ mongoose.set('debug', true);
 ```js
 app.get('/', (req, res) => {
   Post.find({}).lean()
-    .then(posts => {
-      res.render('posts-index', { posts });
-    })
-    .catch(err => {
+    .then((posts) => res.render('posts-index', { posts }))
+    .catch((err) => {
       console.log(err.message);
     })
 })
 ```
+
+
+**Want more of a challenge?**
+>[challenge]
+>
+As a stretch challenge try rewritting the code block above to be async/await.
+Here is are some video resources:
+>
+[Fireship](https://invidious.tube/watch?v=vn3tm0quoqE)
+>
+[The Event Loop](https://invidious.tube/watch?v=cCOL7MC4Pl0)
+>
+[Callbacks vs Promises vs RxJs Observables vs async/await](https://invidious.tube/watch?v=jgWnccjXR4I)
+>
+And also some text resources:
+>
+[Callbacks vs Promises vs RxJS vs async/await](https://academind.com/tutorials/callbacks-vs-promises-vs-rxjs-vs-async-awaits/) 
+>
+[Async/Await vs Promises](https://levelup.gitconnected.com/async-await-vs-promises-4fe98d11038f?gi=853e56aa6d97)
+>
+[async/await vs then/catch](https://www.smashingmagazine.com/2020/11/comparison-async-await-versus-then-catch/)
+
+
+**Async/Await Solution**
+>[solution]
+>
+> We will not give you the solution to every async/await stretch challenge but hopefully this first one gives you a positive direction to head in.
+>
+```js
+app.get('/', async (req, res) => {
+  try {
+    const posts = await Post.find({}).lean();
+    return res.render('posts-index', { posts });
+  } catch (err) {
+    console.log(err.message);
+  }
+});
+```
+>
+> Now, how clean does that async/await code look?
+
+
 
 Try running this and see if your `posts-index` is being displayed. If so, replace your `hello world` with the variable `{{posts}}`. What do you see?
 
@@ -102,23 +141,23 @@ Great, now let's go back to `posts-index.handlebars` and make it look good!
 </div>
 ```
 
-Now that we have `{{posts}}`, we can use handlebars' [built in `each` operator](http://handlebarsjs.com/builtin_helpers.html) to loop over the posts, and display each one.
+Now that we have `{{posts}}`, we can use handlebars' [built in `each` operator](https://handlebarsjs.com/guide/builtin-helpers.html#each) to loop over the posts, and display each one.
 
 > [action]
 > In each post, use bootstrap's `list-group` and `list-group-item` classes. Display the post title in a div with the class `lead`, and add an anchor tag that links to the post's url. Finally, add `target="_blank"` to the anchor tag, so that the url opens in a new tab. Here's the full `posts-index.handlebars`:
 >
 ```html
 <div class="row">
-    <div class="col-sm-8 col-sm-offset-2">
-        <ul>
-            {{#each posts}}
-                <li class="list-group-item">
-                    <div class="lead">{{this.title}}</div>
-                    <a href="{{this.url}}" target="_blank">{{this.url}}</a>
-                </li>
-            {{/each}}
-        </ul>
-    </div>
+  <div class="col-sm-8 col-sm-offset-2">
+    <ul>
+      {{#each posts}}
+        <li class="list-group-item">
+          <div class="lead">{{this.title}}</div>
+          <a href="{{this.url}}" target="_blank">{{this.url}}</a>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
 </div>
 ```
 
@@ -150,20 +189,24 @@ The title is a link to the show page. If we click it, what happens? Error! No ro
 We need the path `/posts/:id` to resolve to displaying a `posts-show` template.
 
 > [action]
-> open `controllers/post.js`, and add a new GET endpoint. Make sure all middleware requirements happen ABOVE it:
+> open `controllers/posts.js`, and add a new GET endpoint. Make sure all middleware requirements happen ABOVE it:
 >
 ```js
-app.get("/posts/:id", function(req, res) {
-  // LOOK UP THE POST
+// LOOK UP THE POST
+app.get('/posts/:id', (req, res) => {
   Post.findById(req.params.id).lean()
-    .then(post => {
-      res.render("posts-show", { post });
-    })
-    .catch(err => {
+    .then((post) => res.render('posts-show', { post }))
+    .catch((err) => {
       console.log(err.message);
     });
 });
 ```
+
+**Async/Await stretch challenge!**
+>[challenge]
+>
+Refactor the code block above to be async/await.
+If you get stuck, there are video and text resources linked at the first async/await stretch challenge.
 
 What happens if we refresh? No template!
 

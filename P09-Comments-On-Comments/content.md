@@ -37,12 +37,10 @@ We're going to be using our optimization in a lot of places, so we should make i
 > In `autopopulate.js`, place the following code:
 >
 ```js
-module.exports = field => {
-    return function(next) {
-        this.populate(field);
-        next();
-    }
-}
+module.exports = (field) => function (next) {
+  this.populate(field);
+  next();
+};
 ```
 
 Great! Because this function recursively calls itself, we can now populate fields every time we load a model! Let's make some changes so that our `posts` and `comments` take advantage of this functionality.
@@ -54,42 +52,40 @@ Great! Because this function recursively calls itself, we can now populate field
 >
 ```js
 // models/post.js
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const Populate = require("../util/autopopulate");
+const { Schema, model } = require('mongoose');
+const Populate = require('../util/autopopulate');
 >
-const PostSchema = new Schema({
+const postSchema = new Schema({
 ...
 });
 // Always populate the author field
-PostSchema
-    .pre('findOne', Populate('author'))
-    .pre('find', Populate('author'))
+postSchema
+  .pre('findOne', Populate('author'))
+  .pre('find', Populate('author'));
 >
-module.exports = mongoose.model("Post", PostSchema);
+module.exports = model('Post', postSchema);
 ```
 >
 > `/models/comment.js`
 >
 ```js
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const Populate = require("../util/autopopulate");
+const { Schema, model } = require('mongoose');
+const Populate = require('../util/autopopulate');
 >
-const CommentSchema = new Schema({
+const commentSchema = new Schema({
   content: { type: String, required: true },
-  author : { type: Schema.Types.ObjectId, ref: "User", required: true },
-[bold]  comments: [{type: Schema.Types.ObjectId, ref: "Comment"}] [/bold]
-});
+  author : { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+}, { timestamps: true });
 >
 // Always populate the author field
-CommentSchema
-    .pre('findOne', Populate('author'))
-    .pre('find', Populate('author'))
-    .pre('findOne', Populate('comments'))
-    .pre('find', Populate('comments'))
+commentSchema
+  .pre('findOne', Populate('author'))
+  .pre('find', Populate('author'))
+  .pre('findOne', Populate('comments'))
+  .pre('find', Populate('comments'));
 >
-module.exports = mongoose.model("Comment", CommentSchema);
+module.exports = model('Comment', commentSchema);
 ```
 
 Finally, let's update our controllers to simplify their logic to just use the [lean](https://mongoosejs.com/docs/api.html#query_Query-lean) method.
@@ -99,27 +95,23 @@ Finally, let's update our controllers to simplify their logic to just use the [l
 >
 ```js
 // SHOW
-app.get("/posts/:id", function (req, res) {
-    var currentUser = req.user;
-    Post.findById(req.params.id).populate('comments').lean()
-        .then(post => {
-            res.render("posts-show", { post, currentUser });  
-        })
-        .catch(err => {
-            console.log(err.message);
-        });
+app.get('/posts/:id', (req, res) => {
+  const currentUser = req.user;
+  Post.findById(req.params.id).populate('comments').lean()
+    .then((post) => res.render('posts-show', { post, currentUser }))
+    .catch((err) => {
+      console.log(err.message);
+    });
 });
 >
 // SUBREDDIT
-app.get("/n/:subreddit", function (req, res) {
-    var currentUser = req.user;
-    Post.find({ subreddit: req.params.subreddit }).lean()
-        .then(posts => {
-            res.render("posts-index", { posts, currentUser });
-        })
-        .catch(err => {
-            console.log(err);
-        });
+app.get('/n/:subreddit', (req, res) => {
+  const { user } = req;
+  Post.find({ subreddit: req.params.subreddit }).lean()
+    .then((posts) => res.render('posts-index', { posts, user }))
+    .catch((err) => {
+      console.log(err);
+    });
 });
 ```
 
@@ -129,33 +121,38 @@ Notice it was only a one line change for each, but it's a lot simpler now! One m
 > Update `/comments/create` in `/controllers/comments` to the following:
 >
 ```js
-module.exports = function (app) {
-    // CREATE Comment
-    app.post("/posts/:postId/comments", function (req, res) {
-        const comment = new Comment(req.body);
-        comment.author = req.user._id;
-        comment
-            .save()
-            .then(comment => {
-                return Promise.all([
-                    Post.findById(req.params.postId)
-                ]);
-            })
-            .then(([post, user]) => {
-                post.comments.unshift(comment);
-                return Promise.all([
-                    post.save()
-                ]);
-            })
-            .then(post => {
-                res.redirect(`/posts/${req.params.postId}`);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    });
+const Post = require('../models/post');
+const Comment = require('../models/comment');
+>
+module.exports = (app) => {
+  // CREATE Comment
+  app.post('/posts/:postId/comments', (req, res) => {
+    const comment = new Comment(req.body);
+    comment.author = req.user._id;
+    comment
+      .save()
+      .then(() => Promise.all([
+        Post.findById(req.params.postId),
+      ]))
+      .then(([post]) => {
+        post.comments.unshift(comment);
+        return Promise.all([
+          post.save(),
+        ]);
+      })
+      .then(() => res.redirect(`/posts/${req.params.postId}`))
+      .catch((err) => {
+        console.log(err);
+      });
+  });
 };
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor all the code blocks above to be async/await.
 
 Now would be a good point to refresh your screen and make sure the `authors` on your `comments` and `posts` are still showing correctly. Notice also we are now redirecting users back to the post's page instead of root. Makes a lot more sense to go back to where you originated the request to reply from, doesn't it?
 
@@ -198,30 +195,30 @@ Let's make a new `replies.js` file in our `controllers` folder. Within, we'll ne
 > create `/controllers/replies` and include the following code:
 >
 ```js
-var Post = require("../models/post");
-var Comment = require("../models/comment");
-var User = require("../models/user");
+const Post = require('../models/post');
+const User = require('../models/user');
+const Comment = require('../models/comment');
 >
-module.exports = app => {
+module.exports = (app) => {
   // NEW REPLY
-  app.get("/posts/:postId/comments/:commentId/replies/new", (req, res) => {
-    var currentUser = req.user;
+  app.get('/posts/:postId/comments/:commentId/replies/new', (req, res) => {
+    const currentUser = req.user;
     let post;
     Post.findById(req.params.postId).lean()
-      .then(p => {
+      .then((p) => {
         post = p;
         return Comment.findById(req.params.commentId).lean();
       })
-      .then(comment => {
-        res.render("replies-new", { post, comment, currentUser });
+      .then((comment) => {
+        res.render('replies-new', { post, comment, currentUser });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err.message);
       });
   });
 >
   // CREATE REPLY
-  app.post("/posts/:postId/comments/:commentId/replies", (req, res) => {
+  app.post('/posts/:postId/comments/:commentId/replies', (req, res) => {
     console.log(req.body);
   });
 };
@@ -265,33 +262,30 @@ The next step is to write our `/replies/create` route logic.
 >
 ```js
 // CREATE REPLY
-app.post("/posts/:postId/comments/:commentId/replies", (req, res) => {
-    // TURN REPLY INTO A COMMENT OBJECT
-    const reply = new Comment(req.body);
-    reply.author = req.user._id
-    // LOOKUP THE PARENT POST
-    Post.findById(req.params.postId)
-        .then(post => {
-            // FIND THE CHILD COMMENT
-            Promise.all([
-                reply.save(),
-                Comment.findById(req.params.commentId),
-            ])
-                .then(([reply, comment]) => {
-                    // ADD THE REPLY
-                    comment.comments.unshift(reply._id);
->
-                    return Promise.all([
-                        comment.save(),
-                    ]);
-                })
-                .then(() => {
-                    res.redirect(`/posts/${req.params.postId}`);
-                })
-                .catch(console.error);
-            // SAVE THE CHANGE TO THE PARENT DOCUMENT
-            return post.save();
+app.post('/posts/:postId/comments/:commentId/replies', (req, res) => {
+  // TURN REPLY INTO A COMMENT OBJECT
+  const reply = new Comment(req.body);
+  reply.author = req.user._id;
+  // LOOKUP THE PARENT POST
+  Post.findById(req.params.postId)
+    .then((post) => {
+      // FIND THE CHILD COMMENT
+      Promise.all([
+        reply.save(),
+        Comment.findById(req.params.commentId),
+      ])
+        .then(([reply, comment]) => {
+          // ADD THE REPLY
+          comment.comments.unshift(reply._id);
+          return Promise.all([
+            comment.save(),
+          ]);
         })
+        .then(() => res.redirect(`/posts/${req.params.postId}`))
+        .catch(console.error);
+      // SAVE THE CHANGE TO THE PARENT DOCUMENT
+      return post.save();
+    });
 });
 ```
 
@@ -345,6 +339,12 @@ Finally, let's give each comment a bit of an indent by creating a style for the 
     <link rel="stylesheet" href="/css/all.css">
 </head>
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor all the code blocks above to be async/await.
 
 # Product So Far
 

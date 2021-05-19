@@ -13,41 +13,48 @@ Mocha.js is a test framework for Node.js, and Chai.js is an assertion library th
 > We're going to add these to our `devDependencies` in our `package.json` file because we don't need the testing libraries in production.
 >
 ```bash
-$ npm install mocha chai chai-http --save-dev
+$ npm install mocha chai chai-http -D
 ```
+>
+> Note: `-D` is just a shorthand for `--save-dev`. Both save the package to our devDependencies
 >
 Now create a folder called `test` in the root of your project.
 >
 > Add a file to your new `test` folder called `index.js` and let's require our testing libraries and then create our first `hello world` style test.
+> We can use `assert`, `expect`, or `should`. Check out this [Stack Overflow article](https://stackoverflow.com/questions/21396524/what-is-the-difference-between-assert-expect-and-should-in-chai) to get a better understanding of the differences. In this tutorial we will use `should`.
+> Using destructuring, we will import `describe` and `it` from mocha in order to keep our linter happy.
 >
 ```js
-const app = require("./../server");
-const chai = require("chai");
-const chaiHttp = require("chai-http");
+// test/index.js
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const { describe, it } = require('mocha');
+const app = require('../server');
+const agent = chai.request.agent(app);
+>
 const should = chai.should();
 >
 chai.use(chaiHttp);
 >
-describe("site", function() {
+describe('site', function () {
   // Describe what you are testing
-  it("Should have home page", function(done) {
+  it('Should have home page', function (done) {
     // Describe what should happen
     // In this case we test that the home page loads
-    chai
-      .request(app)
-      .get("/")
-      .end(function(err, res) {
+    agent
+      .get('/')
+      .end(function (err, res) {
         if (err) {
           return done(err);
         }
-        res.status.should.be.equal(200);
+        res.should.have.status(200);
         return done(); // Call done if the test completed successfully.
       });
   });
 });
 ```
 
-This test tests that the response's status should be equal to 200 - which if you recall your HTTP status codes, means the response is successful.
+This test tests that the response should have a status of 200 - which if you recall your HTTP status codes, means the response is successful.
 
 >[info]
 > Notice we did **not** use `ES6` syntax for our anonymous functions in our tests. That is because using arrow functions is [discouraged in Mocha](https://mochajs.org/#arrow-functions), as they make it so that `this` cannot access the Mocha context.
@@ -70,9 +77,11 @@ Now let's run the test.
 >
 ```json
 "scripts": {
-  "test": "mocha"
+  "test": "mocha --exit"
 },
 ```
+>
+> Note: the `--exit` command exits the tests after they are done
 
 In order for this test to run the server will have to be running on `localhost 3000`, so make sure you've killed `nodemon` before running your tests.
 
@@ -94,28 +103,28 @@ Next let's make a test for the `/posts/create` route we made. We can make a new 
 >
 ```js
 // test/posts.js
-const app = require("./../server");
-const chai = require("chai");
-const chaiHttp = require("chai-http");
-const expect = chai.expect;
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const { describe, it } = require('mocha');
+const agent = chai.request.agent(app);
 >
 // Import the Post model from our models folder so we
 // we can use it in our tests.
 const Post = require('../models/post');
-const server = require('../server');
+const app = require('../server');
 >
-chai.should();
+const should = chai.should();
+>
 chai.use(chaiHttp);
 >
-describe('Posts', function() {
-  const agent = chai.request.agent(server);
+describe('Posts', function () {
   // Post that we'll use for testing purposes
   const newPost = {
-      title: 'post title',
-      url: 'https://www.google.com',
-      summary: 'post summary'
+    title: 'post title',
+    url: 'https://www.google.com',
+    summary: 'post summary'
   };
-  it("should create with valid attributes at POST /posts/new", function (done) {
+  it('should create with valid attributes at POST /posts/new', function (done) {
     // TODO: test code goes here!
   });
 });
@@ -140,29 +149,29 @@ it('Should create with valid attributes at POST /posts/new', function(done) {
   // Checks how many posts there are now
   Post.estimatedDocumentCount()
     .then(function (initialDocCount) {
-        agent
-            .post("/posts/new")
-            // This line fakes a form post,
-            // since we're not actually filling out a form
-            .set("content-type", "application/x-www-form-urlencoded")
-            // Make a request to create another
-            .send(newPost)
-            .then(function (res) {
-                Post.estimatedDocumentCount()
-                    .then(function (newDocCount) {
-                        // Check that the database has one more post in it
-                        expect(res).to.have.status(200);
-                        // Check that the database has one more post in it
-                        expect(newDocCount).to.be.equal(initialDocCount + 1)
-                        done();
-                    })
-                    .catch(function (err) {
-                        done(err);
-                    });
+      agent
+        .post('/posts/new')
+        // This line fakes a form post,
+        // since we're not actually filling out a form
+        .set('content-type', 'application/x-www-form-urlencoded')
+        // Make a request to create another
+        .send(newPost)
+        .then(function (res) {
+          Post.estimatedDocumentCount()
+            .then(function (newDocCount) {
+              // Check that the database has status 200
+              res.should.have.status(200);
+              // Check that the database has one more post in it
+              newDocCount.should.equal(initialDocCount + 1)
+              done();
             })
             .catch(function (err) {
-                done(err);
+              done(err);
             });
+        })
+        .catch(function (err) {
+          done(err);
+        });
     })
     .catch(function (err) {
         done(err);
@@ -186,6 +195,8 @@ after(function () {
   Post.findOneAndDelete(newPost);
 });
 ```
+>
+> Also add `after` to your deconstruction of `require('mocha')` to rid yourself of any linter warnings
 
 Now we have a test for the `/posts/create` route that should be green! Can you make it fail? How about if our `post` object doesn't have a title, url, or summary? Those are all required fields. What do you see if you change that and run the test? Does it fail? How do you know what made it fail?
 

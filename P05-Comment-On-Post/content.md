@@ -30,13 +30,18 @@ So, if we want to allow users to comment on these posts, first we can add a comm
 > Let's add the following `form` to `posts-show` so that we can write a comment if we're viewing a post:
 >
 ```html
-...
-  <form action="/posts/{{post._id}}/comments" method="post">
-    <textarea class='form-control' name="content" placeholder="Comment"></textarea>
-    <div class="text-right">
-      <button type="submit" class="btn btn-primary">Save</button>
-    </div>
-  </form>
+<div class="row">
+  <div class="col-sm-6 col-sm-offset-3">
+    <a href="{{post.url}}" class="lead">{{post.title}}</a>
+    <p>{{post.summary}}</p>
+    <form action="/posts/{{post._id}}/comments" method="post">
+      <textarea class='form-control' name="content" placeholder="Comment"></textarea>
+      <div class="text-right">
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
 ```
 
 ![COMMENT FORM](assets/comment-form.png)
@@ -55,20 +60,20 @@ Follow the pattern you used for the `Post` resource to create a `Comment` resour
 > [action]
 > Create a comments controller as a new file `comments.js` in your `controllers` folder
 >
-  ```js
-  module.exports = function(app) {
+```js
+module.exports = (app) => {
 >
-  };
-  ```
+};
+```
 
 <!-- -->
 
 > [action]
 > Export the comments controller into `server.js`.
 >
-  ```js
-    require('./controllers/comments.js')(app);
-  ```
+```js
+require('./controllers/comments.js')(app);
+```
 
 <!-- -->
 
@@ -77,18 +82,16 @@ Follow the pattern you used for the `Post` resource to create a `Comment` resour
 >
 ```js
 // CREATE Comment
-app.post("/posts/:postId/comments", function(req, res) {
+app.post('/posts/:postId/comments', (req, res) => {
   // INSTANTIATE INSTANCE OF MODEL
   const comment = new Comment(req.body);
 >
   // SAVE INSTANCE OF Comment MODEL TO DB
   comment
     .save()
-    .then(comment => {
-      // REDIRECT TO THE ROOT
-      return res.redirect(`/`);
-    })
-    .catch(err => {
+    // REDIRECT TO THE ROOT
+    .then(() => res.redirect('/'))
+    .catch((err) => {
       console.log(err);
     });
 });
@@ -100,16 +103,13 @@ app.post("/posts/:postId/comments", function(req, res) {
 > Create a Comment model in a `comment.js` file in your `models` folder
 >
 ```js
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 >
-const CommentSchema = new Schema({
-  content: { type: String, required: true }
-},
-  {timestamps: {createdAt: 'created_at'}}
-);
+const commentSchema = new Schema({
+  content: { type: String, required: true },
+}, { timestamps: true });
 >
-module.exports = mongoose.model("Comment", CommentSchema);
+module.exports = model('Comment', commentSchema);
 ```
 
 <!-- -->
@@ -117,9 +117,15 @@ module.exports = mongoose.model("Comment", CommentSchema);
 >[action]
 > Require the comment model in the comments controller
 >
-  ```js
-  const Comment = require('../models/comment');
-  ```
+```js
+const Comment = require('../models/comment');
+```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor all the code blocks above to be async/await.
 
 Alright, let's check our work:
 
@@ -141,25 +147,23 @@ First we'll do the controller logic, then the model logic.
 const Post = require('../models/post');
 const Comment = require('../models/comment');
 >
+...
+>
 // CREATE Comment
-app.post("/posts/:postId/comments", function(req, res) {
+app.post('/posts/:postId/comments', (req, res) => {
   // INSTANTIATE INSTANCE OF MODEL
   const comment = new Comment(req.body);
 >
   // SAVE INSTANCE OF Comment MODEL TO DB
   comment
     .save()
-    .then(comment => {
-      return Post.findById(req.params.postId);
-    })
-    .then(post => {
+    .then(() => Post.findById(req.params.postId))
+    .then((post) => {
       post.comments.unshift(comment);
       return post.save();
     })
-    .then(post => {
-      res.redirect(`/`);
-    })
-    .catch(err => {
+    .then(() => res.redirect('/'))
+    .catch((err) => {
       console.log(err);
     });
 });
@@ -176,8 +180,14 @@ Why did I recommend we use `unshift` here instead of `push`?
 > Next we need to add an array attribute to the `Post` model.
 >
 ```js
-comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
+comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor all the code blocks above to be async/await.
 
 Finally, create some new comments and confirm that their `_id`'s are being added to this `comments` attribute.
 
@@ -202,12 +212,19 @@ Just the id's right? **When we do a reference association, we only save the id's
 >
 ```js
 // LOOK UP THE POST
-Post.findById(req.params.id).lean().populate('comments').then((post) => {
-  res.render('post-show', { post })
-}).catch((err) => {
-  console.log(err.message)
-})
+Post
+  .findById(req.params.id).lean().populate('comments')
+  .then((post) => res.render('post-show', { post }))
+  .catch((err) => {
+    console.log(err.message);
+  });
 ```
+
+<!-- -->
+
+>[challenge]
+>
+Refactor the code block above to be async/await.
 
 Now do we see the comments? Sure do! Well...at least as an object...
 
