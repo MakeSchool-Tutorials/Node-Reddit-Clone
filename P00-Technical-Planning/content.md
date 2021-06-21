@@ -79,14 +79,17 @@ In what order should we fulfill these tasks? What do you think? Write it down st
 > 9. Make comments on comments
 > 10. Vote a post up or down
 
-# Bootstrapping Express.js
+# Starting Express.js
 
 Ok --- we've got user narratives, wireframes, and a plan for the first few features to implement. Time to get started coding! Remember not to "work ahead", instead always do the absolute minimum work to get what you are working on to function and then move to the next.
 
+Follow this video for how to setup an Express.js project with Handlebars:
+
+![ms-video-youtube](https://www.youtube.com/watch?v=41PToE2zYGY&t=3s)
+
 1. Create an npm project (hint: `npm init`) - remember to make your main file called `server.js`. Use the express documentation or a previous project to set up the boilerplate code for the server.
-2. Bootstrap Express.js. You can use Handlebars or Jade as a templating engine if you like. **This tutorial will use Handlebars**. Should you use Handlebars, you should make sure that `express-handlebars` is installed.
-3. Run your server, and check to see if "hello world" appears. If you run into trouble, consult the [Express documentation](https://expressjs.com/en/starter/hello-world.html).
-4. Once you have "hello world" and a template engine installed, move on to the next step.
+2. Start Express.js. You can use Handlebars or Jade as a templating engine if you like. **This tutorial will use Handlebars**. Should you use Handlebars, you should make sure that `express-handlebars` is installed. Navigate to [express-handlebars](https://github.com/express-handlebars/express-handlebars) and read the **Usage** documentation for how to do this.
+3. Run your server with `nodemon` and see that your `home.handlebars` and `layout.handlebars` templates are working and displaying correctly.
 5. Add Bootstrap to your layout template `<head>` using the CDN. Use the following [starter template](https://getbootstrap.com/docs/5.0/getting-started/introduction/#starter-template) as a guide for your own!
 
 > [action] Create a `views` folder and in there we can create a `main.handlebars` file that will serve as our base.
